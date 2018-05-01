@@ -1,8 +1,8 @@
 package MapServer;
 
-public interface AbstractEffect {
+public interface Effect {
     void execute(Object who);
-    EffectTypes getTypeOfEffect();
     String getDescription();
     int duration(); // -1 means infinity
+    int getId();
 }
