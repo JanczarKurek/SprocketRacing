@@ -1,5 +1,7 @@
 package MapServer;
 
+import misc.IdGenerator;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -8,11 +10,12 @@ public class SimpleField implements Field {
 
     LinkedList<Effect> effects = new LinkedList<>();
 
-
+    static IdGenerator idGenerator = new IdGenerator();
+    int id = idGenerator.genId();
 
     @Override
     public Collection<Effect> getEffects() {
-        return null;
+        return new LinkedList<>(effects);
     }
 
     @Override
@@ -41,6 +44,6 @@ public class SimpleField implements Field {
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 }
