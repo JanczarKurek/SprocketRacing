@@ -63,5 +63,4 @@ public class VehicleCardData implements VehicleCard {
         return name;
     }
 
-
 }
