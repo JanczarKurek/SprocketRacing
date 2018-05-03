@@ -36,12 +36,12 @@ public class BoardField implements Field{
     }
 
     @Override
-    public Collection<Effect> getOnStayEffects() {
+    public Collection<OnStayEffect> getOnStayEffects() {
         return field.getOnStayEffects();
     }
 
     @Override
-    public Collection<Effect> getOnPassEffects() {
+    public Collection<OnPassEffect> getOnPassEffects() {
         return field.getOnPassEffects();
     }
 
