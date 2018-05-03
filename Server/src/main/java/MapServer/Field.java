@@ -4,8 +4,8 @@ import java.util.Collection;
 
 public interface Field {
     Collection<Effect> getEffects();
-    Collection<Effect> getOnStayEffects();
-    Collection<Effect> getOnPassEffects();
+    Collection<OnStayEffect> getOnStayEffects();
+    Collection<OnPassEffect> getOnPassEffects();
     void addEffect(Effect effect);
     void clearOld();
     int getId();

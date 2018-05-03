@@ -1,45 +1,50 @@
 package MapServer;
 
-import misc.IdGenerator;
-
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 public class SimpleField implements Field {
 
-    LinkedList<Effect> effects = new LinkedList<>();
+    private LinkedList<OnStayEffect> onStayEffects = new LinkedList<>();
+    private LinkedList<OnPassEffect> onPassEffects = new LinkedList<>();
 
-    static IdGenerator idGenerator = new IdGenerator();
-    int id = idGenerator.genId();
+    private int id;
+
+    public SimpleField(int id){
+        this.id = id;
+    }
 
     @Override
     public Collection<Effect> getEffects() {
-        return new LinkedList<>(effects);
+        LinkedList<Effect> effects = new LinkedList<>(onPassEffects);
+        effects.addAll(onStayEffects);
+        return effects;
     }
 
     @Override
-    public Collection<Effect> getOnStayEffects() {
-        LinkedList<Effect> ret = new LinkedList<>(effects);
-        ret.removeIf(e -> !(e instanceof OnStayEffect));
-        return ret;
+    public Collection<OnStayEffect> getOnStayEffects() {
+        return new LinkedList<>(onStayEffects);
     }
 
     @Override
-    public Collection<Effect> getOnPassEffects() {
-        LinkedList<Effect> ret = new LinkedList<>(effects);
-        ret.removeIf(e -> !(e instanceof OnPassEffect));
-        return ret;
+    public Collection<OnPassEffect> getOnPassEffects() {
+        return new LinkedList<>(onPassEffects);
     }
 
     @Override
     public void addEffect(Effect effect) {
-        effects.push(effect);
+        if(effect instanceof OnStayEffect){
+            onStayEffects.add((OnStayEffect) effect);
+        }else if(effect instanceof OnPassEffect){
+            onPassEffects.add((OnPassEffect) effect);
+        }
     }
+
 
     @Override
     public void clearOld() {
-        effects.removeIf(now -> now.duration() == 0);
+        onPassEffects.removeIf(now -> now.duration() == 0);
+        onStayEffects.removeIf(now -> now.duration() == 0);
     }
 
     @Override
