@@ -1,21 +1,17 @@
 package Views;
 
-import MapServer.*;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.junit.Test;
-
 import java.io.File;
-import java.util.Collection;
 
 public class BoardViewTest{
     @Test
     public void testBasic() throws InterruptedException{
         BoardView View = new BoardView();
-        String imagePath = "";
-        File description = new File("");
+        String imagePath = "https://github.com/JanczarKurek/SprocketRacing/blob/Board/Server/src/test/java/Views/GraphicDescription/board.jpg";
+        File description = new File("https://github.com/JanczarKurek/SprocketRacing/blob/Board/Server/src/test/java/Views/GraphicDescription/description.txt");
         View.setDescription( imagePath, description);
 
         Thread thread = new Thread(new Runnable() {
