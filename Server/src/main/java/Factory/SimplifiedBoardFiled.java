@@ -1,7 +1,7 @@
 package Factory;
 
 import java.util.*;
-public class SimplifiedBoardFiled {
+public class SimplifiedBoardFiled implements MapServer.Field {
     private LinkedList<Integer> nextFields = new LinkedList<>();
     private int id;
     private LinkedList<MapServer.OnStayEffect> onStayEffects = new LinkedList<>();
@@ -41,7 +41,29 @@ public class SimplifiedBoardFiled {
         return new LinkedList<>(onPassEffects);
     }
 
+    @Override
+    public void addEffect(MapServer.Effect effect) {
+        if (effect instanceof MapServer.OnPassEffect)
+            add((MapServer.OnPassEffect) effect);
+        else if (effect instanceof MapServer.OnStayEffect)
+            add((MapServer.OnStayEffect) effect);
+    }
+
+    @Override
+    public Collection<MapServer.Effect> getEffects() {
+        LinkedList<MapServer.Effect> list = new LinkedList<>(onStayEffects);
+        list.addAll(onStayEffects);
+        return list;
+    }
+
+    @Override
     public int getId(){
         return id;
+    }
+
+    @Override
+    public void clearOld() {
+        onPassEffects.removeIf(now -> now.duration() == 0);
+        onStayEffects.removeIf(now -> now.duration() == 0);
     }
 }
