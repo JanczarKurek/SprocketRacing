@@ -45,4 +45,12 @@ public class BoardStructure {                       //Board is a directed acycli
         }
         return ret;
     }
+
+    public void setStart(BoardField start) {
+        this.start = start;
+    }
+
+    public void setEnd(BoardField end) {
+        this.end = end;
+    }
 }

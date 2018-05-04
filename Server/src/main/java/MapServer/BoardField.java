@@ -26,7 +26,7 @@ public class BoardField implements Field{
         prevFields.push(prev);
     }
 
-    BoardField(Field field){
+    public BoardField(Field field){
         this.field = field;
     }
 
