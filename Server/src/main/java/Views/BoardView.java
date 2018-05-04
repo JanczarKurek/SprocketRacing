@@ -1,60 +1,49 @@
 package Views;
 
-import MapServer.*;
 import javafx.application.*;
 import javafx.scene.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.*;
 
-import java.util.Collection;
+import java.io.File;
+import java.util.*;
 
 public class BoardView extends Application {
-    public static final int FIELD_WIDTH = 50;
-    public static final int FIELD_HEIGHT = 50;
-    private static final int FIELD_SPACE = 10;
+    private String image;
+    private File description;
+    private int sceneWidth;
+    private  int sceneHeight;
+    private int numberOfFileds;
+    private ArrayList<FieldPair> fieldsCenter= new ArrayList<>();
 
-
-    public void setStructure(BoardStructure structure) {
-        this.structure = structure;
-    }
-
-    private Group fieldGroup= new Group();
-    private int widthLastField;
-    private BoardStructure structure;
-
-    private void viewFields(int x, int y, BoardField field, BoardField last){
-        int i=0;
-        for(BoardField nextField : field.getNextFields()) {
-            viewFields(x+FIELD_SPACE+FIELD_WIDTH, y+(FIELD_SPACE+FIELD_HEIGHT)*i, nextField, last);
-            i++;
-        }
-        FieldView fieldView = new FieldView(x, y, field);
-        if(field==last)
-            widthLastField=x;
-        if(!fieldGroup.getChildren().contains(fieldView))
-            fieldGroup.getChildren().add(fieldView);
+    public void setDescription(String image, File description){
+        this.image=image;
+        this.description=description;
     }
 
     private Parent create(){
-        Pane root = new Pane();
-        viewFields(20, 20, structure.getStart(), structure.getEnd());
-        Text startText=new Text(25, 15, "START");
-        startText.setFont(new Font(15));
-        root.getChildren().add(startText);
-        root.getChildren().addAll(fieldGroup);
-        Text endText=new Text(widthLastField+5, 15, "META");
-        endText.setFont(new Font(15));
-        root.getChildren().add(endText);
+        Pane root= new Pane();
+        try {
+            Scanner scanner = new Scanner(description);
+            sceneWidth =scanner.nextInt();
+            sceneWidth= scanner.nextInt();
+            numberOfFileds=scanner.nextInt();
+            for(int i=0; i<numberOfFileds; i++){
+                fieldsCenter.add(new FieldPair(scanner.nextInt(), scanner.nextInt()));
+            }
+
+        }catch (Exception e){System.out.println("error");}
+        Image background=new Image(image,true);
+        ImageView imgView = new ImageView(background);
+        root.getChildren().add(imgView);
         return root;
     }
-
     public void start(Stage primaryStage){
-        Scene scene=new Scene(create());
+        Scene scene=new Scene(create(), sceneWidth, sceneHeight);
         primaryStage.setTitle("Sprocket Racing Board");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 }
