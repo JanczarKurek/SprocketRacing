@@ -48,5 +48,9 @@ public class EffectsSet {
             }
         };
     }
+
+    public static int idOfEffect (MapServer.Effect effect) {
+        return -1;
+    }
 }
 
