@@ -1,4 +1,4 @@
-package MapServer;
+package misc;
 
 public interface Effect {
     void execute(Object who);

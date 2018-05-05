@@ -1,5 +1,7 @@
 package MapServer;
 
+import misc.Effect;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -32,12 +34,13 @@ public class SimpleField implements Field {
     }
 
     @Override
-    public void addEffect(Effect effect) {
+    public SimpleField addEffect(Effect effect) {
         if(effect instanceof OnStayEffect){
             onStayEffects.add((OnStayEffect) effect);
         }else if(effect instanceof OnPassEffect){
             onPassEffects.add((OnPassEffect) effect);
         }
+        return this;
     }
 
 

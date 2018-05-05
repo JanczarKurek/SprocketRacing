@@ -1,5 +1,8 @@
 package Factory;
 
+import misc.Effect;
+import MapServer.Field;
+
 import java.util.*;
 public class SimplifiedBoardFiled implements MapServer.Field {
     private LinkedList<Integer> nextFields = new LinkedList<>();
@@ -42,16 +45,17 @@ public class SimplifiedBoardFiled implements MapServer.Field {
     }
 
     @Override
-    public void addEffect(MapServer.Effect effect) {
+    public Field addEffect(Effect effect) {
         if (effect instanceof MapServer.OnPassEffect)
             add((MapServer.OnPassEffect) effect);
         else if (effect instanceof MapServer.OnStayEffect)
             add((MapServer.OnStayEffect) effect);
+        return this;
     }
 
     @Override
-    public Collection<MapServer.Effect> getEffects() {
-        LinkedList<MapServer.Effect> list = new LinkedList<>(onStayEffects);
+    public Collection<Effect> getEffects() {
+        LinkedList<Effect> list = new LinkedList<>(onStayEffects);
         list.addAll(onStayEffects);
         return list;
     }

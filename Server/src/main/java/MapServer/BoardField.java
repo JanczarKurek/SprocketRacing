@@ -1,5 +1,7 @@
 package MapServer;
 
+import misc.Effect;
+
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -46,8 +48,9 @@ public class BoardField implements Field{
     }
 
     @Override
-    public void addEffect(Effect effect) {
+    public BoardField addEffect(Effect effect) {
         field.addEffect(effect);
+        return this;
     }
 
     @Override

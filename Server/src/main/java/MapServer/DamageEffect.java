@@ -33,5 +33,4 @@ public class DamageEffect implements OnPassEffect {
     public int getId() {
         return id;
     }
-
 }

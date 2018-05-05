@@ -17,6 +17,9 @@ public class BoardState {
     public Integer getPlayerPosition(Integer playerId){
         return playersOnBoard.get(playerId);
     }
+    public TreeMap<Integer, Integer> getPlayersPositions(){
+        return new TreeMap<>(playersOnBoard);
+    }
 
     public int getNumberOfPlayers(){
         return playersOnBoard.size();

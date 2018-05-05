@@ -46,8 +46,6 @@ public class VehicleCardData implements VehicleCard {
     }
     public Joints joints;
 
-
-
     @Override
     public Cost getCost() {
         return cost;
