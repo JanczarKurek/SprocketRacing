@@ -49,7 +49,7 @@ public class EffectsSet {
         };
     }
 
-    public static int idOfEffect (MapServer.Effect effect) {
+    public static int idOfEffect (misc.Effect effect) {
         return -1;
     }
 }

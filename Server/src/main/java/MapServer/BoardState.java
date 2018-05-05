@@ -8,7 +8,7 @@ public class BoardState {
     private TreeMap<Integer, Integer> playersOnBoard = new TreeMap<>(); //Maps players to fields (by ID)
     private LinkedList<GlobalEffect> globalEffects = new LinkedList<>();
 
-    public BoardState(Collection<Integer> players, int start){
+    BoardState(Collection<Integer> players, int start){
         for(Integer player : players){
             playersOnBoard.put(player, start);
         }
@@ -27,5 +27,10 @@ public class BoardState {
 
     public Collection<Integer> getPlayers(){
         return playersOnBoard.keySet();
+    }
+
+    public void setPlayerPosition(int id, int newPosition){
+        playersOnBoard.remove(id);
+        playersOnBoard.put(id, newPosition);
     }
 }

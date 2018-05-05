@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Path implements Iterable<Integer>{ //represents path on board
     private LinkedList<Integer> path;
-    Path(List<Integer> path){
+    public Path(List<Integer> path){
         this.path = new LinkedList<>(path);
     }
     Path(){
