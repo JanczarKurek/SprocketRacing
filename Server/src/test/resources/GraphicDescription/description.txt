@@ -9,6 +9,7 @@
 710 140
 890 140
 
+
 //Pierwsza linia - wymiary planszy
 //Druga linia - rozmiar kwadratowego pola
 //Trzecia linia - ilość pól
