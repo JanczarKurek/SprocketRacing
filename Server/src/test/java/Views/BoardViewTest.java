@@ -85,7 +85,7 @@ public class BoardViewTest{
     @Test
     public void test2() throws InterruptedException{
         Path path1 = new Path(Arrays.asList(0, 1));
-        Path path2 = new Path(Arrays.asList(0, 1, 2, 3, 4));
+        Path path2 = new Path(Arrays.asList(0, 1, 2));
 
         try {
             PawnController pawn0 = board.getController(1);
