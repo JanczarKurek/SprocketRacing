@@ -21,4 +21,6 @@ public class Board {
         //todo how to get to account global effects?
         return boardStructure.effectsOnPath(path);
     }
+
+
 }

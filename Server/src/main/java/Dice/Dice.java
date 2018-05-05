@@ -16,12 +16,17 @@ public class Dice {
         return pips;
     }
 
-    int getValue(){
+    public int getValue(){
         return pips;
     }
 
     Dice(Dice.Color color){
         this.color = color;
+    }
+
+    int setValue(int value){
+        pips = value;
+        return pips;
     }
 
 }
