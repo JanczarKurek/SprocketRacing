@@ -7,7 +7,6 @@ import Dice.DiceSlots;
 import ErrorsAndExceptions.WrongColor;
 import ErrorsAndExceptions.WrongMove;
 import SmallFunctionalFeaturesDamnYouJava.Functional;
-import misc.Effect;
 
 import java.util.ArrayList;
 import java.util.Collection;

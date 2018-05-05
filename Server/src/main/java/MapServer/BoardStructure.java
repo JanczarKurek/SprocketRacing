@@ -63,4 +63,8 @@ public class BoardStructure {                       //Board is a directed acycli
             return true;
         }
     }
+
+    public Collection<OnStayEffect> getOnStayEffectsFromField(Integer fieldId){
+        return fields.get(fieldId).getOnStayEffects();
+    }
 }
