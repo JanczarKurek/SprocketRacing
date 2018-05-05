@@ -6,8 +6,7 @@ import MapServer.*;
 import static MapServer.EffectsSet.idOfEffect;
 
 public class PutSimplifieBoardField {
-    public static JSONObject putSimplifiedBoardField(Factory.SimplifiedBoardFiled sbf){
-        JSONObject jsonObject = new JSONObject();
+    public static void putSimplifiedBoardField(JSONObject jsonObject, Factory.SimplifiedBoardFiled sbf){
         jsonObject.put("id", sbf.getId());
 
         JSONArray nextFields = new JSONArray();
@@ -24,7 +23,5 @@ public class PutSimplifieBoardField {
         for(OnPassEffect onPassEffect : sbf.getOnPassEffects())
             onPassEffects.add(idOfEffect(onPassEffect));
         jsonObject.put("onPassEffects", onPassEffects);
-
-        return jsonObject;
     }
 }

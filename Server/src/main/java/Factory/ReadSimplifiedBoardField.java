@@ -1,6 +1,5 @@
 package Factory;
 
-import MapServer.EffectsSet.*;
 import org.json.simple.*;
 
 import static MapServer.EffectsSet.getOnPassEffect;
