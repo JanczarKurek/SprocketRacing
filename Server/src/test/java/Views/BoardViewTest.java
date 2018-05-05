@@ -17,8 +17,8 @@ public class BoardViewTest{
 
     @Before
     public void beforeTests(){
-        String imagePath = "https://github.com/JanczarKurek/SprocketRacing/blob/Board/Server/src/test/java/Views/GraphicDescription/board.jpg?raw=true";
-        String descriptionPath = "https://raw.githubusercontent.com/JanczarKurek/SprocketRacing/Board/Server/src/test/java/Views/GraphicDescription/description.txt";
+        String imagePath = "https://github.com/JanczarKurek/SprocketRacing/blob/Board/Server/src/test/resources/GraphicDescription/board.jpg?raw=true";
+        String descriptionPath = "https://raw.githubusercontent.com/JanczarKurek/SprocketRacing/Board/Server/src/test/resources/GraphicDescription/description.txt";
         View.setDescription(imagePath, descriptionPath);
 
         for (int i = 0; i < 4; i++) {
@@ -85,7 +85,7 @@ public class BoardViewTest{
     @Test
     public void test2() throws InterruptedException{
         Path path1 = new Path(Arrays.asList(0, 1));
-        Path path2 = new Path(Arrays.asList(0, 1, 2));
+        Path path2 = new Path(Arrays.asList(0, 1, 2, 3));
 
         try {
             PawnController pawn0 = board.getController(1);
