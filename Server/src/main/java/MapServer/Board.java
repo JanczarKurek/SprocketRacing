@@ -1,5 +1,6 @@
 package MapServer;
 
+import ErrorsAndExceptions.NoSuchPlayer;
 import ErrorsAndExceptions.WrongMove;
 
 import java.util.Collection;
@@ -46,7 +47,10 @@ public class Board implements AbstractBoard {
     }
 
     @Override
-    public PawnController getController(Integer playerId){
+    public PawnController getController(Integer playerId) throws NoSuchPlayer {
+        if(!boardState.getPlayers().contains(playerId)){
+            throw new NoSuchPlayer();
+        }
         return new PawnControllerImpl(playerId);
     }
 
