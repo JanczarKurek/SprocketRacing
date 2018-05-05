@@ -1,2 +1,5 @@
 .idea/
 test_ignore.txt
+Client/.gradle
+Server/.gradle
+Server/out
