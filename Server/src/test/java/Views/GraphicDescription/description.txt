@@ -1,9 +1,15 @@
 1003 599
+90
 7
-65 490
-145 375
-265 300
-440 325
-605 235
-745 165
-920 180
+10 450
+100 335
+220 250
+400 275
+560 180
+710 130
+890 140
+
+//Pierwsza linia - wymiary planszy
+//Druga linia - rozmiar kwadratowego pola
+//Trzecia linia - ilość pól
+//Kolejne linie - współrzędne lewego górnego rogu kolejnych pól
