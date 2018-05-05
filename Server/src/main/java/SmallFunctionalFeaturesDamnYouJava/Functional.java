@@ -20,7 +20,7 @@ public class Functional {
     }
 
     public static Iterable<Integer> range(int end){
-        return () -> new Iterator<Integer>() {
+        return () -> new Iterator<>() {
             int i = 0;
             @Override
             public boolean hasNext() {
@@ -35,7 +35,7 @@ public class Functional {
     }
 
     public static <V, E> Iterable<Pair<V, E>> zip(Iterable<V> vIterable, Iterable<E> eIterable){
-        return () -> new Iterator<Pair<V, E>>() {
+        return () -> new Iterator<>() {
             Iterator<V> vIterator = vIterable.iterator();
             Iterator<E> eIterator = eIterable.iterator();
             @Override
@@ -51,7 +51,7 @@ public class Functional {
     }
 
     public static <V, E> Iterable<E> map(Iterable<V> vIterable, Function<V, E> function){
-        return () -> new Iterator<E>() {
+        return () -> new Iterator<>() {
             Iterator<V> it = vIterable.iterator();
             @Override
             public boolean hasNext() {
@@ -69,6 +69,5 @@ public class Functional {
             collection.add(e);
         }
     }
-
 
 }

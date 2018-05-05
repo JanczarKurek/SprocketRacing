@@ -1,8 +1,10 @@
-package Dice;
+package InGameResources.Dice;
+
+import InGameResources.InGameResource;
 
 import java.util.Random;
 
-public class Dice {
+public class Dice implements InGameResource{
     private int pips;
     public enum Color{
         RED,
