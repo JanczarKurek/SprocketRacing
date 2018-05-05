@@ -2,8 +2,8 @@ package Cards;
 
 /* It represents VehicleCard on use effect an it's cost */
 
-import Dice.Dice;
-import Dice.DiceSlots;
+import InGameResources.Dice.Dice;
+import InGameResources.Dice.DiceSlots;
 import ErrorsAndExceptions.WrongColor;
 import ErrorsAndExceptions.WrongMove;
 import SmallFunctionalFeaturesDamnYouJava.Functional;

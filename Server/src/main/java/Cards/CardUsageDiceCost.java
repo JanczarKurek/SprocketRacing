@@ -1,6 +1,6 @@
 package Cards;
 
-import Dice.Dice;
+import InGameResources.Dice.Dice;
 
 import java.util.Collection;
 
