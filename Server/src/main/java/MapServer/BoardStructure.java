@@ -8,10 +8,7 @@ public class BoardStructure {                       //Board is a directed acycli
                                                     //each field has distinct const ID.
     public boolean checkPath(Path path){
         ArrayList<BoardField> internalPath = internalPath(path);
-        for(int id : path){
-            internalPath.add(fields.get(id));
-        }
-        for(int i = 0; i < internalPath.size(); ++i){
+        for(int i = 0; i < (internalPath.size() - 1); ++i){
             if(!internalPath.get(i).getNextFields().contains(internalPath.get(i+1))){
                 return false;
             }
@@ -21,6 +18,10 @@ public class BoardStructure {                       //Board is a directed acycli
     private BoardField start;
     private BoardField end;
 
+    public BoardStructure(){
+        fields = new TreeMap<>();
+    }
+
     private ArrayList<BoardField> internalPath(Path path){
         ArrayList<BoardField> internalPath = new ArrayList<>();
         for(int id : path){
@@ -29,12 +30,12 @@ public class BoardStructure {                       //Board is a directed acycli
         return internalPath;
     }
 
-    public BoardField getStart() {
-        return start;
+    public int getStart() {
+        return start.getId();
     }
 
-    public BoardField getEnd() {
-        return end;
+    public int getEnd() {
+        return end.getId();
     }
 
     public Collection<OnPassEffect> effectsOnPath(Path path){
@@ -52,5 +53,18 @@ public class BoardStructure {                       //Board is a directed acycli
 
     public void setEnd(BoardField end) {
         this.end = end;
+    }
+
+    public boolean setField(BoardField field){
+        if(fields.containsKey(field.getId()))
+            return false;
+        else{
+            fields.put(field.getId(), field);
+            return true;
+        }
+    }
+
+    public Collection<OnStayEffect> getOnStayEffectsFromField(Integer fieldId){
+        return fields.get(fieldId).getOnStayEffects();
     }
 }

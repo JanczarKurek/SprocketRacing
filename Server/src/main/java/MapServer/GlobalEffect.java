@@ -1,5 +1,7 @@
 package MapServer;
 
+import misc.Effect;
+
 public interface GlobalEffect extends Effect {
     @Override
     default String getDescription() {

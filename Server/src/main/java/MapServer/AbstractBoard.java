@@ -1,5 +1,7 @@
 package MapServer;
 
-public interface AbstractBoard {
+import ErrorsAndExceptions.NoSuchPlayer;
 
+public interface AbstractBoard {
+    PawnController getController(Integer playerId) throws NoSuchPlayer;
 }
