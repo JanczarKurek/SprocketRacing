@@ -24,4 +24,8 @@ public class BoardState {
     public int getNumberOfPlayers(){
         return playersOnBoard.size();
     }
+
+    public Collection<Integer> getPlayers(){
+        return playersOnBoard.keySet();
+    }
 }
