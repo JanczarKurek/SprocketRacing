@@ -20,6 +20,7 @@ public class Board implements AbstractBoard {
         if(!boardStructure.checkPath(path))
             throw new WrongMove("Invalid path.");
         //todo how to get to account global effects?
+        boardState.setPlayerPosition(player, path.end());
         return boardStructure.effectsOnPath(path);
     }
 
@@ -31,7 +32,7 @@ public class Board implements AbstractBoard {
     public class PawnControllerImpl implements PawnController{
         private int playerId;
 
-        public PawnControllerImpl(int playerId) {
+        PawnControllerImpl(int playerId) {
             this.playerId = playerId;
         }
 
@@ -52,6 +53,15 @@ public class Board implements AbstractBoard {
             throw new NoSuchPlayer();
         }
         return new PawnControllerImpl(playerId);
+    }
+
+
+    public int getNumberOfPlayers(){
+        return boardState.getNumberOfPlayers();
+    }
+
+    public Integer getPlayerPosition(Integer playerId){
+        return boardState.getPlayerPosition(playerId);
     }
 
 }

@@ -1,6 +1,6 @@
 package Views;
 
-import MapServer.BoardState;
+import MapServer.Board;
 import javafx.application.*;
 import javafx.scene.*;
 import javafx.scene.image.Image;
@@ -8,9 +8,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
@@ -23,15 +20,15 @@ public class BoardView extends Application {
     private int fieldSize;
     private int numberOfFileds;
     private HashMap<Integer,FieldPair> fieldsCenter= new HashMap<>();
-    private BoardState State;
+    private Board board;
 
     public void setDescription(String image, String description){
         this.image=image;
         this.description=description;
     }
 
-    public void setState(BoardState state){
-        State=state;
+    public void setBoard(Board state){
+        board=state;
     }
     private Parent create(){
         Pane root= new Pane();
@@ -55,8 +52,8 @@ public class BoardView extends Application {
     }
 
     private void addPlayers(Pane root){
-        for(int i=0; i<State.getNumberOfPlayers(); i++){
-            int idField = State.getPlayerPosition(i);
+        for(int i=0; i<board.getNumberOfPlayers(); i++){
+            int idField = board.getPlayerPosition(i);
             FieldPair field = fieldsCenter.get(idField);
             int x =field.getX()+((field.getPlayers()%3)*(fieldSize/3));
             int y =field.getY()+((field.getPlayers()/3)*(fieldSize/3));

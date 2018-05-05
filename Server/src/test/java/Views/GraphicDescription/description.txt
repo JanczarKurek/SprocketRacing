@@ -4,10 +4,10 @@
 10 450
 100 335
 220 250
-400 275
-560 180
-710 130
-890 140
+400 270
+560 165
+710 125
+890 130
 
 //Pierwsza linia - wymiary planszy
 //Druga linia - rozmiar kwadratowego pola
