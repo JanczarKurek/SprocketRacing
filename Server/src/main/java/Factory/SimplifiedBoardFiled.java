@@ -4,6 +4,10 @@ import misc.Effect;
 import MapServer.Field;
 
 import java.util.*;
+
+import static java.lang.Math.toIntExact;
+
+
 public class SimplifiedBoardFiled implements MapServer.Field {
     private LinkedList<Integer> nextFields = new LinkedList<>();
     private int id;
@@ -16,6 +20,10 @@ public class SimplifiedBoardFiled implements MapServer.Field {
         this.id = id;
     }
 
+    public void add(Long nextField) {
+        add(toIntExact(nextField));
+    }
+
     public void add(Integer nextField) {
         nextFields.add(nextField);
     }
@@ -26,6 +34,10 @@ public class SimplifiedBoardFiled implements MapServer.Field {
 
     public void add(MapServer.OnPassEffect onPassEffect) {
         onPassEffects.add(onPassEffect);
+    }
+
+    public void setId(Long id) {
+        setId(toIntExact(id));
     }
 
     public void setId(int id) {
