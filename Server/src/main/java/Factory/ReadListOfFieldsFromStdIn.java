@@ -5,8 +5,7 @@ import java.util.*;
 import static MapServer.EffectsSet.getEffect;
 
 public class ReadListOfFieldsFromStdIn {
-    public static LinkedList<SimplifiedBoardFiled> readListOfFieldsFromStdIn(){
-        Scanner scanner = new Scanner(System.in);
+    public static LinkedList<SimplifiedBoardFiled> readListOfFieldsFromStdIn(java.util.Scanner scanner){
         TreeSet<Integer> idSet = new TreeSet<>();
 
         System.out.println("Set number of fields: ");
