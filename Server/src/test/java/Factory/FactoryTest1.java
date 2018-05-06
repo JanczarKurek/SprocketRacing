@@ -23,7 +23,7 @@ public class FactoryTest1 {
         //  1 -> 2 -> 3
         //  |         ^
         //  v        /
-        //  4-------/  this graph is sth like that
+        //  4-------/  this graph is sth like this
 
 
         boardField1.addNext(boardField2);
