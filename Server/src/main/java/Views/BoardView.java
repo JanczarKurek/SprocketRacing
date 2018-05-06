@@ -6,6 +6,7 @@ import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.*;
 
 import java.net.URL;
@@ -21,6 +22,10 @@ public class BoardView extends Application {
     private int numberOfFileds;
     private HashMap<Integer,FieldPair> fieldsCenter= new HashMap<>();
     private Board board;
+    private Stage stage;
+    private boolean firstScene=true;
+    private Image background;
+    private boolean helpMe=false;
 
     public void setDescription(String image, String description){
         this.image=image;
@@ -30,24 +35,29 @@ public class BoardView extends Application {
     public void setBoard(Board state){
         board=state;
     }
-    private Parent create(){
+    public Parent create(){
         Pane root= new Pane();
-        try {
-            URLConnection url = new URL(description).openConnection();
-            Scanner scanner = new Scanner(url.getInputStream());
-            sceneWidth =scanner.nextInt();
-            sceneHeight= scanner.nextInt();
-            fieldSize = scanner.nextInt();
-            numberOfFileds=scanner.nextInt();
-            for(int i=0; i<numberOfFileds; i++){
-                fieldsCenter.put(i,new FieldPair(scanner.nextInt(), scanner.nextInt()));
-            }
+        if(firstScene) {
+            try {
+                URLConnection url = new URL(description).openConnection();
+                Scanner scanner = new Scanner(url.getInputStream());
+                sceneWidth = scanner.nextInt();
+                sceneHeight = scanner.nextInt();
+                fieldSize = scanner.nextInt();
+                numberOfFileds = scanner.nextInt();
+                for (int i = 0; i < numberOfFileds; i++) {
+                    fieldsCenter.put(i, new FieldPair(scanner.nextInt(), scanner.nextInt()));
+                }
 
-        }catch (Exception e){System.out.println("error "+e.getClass());}
-        Image background=new Image(image, true);
+            } catch (Exception e) {
+                System.out.println("error " + e.getClass());
+            }
+            background = new Image(image, true);
+        }
         ImageView imgView = new ImageView(background);
         root.getChildren().add(imgView);
         addPlayers(root);
+        firstScene=false;
         return root;
     }
 
@@ -65,8 +75,15 @@ public class BoardView extends Application {
     }
     public void start(Stage primaryStage){
         Scene scene=new Scene(create(), sceneWidth, sceneHeight);
+        stage=primaryStage;
         primaryStage.setTitle("Sprocket Racing Board");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+     public int getWidth(){
+        return sceneWidth;
+     }
+     public int getHeight(){
+        return sceneHeight;
+     }
 }
