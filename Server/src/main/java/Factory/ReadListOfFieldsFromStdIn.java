@@ -2,8 +2,10 @@ package Factory;
 
 import java.util.*;
 
+import static MapServer.EffectsSet.getEffect;
+
 public class ReadListOfFieldsFromStdIn {
-    public static Collection<SimplifiedBoardFiled> readListOfFieldsFromStdIn(){
+    public static LinkedList<SimplifiedBoardFiled> readListOfFieldsFromStdIn(){
         Scanner scanner = new Scanner(System.in);
         TreeSet<Integer> idSet = new TreeSet<>();
 
@@ -47,8 +49,51 @@ public class ReadListOfFieldsFromStdIn {
 
             System.out.println("Set OnStayEffects IDs: ");
             for(int j=0; j<numOfOSE; j++)
-                sbf.addEffect()
+                sbf.addEffect(getEffect(scanner.nextInt()));
+
+            System.out.println("Set number of OnPassEffects");
+            int numOfOPE = scanner.nextInt();
+            if (numOfOPE < 0) {
+                System.out.println("Number of OnPassEffects can not be negative!");
+                return new java.util.LinkedList<>();
+            }
+
+            System.out.println("Set OnPassEffects IDs: ");
+            for(int j=0; j<numOfOPE; j++)
+                sbf.addEffect(getEffect(scanner.nextInt()));
+
+            list.add(sbf);
         }
 
+        for (SimplifiedBoardFiled sbf : list)
+            for (Integer i : sbf.getNextFields())
+                if (!idSet.contains(i)) {
+                    System.out.println("ID of one of succesors is wrong!");
+                    return new java.util.LinkedList<>();
+                }
+
+        int endCounter = 0;
+        for (SimplifiedBoardFiled sbf : list)
+            if (sbf.getNextFields().isEmpty())
+                endCounter++;
+        if (endCounter != 1) {
+            System.out.println("Invalid linking!");
+            return new java.util.LinkedList<>();
+        }
+
+        TreeSet<Integer> startFieldsSet = new java.util.TreeSet<>();
+        for (Integer i : idSet)
+            startFieldsSet.add(i);
+        for (SimplifiedBoardFiled sbf : list)
+            for (Integer i : sbf.getNextFields())
+                if (startFieldsSet.contains(i))
+                    startFieldsSet.remove(i);
+        if(startFieldsSet.size() != 1) {
+            System.out.println("Invalid linking!");
+            return new java.util.LinkedList<>();
+        }
+
+
+        return list;
     }
 }
