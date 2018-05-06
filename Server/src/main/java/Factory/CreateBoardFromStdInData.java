@@ -17,12 +17,14 @@ public class CreateBoardFromStdInData {
         fileName = scanner.next();
 
         try (FileWriter fileWriter = new FileWriter(fileName)) {
-            LinkedList<SimplifiedBoardFiled> list = readListOfFieldsFromStdIn();
+            LinkedList<SimplifiedBoardFiled> list = readListOfFieldsFromStdIn(scanner);
             if (list.size() < 1)
                 return false;
-            JSONObject jsonObject = new JSONObject();
 
+            JSONObject jsonObject = new JSONObject();
             putListOfFields(jsonObject, list);
+            fileWriter.write(jsonObject.toString());
+            fileWriter.flush();
 
             boardStructure = readBoardStructure(fileName);
 
