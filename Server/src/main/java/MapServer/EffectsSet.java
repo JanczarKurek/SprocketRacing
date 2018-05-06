@@ -60,6 +60,30 @@ public class EffectsSet {
         };
     }
 
+    public static misc.Effect getEffect(int id) {
+        return new misc.Effect() {
+            @Override
+            public void execute(Object who) {
+
+            }
+
+            @Override
+            public String getDescription() {
+                return null;
+            }
+
+            @Override
+            public int duration() {
+                return 0;
+            }
+
+            @Override
+            public int getId() {
+                return 0;
+            }
+        };
+    }
+
     public static int idOfEffect (misc.Effect effect) {
         return -1;
     }
