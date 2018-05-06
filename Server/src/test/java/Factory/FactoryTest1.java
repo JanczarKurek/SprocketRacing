@@ -75,7 +75,6 @@ public class FactoryTest1 {
             list.removeFirstOccurrence(2);
             assertFalse(result.checkPath(new Path(list))); // is 1->3 in this graph?
 
-
         } catch (NoSuchFieldException e) {
             fail();
         } catch (IllegalAccessException e) {
