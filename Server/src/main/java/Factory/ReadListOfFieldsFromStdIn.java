@@ -35,7 +35,8 @@ public class ReadListOfFieldsFromStdIn {
                 return new java.util.LinkedList<>();
             }
 
-            System.out.println("Set succesors IDs: ");
+            if (numOfSucc > 0)
+                System.out.println("Set succesors IDs: ");
             for(int j=0; j<numOfSucc; j++)
                 sbf.add(scanner.nextInt());
 
@@ -46,7 +47,8 @@ public class ReadListOfFieldsFromStdIn {
                 return new java.util.LinkedList<>();
             }
 
-            System.out.println("Set OnStayEffects IDs: ");
+            if (numOfOSE > 0)
+                System.out.println("Set OnStayEffects IDs: ");
             for(int j=0; j<numOfOSE; j++)
                 sbf.addEffect(getEffect(scanner.nextInt()));
 
@@ -57,7 +59,8 @@ public class ReadListOfFieldsFromStdIn {
                 return new java.util.LinkedList<>();
             }
 
-            System.out.println("Set OnPassEffects IDs: ");
+            if (numOfOPE > 0)
+                System.out.println("Set OnPassEffects IDs: ");
             for(int j=0; j<numOfOPE; j++)
                 sbf.addEffect(getEffect(scanner.nextInt()));
 
