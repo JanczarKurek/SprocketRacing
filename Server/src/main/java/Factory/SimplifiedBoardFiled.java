@@ -16,6 +16,10 @@ public class SimplifiedBoardFiled implements MapServer.Field {
         this.id = id;
     }
 
+    public void add(Long nextField) {
+        add(Math.toIntExact(nextField));
+    }
+
     public void add(Integer nextField) {
         nextFields.add(nextField);
     }
@@ -30,6 +34,10 @@ public class SimplifiedBoardFiled implements MapServer.Field {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setId(Long id) {
+        setId(Math.toIntExact(id));
     }
 
     public Collection<Integer> getNextFields() {

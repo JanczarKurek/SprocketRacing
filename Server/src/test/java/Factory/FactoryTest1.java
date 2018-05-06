@@ -5,7 +5,6 @@ import static Factory.ReadBoardStructure.readBoardStructure;
 import static org.junit.Assert.*;
 import MapServer.*;
 import java.util.*;
-
 public class FactoryTest1 {
 
     @org.junit.Test
