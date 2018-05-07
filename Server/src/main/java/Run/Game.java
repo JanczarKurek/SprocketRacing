@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Scanner;
+import MapServer.Board;
 
 public class Game extends Application {
     public void start(Stage primaryStage) {
@@ -59,17 +60,15 @@ public class Game extends Application {
         Board board = new Board(boardStructure, PlayersList, 0);
         View.setBoard(board);
 
-        Scene scene = new Scene(View.create(), View.getWidth(), View.getHeight());
-        primaryStage.setScene(scene);
-        primaryStage.show();
+
         while (true) {
             System.out.println("Move player number: (Or exit)");
-            int player = -1;
+            int player;
             scannerIn = new Scanner(System.in);
             try {
                 player = scannerIn.nextInt();
             } catch (Exception e) {
-                System.exit(0);
+                break;
             }
             System.out.println("Length of path: ");
             int length = scannerIn.nextInt();
@@ -86,11 +85,11 @@ public class Game extends Application {
             } catch (Exception e) {
                 System.out.println("error " + e.getClass());
             }
-            scene = new Scene(View.create(), View.getWidth(), View.getHeight());
-            primaryStage.setScene(scene);
         }
+        Scene scene = new Scene(View.create(), View.getWidth(), View.getHeight());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
-
     public static void main(String[] args) {
         launch(args);
     }
