@@ -6,7 +6,6 @@ import javafx.scene.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import javafx.stage.*;
 
 import java.net.URL;
@@ -22,10 +21,8 @@ public class BoardView extends Application {
     private int numberOfFileds;
     private HashMap<Integer,FieldPair> fieldsCenter= new HashMap<>();
     private Board board;
-    private Stage stage;
     private boolean firstScene=true;
     private Image background;
-    private boolean helpMe=false;
 
     public void setDescription(String image, String description){
         this.image=image;
@@ -75,7 +72,6 @@ public class BoardView extends Application {
     }
     public void start(Stage primaryStage){
         Scene scene=new Scene(create(), sceneWidth, sceneHeight);
-        stage=primaryStage;
         primaryStage.setTitle("Sprocket Racing Board");
         primaryStage.setScene(scene);
         primaryStage.show();
