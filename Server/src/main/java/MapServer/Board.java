@@ -4,6 +4,7 @@ import ErrorsAndExceptions.NoSuchPlayer;
 import ErrorsAndExceptions.WrongMove;
 
 import java.util.Collection;
+import java.util.TreeMap;
 
 public class Board implements AbstractBoard {
     private BoardStructure boardStructure;
@@ -53,6 +54,11 @@ public class Board implements AbstractBoard {
             throw new NoSuchPlayer();
         }
         return new PawnControllerImpl(playerId);
+    }
+
+    @Override
+    public TreeMap<Integer, Integer> getPlayersPositions() {
+        return boardState.getPlayersPositions();
     }
 
 

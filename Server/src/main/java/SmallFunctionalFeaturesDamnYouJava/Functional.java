@@ -50,6 +50,22 @@ public class Functional {
         };
     }
 
+    public static <V, E> Iterable<Pair<V, E>> finZip(Iterable<V> vIterable, Iterable<E> eIterable){
+        return () -> new Iterator<>() {
+            Iterator<V> vIterator = vIterable.iterator();
+            Iterator<E> eIterator = eIterable.iterator();
+            @Override
+            public boolean hasNext() {
+                return vIterator.hasNext() && eIterator.hasNext();
+            }
+
+            @Override
+            public Pair<V, E> next() {
+                return new Pair<>(vIterator.next(), eIterator.next());
+            }
+        };
+    }
+
     public static <V, E> Iterable<E> map(Iterable<V> vIterable, Function<V, E> function){
         return () -> new Iterator<>() {
             Iterator<V> it = vIterable.iterator();
