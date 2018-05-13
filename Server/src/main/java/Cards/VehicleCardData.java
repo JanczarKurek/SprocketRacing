@@ -6,11 +6,41 @@ public class VehicleCardData implements VehicleCard {
     private Cost cost;
     private int id;
     private String name;
+    private VehicleCardEngine engine;
+
+    public void setCost(Cost cost) {
+        this.cost = cost;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEngine(VehicleCardEngine engine) {
+        this.engine = engine;
+    }
+
+    public Joints getJoints() {
+        return joints;
+    }
+
     private class Joints{
+
         private boolean left;
         private boolean right;
         private boolean up;
         private boolean down;
+
+        Joints(boolean left, boolean right, boolean up, boolean down) {
+            this.left = left;
+            this.right = right;
+            this.up = up;
+            this.down = down;
+        }
 
         public boolean isLeft() {
             return left;
@@ -44,7 +74,12 @@ public class VehicleCardData implements VehicleCard {
             this.down = down;
         }
     }
-    public Joints joints;
+
+    public void setJoints(boolean left, boolean right, boolean up, boolean down) {
+        joints = new Joints(left, right, up, down);
+    }
+
+    private Joints joints;
 
     @Override
     public Cost getCost() {
