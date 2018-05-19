@@ -4,7 +4,7 @@ import java.util.*;
 import org.json.simple.*;
 import org.json.simple.parser.*;
 
-import static Cards.CardFactory.ReadSingleVehicleCard.readSingleVehicleCard;
+import static Cards.CardFactory.ReadSingleVehicleCardData.readSingleVehicleCardData;
 
 public class ReadVehicleCardDataFromFile {
     public static LinkedList<Cards.VehicleCardData> readVehicleCardDataFromFile(String fileName) {
@@ -15,7 +15,7 @@ public class ReadVehicleCardDataFromFile {
             LinkedList<Cards.VehicleCardData> vehicleCards = new LinkedList<>();
             JSONArray jsonArray = (JSONArray) jsonObject.get("VehicleCards");
             for (Object o : jsonArray)
-                vehicleCards.add(readSingleVehicleCard((JSONObject) o));
+                vehicleCards.add(readSingleVehicleCardData((JSONObject) o));
             return vehicleCards;
         } catch (java.io.IOException | ParseException e) {
             e.printStackTrace();

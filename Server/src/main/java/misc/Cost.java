@@ -1,8 +1,8 @@
 package misc;
 
 public class Cost {
-    Cost(){};
-    Cost(int r, int y, int b){
+    public Cost(){};
+    public Cost(int r, int y, int b){
         red = r;
         yellow = y;
         blue = b;
