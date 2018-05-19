@@ -3,7 +3,7 @@ package Cards.CardFactory;
 import org.json.simple.*;
 
 public class ReadVehicleCardEngine {
-    public static Cards.VehicleCardEngine readVehicleCardEngine(JSONObject jsonObject) {
+    static Cards.VehicleCardEngine readVehicleCardEngine(JSONObject jsonObject) {
         return null; //new Cards.VehicleCardEngine();
     }
 }

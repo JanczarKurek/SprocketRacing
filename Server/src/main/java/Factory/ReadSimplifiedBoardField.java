@@ -6,7 +6,7 @@ import static MapServer.EffectsSet.getOnPassEffect;
 import static MapServer.EffectsSet.getOnStayEffect;
 
 public class ReadSimplifiedBoardField {
-    public static Factory.SimplifiedBoardFiled readSimplifiedBoardField(JSONObject jsonObject) {
+    static Factory.SimplifiedBoardFiled readSimplifiedBoardField(JSONObject jsonObject) {
         SimplifiedBoardFiled sbf = new SimplifiedBoardFiled();
 
         sbf.setId((Long) jsonObject.get("id"));
