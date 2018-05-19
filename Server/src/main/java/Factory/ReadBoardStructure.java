@@ -27,16 +27,10 @@ public class ReadBoardStructure {
                 }
 
                 return boardStructure;
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-        } catch (java.io.FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        } catch (org.json.simple.parser.ParseException e) {
+        } catch (java.io.IOException | org.json.simple.parser.ParseException e) {
             e.printStackTrace();
         }
         return null;
