@@ -8,7 +8,7 @@ import java.util.*;
 import static Factory.ReadSimplifiedBoardField.readSimplifiedBoardField;
 
 public class ReadTreeMap {
-    public static java.util.TreeMap<Integer, MapServer.BoardField> readTreeMap(JSONObject jsonObject) {
+    static java.util.TreeMap<Integer, MapServer.BoardField> readTreeMap(JSONObject jsonObject) {
         JSONArray jsonArray = (JSONArray) jsonObject.get("BoardFields");
         LinkedList<SimplifiedBoardFiled> list = new LinkedList<>();
         for(int i = 0; i < jsonArray.size(); i++) {

@@ -7,7 +7,7 @@ import MapServer.*;
 import static Factory.PutListOfFields.putListOfFields;
 
 public class PutBoardStructure {
-    public static void putBoardStructure(JSONObject jsonObject,
+    static void putBoardStructure(JSONObject jsonObject,
                                          MapServer.BoardStructure boardStructure){
 
         LinkedList<Factory.SimplifiedBoardFiled> list = new LinkedList<>();
