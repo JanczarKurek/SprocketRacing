@@ -25,8 +25,4 @@ public class CreateJSONFile {
             System.out.println(e.getClass());
         }
     }
-
-    public static void main(String[] Args) {
-        System.out.println("ok");
-    }
 }

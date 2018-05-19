@@ -11,7 +11,7 @@ public class ReadTreeMap {
     public static java.util.TreeMap<Integer, MapServer.BoardField> readTreeMap(JSONObject jsonObject) {
         JSONArray jsonArray = (JSONArray) jsonObject.get("BoardFields");
         LinkedList<SimplifiedBoardFiled> list = new LinkedList<>();
-        for(int i=0; i<jsonArray.size(); i++){
+        for(int i = 0; i < jsonArray.size(); i++) {
             JSONObject o = (JSONObject) jsonArray.get(i);
             SimplifiedBoardFiled sbf = readSimplifiedBoardField(o);
             list.add(sbf);
