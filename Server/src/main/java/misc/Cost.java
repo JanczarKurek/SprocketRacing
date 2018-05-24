@@ -2,14 +2,16 @@ package misc;
 
 public class Cost {
     public Cost(){};
-    public Cost(int r, int y, int b){
+    public Cost(int r, int y, int b, int c){
         red = r;
         yellow = y;
         blue = b;
+        cogs = c;
     }
     private int red;
     private int yellow;
     private int blue;
+    private int cogs;
 
     public int getRed() {
         return red;
@@ -21,6 +23,10 @@ public class Cost {
 
     public int getBlue() {
         return blue;
+    }
+
+    public int getCogs() {
+        return cogs;
     }
 }
 
