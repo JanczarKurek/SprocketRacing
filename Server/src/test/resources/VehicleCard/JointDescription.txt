@@ -1,0 +1,3 @@
+75 38
+
+//wymiary polaczenia
