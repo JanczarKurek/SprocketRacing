@@ -6,5 +6,5 @@ false false false true
 
 //nazwa
 //poloczenia (lewe, prawe, gorne, dolne)
-//ilosc slotow, kolor kostki (0 - czerwona, 1 - zolta, 2 - niebieska)
 //koszt (ile czerwonych, zoltych, niebieskich, zebatki)
+//ilosc slotow, kolor kostki (0 - czerwona, 1 - zolta, 2 - niebieska)

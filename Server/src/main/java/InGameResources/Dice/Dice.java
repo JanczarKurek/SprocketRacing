@@ -13,7 +13,7 @@ public class Dice implements InGameResource{
     }
     private Color color;
     private static Random generator = new Random();
-    int roll(){
+    public int roll(){
         pips = generator.nextInt(6) + 1;
         return pips;
     }
@@ -22,7 +22,9 @@ public class Dice implements InGameResource{
         return pips;
     }
 
-    Dice(Dice.Color color){
+    public Color getColor() {return color;}
+
+    public Dice(Dice.Color color){
         this.color = color;
     }
 

@@ -4,7 +4,7 @@ import Cards.Card;
 import Cards.VehicleCard;
 import Cards.VehicleCardData;
 import VisualBoard.VisualElement;
-import VisualCards.VisualJoint;
+import Settings.Settings;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -30,8 +30,10 @@ public class VisualCard implements VisualElement {
     VisualCard(Card card) throws FileNotFoundException{
         this.card = card;
         if(card instanceof VehicleCard) {
-            background = new Image(new FileInputStream("SprocketRacing/Server/src/test/resources/VehicleCard/CardVehicle.png"));
-            File file = new File("SprocketRacing/Server/src/test/resources/VehicleCard/VehicleCardDescription.txt");
+            Settings settings = Settings.getSettings();
+            String resPref = settings.getResourcesPath();
+            background = new Image(new FileInputStream(resPref+"VehicleCard/CardVehicle.png"));
+            File file = new File(resPref+"VehicleCard/VehicleCardDescription.txt");
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             setXY(fileReader.nextInt(), fileReader.nextInt());
@@ -40,6 +42,7 @@ public class VisualCard implements VisualElement {
         cost = card.getCost();
 
     }
+
 
     private void setXY(int x, int y){
         width = x;

@@ -1,0 +1,4 @@
+Aerostat
+false false true false
+1 1 1 1
+4 0
