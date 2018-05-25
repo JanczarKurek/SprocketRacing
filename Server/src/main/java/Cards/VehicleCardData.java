@@ -28,7 +28,7 @@ public class VehicleCardData implements VehicleCard {
         return joints;
     }
 
-    private class Joints{
+    public class Joints{
 
         private boolean left;
         private boolean right;
