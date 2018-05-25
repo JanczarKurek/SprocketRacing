@@ -1,5 +1,6 @@
 package Cards;
 
+import InGameResources.Dice.DiceSlots;
 import misc.Cost;
 
 public class VehicleCardData implements VehicleCard {
@@ -7,6 +8,8 @@ public class VehicleCardData implements VehicleCard {
     private int id;
     private String name;
     private VehicleCardEngine engine;
+
+
 
     public void setCost(Cost cost) {
         this.cost = cost;
@@ -96,4 +99,7 @@ public class VehicleCardData implements VehicleCard {
         return name;
     }
 
+    public DiceSlots getDiceSlots(){
+        return engine.getDiceSlots();
+    }
 }

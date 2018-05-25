@@ -14,6 +14,11 @@ import java.util.Collection;
 public class VehicleCardEngine {
     private CardUsageCost cardUsageCost;
     private CardEffect possibilities;
+
+    public DiceSlots getDiceSlots() {
+        return diceSlots;
+    }
+
     private DiceSlots diceSlots;
 
 
