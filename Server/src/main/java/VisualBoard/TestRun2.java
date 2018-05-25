@@ -4,6 +4,7 @@ import MapServer.Board;
 import MapServer.BoardField;
 import MapServer.BoardStructure;
 import MapServer.SimpleField;
+import Settings.Settings;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -26,12 +27,14 @@ public class TestRun2 extends Application {
     @Override
     public void start(Stage primaryStage){
         try {
+            Settings settings = Settings.getSettings();
+            String resPref = settings.getResourcesPath();
             Board board = gameSetup();
             VisualBoardCreator boardCreator = new VisualBoardCreator(board);
-            boardCreator.setBoardSprite("/home/janczar/.tajnyLab/MaciekMateuszowski/SprocketRacing/Server/src/test/resources/GraphicDescription/board.jpg");
-            boardCreator.getInfoFromFile("/home/janczar/.tajnyLab/MaciekMateuszowski/SprocketRacing/Server/src/test/resources/GraphicDescription/description.txt");
-            boardCreator.setPawn(0, "/home/janczar/.tajnyLab/MaciekMateuszowski/SprocketRacing/Server/src/test/resources/pionek3.jpg");
-            boardCreator.setPawn(1, "/home/janczar/.tajnyLab/MaciekMateuszowski/SprocketRacing/Server/src/test/resources/pionek4.jpg");
+            boardCreator.setBoardSprite(resPref +"GraphicDescription/board.jpg");
+            boardCreator.getInfoFromFile(resPref + "/GraphicDescription/description.txt");
+            boardCreator.setPawn(0, resPref + "pionek3.jpg");
+            boardCreator.setPawn(1, resPref + "pionek4.jpg");
             VisualBoard visualBoard = boardCreator.getVisualBoard();
             TextGameController controller = new TextGameController(board);
             System.out.println("Board created...");

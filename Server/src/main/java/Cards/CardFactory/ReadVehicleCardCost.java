@@ -11,6 +11,6 @@ public class ReadVehicleCardCost {
         int r = toIntExact((Long) jsonObject.get("red"));
         int y = toIntExact((Long) jsonObject.get("yellow"));
         int b = toIntExact((Long) jsonObject.get("blue"));
-        return new misc.Cost(r, y, b);
+        return new misc.Cost(r, y, b, 0);
     }
 }
