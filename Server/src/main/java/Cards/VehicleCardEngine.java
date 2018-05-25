@@ -14,6 +14,46 @@ import java.util.Collection;
 public class VehicleCardEngine {
     private CardUsageCost cardUsageCost;
     private CardEffect possibilities;
+    private Proposition actualProposition;
+    class Proposition{
+        Collection<CardEffect> effects = new ArrayList<>();
+        Collection<Dice> dices;
+        Proposition(Collection<Dice> dices) throws WrongMove, WrongColor {
+            if(actualProposition != null)
+                throw new IllegalStateException("Tried to create proposition with another going on...");
+            this.dices = dices;
+            diceSlots.tryInsertAll(dices);
+            int times = cardUsageCost.countEffectPower(dices);
+            for(int i : Functional.range(times)){
+                effects.add(possibilities);
+            }
+            actualProposition = this;
+        }
+
+        public Collection<CardEffect> getEffects() {
+            return effects;
+        }
+
+        public void accept(){
+            if(actualProposition != this){
+                throw new IllegalStateException("Error, trying to accept second time or similar");
+            }
+            try {
+                diceSlots.insertAll(dices);
+            } catch (Exception e){
+                throw new RuntimeException("Should not occurred, but caused by " + e);
+            }
+            actualProposition = null;
+        }
+
+        public Collection<Dice> decline(){
+            if(actualProposition != this){
+                throw new IllegalStateException("Error, trying to accept second time or similar");
+            }
+            actualProposition = null;
+            return dices;
+        }
+    }
 
     public DiceSlots getDiceSlots() {
         return diceSlots;
@@ -28,13 +68,9 @@ public class VehicleCardEngine {
         this.diceSlots = diceSlots;
     }
 
-    Collection<CardEffect> run(Collection<Dice> dices) throws WrongMove, WrongColor {
-        diceSlots.insertAll(dices);
-        int times = cardUsageCost.countEffectPower(dices);
-        Collection<CardEffect> ret = new ArrayList<>();
-        for(int i : Functional.range(times)){
-            ret.add(possibilities);
-        }
-        return ret;
+    Proposition getProposition(Collection<Dice> dices) throws WrongMove, WrongColor {
+        return new Proposition(dices);
     }
+
+
 }
