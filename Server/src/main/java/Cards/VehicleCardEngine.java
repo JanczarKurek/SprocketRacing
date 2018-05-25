@@ -16,6 +16,7 @@ public class VehicleCardEngine {
     private CardEffect possibilities;
     private DiceSlots diceSlots;
 
+
     public VehicleCardEngine(CardUsageCost cardUsageCost, CardEffect possibilities, DiceSlots diceSlots) {
         this.cardUsageCost = cardUsageCost;
         this.possibilities = possibilities;
