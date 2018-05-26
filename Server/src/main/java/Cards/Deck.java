@@ -5,12 +5,12 @@ import ErrorsAndExceptions.EmptyDeck;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Deck<T extends Card> {
+public class Deck{
     private int id;
 
     private String description = "";
 
-    private ArrayList<T> cards = new ArrayList<>();
+    private ArrayList<Card> cards = new ArrayList<>();
 
     public Deck(int id){
         this.id = id;
@@ -21,19 +21,19 @@ public class Deck<T extends Card> {
         this.description = description;
     }
 
-    void put(T card){
+    public void put(Card card){
         cards.add(card);
     }
 
-    void shuffle(){
+    public void shuffle(){
         Collections.shuffle(cards);
     }
 
-    int size(){
+    public int size(){
         return cards.size();
     }
 
-    T take() throws EmptyDeck {
+    public Card take() throws EmptyDeck {
         if(cards.size() == 0)
             throw new EmptyDeck();
         return cards.remove(cards.size() - 1);
