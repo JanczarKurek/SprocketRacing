@@ -20,6 +20,6 @@ public class ReadVehicleCardDataFromFile {
         } catch (java.io.IOException | ParseException e) {
             e.printStackTrace();
         }
-        return new java.util.LinkedList<>(); // zmien to potem
+        return null; // zmien to potem
     }
 }

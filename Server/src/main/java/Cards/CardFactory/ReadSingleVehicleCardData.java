@@ -11,11 +11,11 @@ public class ReadSingleVehicleCardData {
     static Cards.VehicleCardData readSingleVehicleCardData(JSONObject jsonObject) {
         Cards.VehicleCardData result = new Cards.VehicleCardData();
 
-        result.setCost(readVehicleCardCost(jsonObject));
+        result.setCost(readVehicleCardCost((JSONObject) jsonObject.get("Cost")));
 
-        result.setEngine(readVehicleCardEngine(jsonObject));
+        result.setEngine(readVehicleCardEngine((JSONObject) jsonObject.get("VehicleCardEngine")));
 
-        Boolean[] joints = readVehicleCardJoints(jsonObject);
+        Boolean[] joints = readVehicleCardJoints((JSONArray) jsonObject.get("Joints"));
         result.setJoints(joints[0], joints[1], joints[2], joints[3]);
 
         result.setId(toIntExact((Long) jsonObject.get("Id")));
