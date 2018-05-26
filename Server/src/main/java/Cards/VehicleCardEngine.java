@@ -10,13 +10,14 @@ import SmallFunctionalFeaturesDamnYouJava.Functional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class VehicleCardEngine {
     private CardUsageCost cardUsageCost;
     private CardEffect possibilities;
     private Proposition actualProposition;
     class Proposition{
-        Collection<CardEffect> effects = new ArrayList<>();
+        List<CardEffect> effects = new ArrayList<>();
         Collection<Dice> dices;
         Proposition(Collection<Dice> dices) throws WrongMove, WrongColor {
             if(actualProposition != null)
@@ -30,7 +31,7 @@ public class VehicleCardEngine {
             actualProposition = this;
         }
 
-        public Collection<CardEffect> getEffects() {
+        public List<CardEffect> getEffects() {
             return effects;
         }
 
