@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public class CardUsagePipCost implements CardUsageCost {
     private int cost;
-    CardUsagePipCost(int cost){
+    public CardUsagePipCost(int cost){
         this.cost = cost;
     }
     @Override
