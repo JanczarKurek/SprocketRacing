@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class DiceSlotsImpl implements DiceSlots {
-    DiceSlotsImpl(int size, Dice.Color color){
+    public DiceSlotsImpl(int size, Dice.Color color){
         this.size = size;
         this.color = color;
     }

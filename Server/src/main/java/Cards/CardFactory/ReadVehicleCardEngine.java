@@ -4,7 +4,7 @@ import org.json.simple.*;
 
 import static Cards.CardFactory.ReadCardEffect.readCardEffect;
 import static Cards.CardFactory.ReadCardUsageCost.readCardUsageCost;
-import static Cards.CardFactory.RedDiceSlots.readDiceSlots;
+import static Cards.CardFactory.ReadDiceSlots.readDiceSlots;
 
 public class ReadVehicleCardEngine {
     static Cards.VehicleCardEngine readVehicleCardEngine(JSONObject jsonObject) {
