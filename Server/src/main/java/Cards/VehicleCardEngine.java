@@ -16,7 +16,7 @@ public class VehicleCardEngine {
     private CardUsageCost cardUsageCost;
     private CardEffect possibilities;
     private Proposition actualProposition;
-    class Proposition{
+    public class Proposition{
         List<CardEffect> effects = new ArrayList<>();
         Collection<Dice> dices;
         Proposition(Collection<Dice> dices) throws WrongMove, WrongColor {
