@@ -5,8 +5,10 @@ import Cards.*;
 import javafx.util.*;
 
 public class CardsLayout {
-    LinkedList<CardInLayout> train;
-    CardInLayout cockpit;
+    private LinkedList<CardInLayout> train = new java.util.LinkedList<>();
+    private CardInLayout cockpit;
+
+    public CardsLayout() {}
 
     public CardsLayout(CardInLayout cockpit, Collection<CardInLayout> train) {
         this.cockpit = cockpit;
@@ -21,12 +23,20 @@ public class CardsLayout {
         cockpit = new CardInLayout(card, x, y);
     }
 
-    public void addComparment(CardInLayout card) {
+    public void add(CardInLayout card) {
         train.add(card);
     }
 
-    public void addComparament(VehicleCardData card, Integer x, Integer y) {
+    public void add(VehicleCardData card, Integer x, Integer y) {
         train.add(new CardInLayout(card, x, y));
+    }
+
+    public void remove(VehicleCardData card, Integer x, Integer y) {
+        train.remove(new CardInLayout(card, x, y));
+    }
+
+    public void remove(CardInLayout card) {
+        train.remove(card);
     }
 
     public CardInLayout getCockpit() {
@@ -71,7 +81,7 @@ public class CardsLayout {
 
         dfs(cockpit, visited, cards);
 
-        return !visited.containsKey(true);
+        return !visited.containsValue(false);
     }
 
     private void dfs(CardInLayout currentCard, Map<CardInLayout, Boolean> visited,
@@ -80,21 +90,38 @@ public class CardsLayout {
             return;
         visited.put(currentCard, true);
 
-        if (currentCard.getCard().getJoints().isUp())
-            dfs(cards.get(new Pair<>(currentCard.getCoordinates().getKey(),
-                    currentCard.getCoordinates().getValue() + 1)), visited, cards);
+        if (currentCard.getCard().getJoints().isUp()) {
+            Pair<Integer, Integer> pair = new Pair<>(currentCard.getCoordinates().getKey(),
+                    currentCard.getCoordinates().getValue() + 1);
 
-        if (currentCard.getCard().getJoints().isDown())
-            dfs(cards.get(new Pair<>(currentCard.getCoordinates().getKey(),
-                    currentCard.getCoordinates().getValue() - 1)), visited, cards);
+            if (cards.containsKey(pair) && cards.get(pair).getCard().getJoints().isDown())
+                dfs(cards.get(pair), visited, cards);
+        }
 
-        if (currentCard.getCard().getJoints().isLeft())
-            dfs(cards.get(new Pair<>(currentCard.getCoordinates().getKey() - 1,
-                    currentCard.getCoordinates().getValue())), visited, cards);
+        if (currentCard.getCard().getJoints().isDown()) {
+            Pair<Integer, Integer> pair = new Pair<>(currentCard.getCoordinates().getKey(),
+                    currentCard.getCoordinates().getValue() - 1);
 
-        if (currentCard.getCard().getJoints().isRight())
-            dfs(cards.get(new Pair<>(currentCard.getCoordinates().getKey() + 1,
-                    currentCard.getCoordinates().getValue())), visited, cards);
+            if (cards.containsKey(pair) && cards.get(pair).getCard().getJoints().isUp())
+                dfs(cards.get(pair), visited, cards);
+        }
+
+        if (currentCard.getCard().getJoints().isLeft()) {
+            Pair<Integer, Integer> pair = new Pair<>(currentCard.getCoordinates().getKey() - 1,
+                    currentCard.getCoordinates().getValue());
+
+            if (cards.containsKey(pair) && cards.get(pair).getCard().getJoints().isRight())
+                dfs(cards.get(pair), visited, cards);
+        }
+
+        if (currentCard.getCard().getJoints().isRight()) {
+            Pair<Integer, Integer> pair = new Pair<>(currentCard.getCoordinates().getKey() + 1,
+                    currentCard.getCoordinates().getValue());
+
+            if (cards.containsKey(pair) && cards.get(pair).getCard().getJoints().isLeft())
+                dfs(cards.get(pair), visited, cards);
+        }
+
     }
 
 
