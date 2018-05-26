@@ -24,10 +24,22 @@ public class CardInLayout {
 
     public Pair<Integer, Integer> getCoordinates() {
         return coordinates;
-        //return new Pair<>(coordinates.getKey(), coordinates.getValue());
     }
 
     public VehicleCardData getCard() {
         return myCard;
+    }
+
+    @Override
+    public int hashCode() {
+        return coordinates.hashCode() + myCard.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CardInLayout && coordinates.equals(((CardInLayout) o).getCoordinates()) &&
+                myCard.equals(((CardInLayout) o).getCard()))
+            return true;
+        return false;
     }
 }
