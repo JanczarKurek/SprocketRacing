@@ -37,54 +37,20 @@ public class EffectsSet {
     }
 
     public static MapServer.OnPassEffect getOnPassEffect(int id) {
-        return new MapServer.OnPassEffect() {
-            @Override
-            public void execute(Object who) {
-
-            }
-
-            @Override
-            public String getDescription() {
-                return null;
-            }
-
-            @Override
-            public int duration() {
-                return 0;
-            }
-
-            @Override
-            public int getId() {
-                return 0;
-            }
-        };
+        if (id < 100)
+            return new DamageEffect(id);
+        return null;
     }
 
     public static misc.Effect getEffect(int id) {
-        return new misc.Effect() {
-            @Override
-            public void execute(Object who) {
-
-            }
-
-            @Override
-            public String getDescription() {
-                return null;
-            }
-
-            @Override
-            public int duration() {
-                return 0;
-            }
-
-            @Override
-            public int getId() {
-                return 0;
-            }
-        };
+        if (id < 100)
+            return getOnPassEffect(id);
+        return getOnStayEffect(id);
     }
 
     public static int idOfEffect (misc.Effect effect) {
+        if (effect instanceof MapServer.DamageEffect)
+            return ((DamageEffect) effect).getDamage();
         return -1;
     }
 }
