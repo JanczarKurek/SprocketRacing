@@ -8,7 +8,7 @@ public class Hand {
     public Hand(Collection<Card> cards){
         this.cards = new ArrayList<>(cards);
     }
-    Card take(int no){
+    public Card take(int no){
         return cards.remove(no);
     }
 

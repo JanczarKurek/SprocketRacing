@@ -10,9 +10,10 @@ import Players.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.TreeMap;
 
-/** Represents game table - board with decks **/
+/** Represents game table - board with decks and players sitting **/
 
 public class Table {
 
@@ -21,14 +22,14 @@ public class Table {
         void run();
     }
 
-    enum Phase{
+    public enum Phase{
         DRAW,
         VENT,
         RACE,
         DAMAGE
     }
 
-    static TreeMap<Phase, Phase> phaseOrder = new TreeMap<>();
+    private static TreeMap<Phase, Phase> phaseOrder = new TreeMap<>();
     static {
         phaseOrder.put(Phase.DRAW, Phase.VENT);
         phaseOrder.put(Phase.VENT, Phase.RACE);
@@ -36,9 +37,11 @@ public class Table {
         phaseOrder.put(Phase.DAMAGE, Phase.DRAW);
     }
 
+
+
     private void checkPhase(Phase expecting, String dsc){
-        if(expecting != actualPhase)
-            throw new WrongPhaseException(dsc + ": not in appropriate phase, should be " + expecting + " got " + actualPhase);
+        if(expecting != currentPhase)
+            throw new WrongPhaseException(dsc + ": not in appropriate phase, should be " + expecting + " got " + currentPhase);
     }
 
     public static class WrongPhaseException extends RuntimeException{
@@ -48,12 +51,17 @@ public class Table {
         }
     }
 
-    private Phase actualPhase;
+    public Phase getCurrentPhase() {
+        return currentPhase;
+    }
+
+    private Phase currentPhase;
     private AbstractBoard board;
     private ArrayList<Deck> decks;
     private ArrayList<Deck> discards = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
     private ArrayList<TableControllerImpl> controllers = new ArrayList<>();
+    private HashMap<Player, Hand> passedHands = new HashMap<>();
 
     private int actualPhaseVotes = 0;
 
@@ -69,6 +77,7 @@ public class Table {
         Player player;
         boolean gotHand = false;
         boolean voted = false;
+        boolean firstHand = true;
         TreeMap<Phase, PhasePrep> phasePreps = new TreeMap<>();
         {
             phasePreps.put(Phase.DRAW, this::prepareDraw);
@@ -80,8 +89,10 @@ public class Table {
             this.player = player;
         }
         private void prepareDraw(){
+            firstHand = true;
             gotHand = false;
             voted = false;
+            passedHands.put(player, null);
         }
 
         private void prepareVent(){
@@ -105,7 +116,7 @@ public class Table {
         }
 
         void prepNextPhase(){
-            phasePreps.get(actualPhase).run();
+            phasePreps.get(currentPhase).run();
         }
 
         //Actions during DRAW
@@ -115,11 +126,31 @@ public class Table {
                 throw new WrongMove("Player " + player.getId() + " already voted end phase, no actions allowed");
             if(gotHand)
                 throw new WrongMove("Hand already taken by player " + player.getId());
+            if(!firstHand) {
+                int pos = players.indexOf(player);
+                pos = (pos - 1 + players.size()) % players.size();
+                Player myPred = players.get(pos);
+                if(passedHands.get(myPred) == null){
+                    throw new WrongMove("No hand to take, prev players should pass hand first");
+                }
+                gotHand = true;
+                return passedHands.remove(myPred);
+            }
             gotHand = true;
+            firstHand = false;
             return Table.this.getHand();
         }
 
-
+        public void passHand(Hand playersHand) throws WrongMove {
+            if(playersHand == null)
+                throw new NullPointerException();
+            checkPhase(Phase.DRAW, "passHand");
+            if(passedHands.get(player) != null){
+                throw new WrongMove("Hand already passed in this phase");
+            }
+            gotHand = false;
+            passedHands.put(player, playersHand);
+        }
     }
 
     public TableController sitDown(Player player){
@@ -149,7 +180,7 @@ public class Table {
             actualPhaseVotes = 0;
             for(TableControllerImpl controller : controllers)
                 controller.prepNextPhase();
-            actualPhase = phaseOrder.get(actualPhase);
+            currentPhase = phaseOrder.get(currentPhase);
         }
     }
 }
