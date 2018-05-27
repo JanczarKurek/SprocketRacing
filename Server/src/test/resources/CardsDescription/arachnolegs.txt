@@ -2,9 +2,15 @@ Arachnolegs
 false false false true
 0 2 0 2
 2 2
+3
+1 0
 
 
 //nazwa
 //poloczenia (lewe, prawe, gorne, dolne)
 //koszt (ile czerwonych, zoltych, niebieskich, zebatki)
 //ilosc slotow, kolor kostki (0 - czerwona, 1 - zolta, 2 - niebieska)
+//ile oczek do użycia karty (7 - oznacza gwiazdke)
+//ilosc efektow, efekt (0 - move, 1 - smooth move, 2 - gain a cog, 3 - Reinforce Invention, 4 - take a damage
+        5 - gain red dice, 6 - gain blue dice, 7 - gain yellow dice,
+        8 - discard red dice, 9 - discard blue dice, 10 - discard yellow dice, 11 - slash(or))
