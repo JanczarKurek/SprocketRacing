@@ -3,6 +3,9 @@ package VisualCards;
 import Cards.Card;
 import Cards.VehicleCard;
 import Cards.VehicleCardData;
+import Cards.VehicleCardEngine;
+import InGameResources.Dice.Dice;
+import InGameResources.Dice.DiceSlots;
 import VisualBoard.VisualElement;
 import Settings.Settings;
 import javafx.scene.Group;
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class VisualCard implements VisualElement {
@@ -26,6 +30,12 @@ public class VisualCard implements VisualElement {
     private ArrayList<VisualJoint> joints = new ArrayList<>();
     private VisualName name;
     private Cost cost;
+    private DiceSlots slots;
+    private VehicleCardEngine engine;
+    private int usagePipCost;
+    private LinkedList<Integer> effects;
+    private Dice.Color color;
+    private int slotsNumber;
 
     VisualCard(Card card) throws FileNotFoundException{
         this.card = card;
@@ -37,18 +47,38 @@ public class VisualCard implements VisualElement {
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             setXY(fileReader.nextInt(), fileReader.nextInt());
+            slots = ((VehicleCardData)card).getDiceSlots();
+            effects = new LinkedList<>();
         }
         name = new VisualName(card.getName());
         cost = card.getCost();
 
     }
 
-
     private void setXY(int x, int y){
         width = x;
         height = y;
     }
 
+    public void setUsagePipCost(int cost){
+        usagePipCost = cost;
+    }
+
+    public void addEffect(int effect){
+        effects.add(effect);
+    }
+
+    public void setColorSlot(Dice.Color color){
+        this.color = color;
+    }
+
+    public void setNumberSlots(int numberSlots){
+        this.slotsNumber = numberSlots;
+    }
+
+    public LinkedList<Integer> getEffects(){
+        return effects;
+    }
     public int getHeight(){
         return height;
     }
@@ -71,6 +101,26 @@ public class VisualCard implements VisualElement {
 
     public int cogsCost(){
         return cost.getCogs();
+    }
+
+    public DiceSlots getSlots(){
+        return slots;
+    }
+
+    public int getUsagePipCost(){
+        return usagePipCost;
+    }
+
+    public Dice.Color getColorSlot(){
+        return color;
+    }
+
+    public int getSlotsNumber(){
+        return slotsNumber;
+    }
+
+    public Card getCard(){
+        return card;
     }
     public ArrayList<VisualJoint> getJoints(){
         return joints;
