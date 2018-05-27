@@ -16,12 +16,21 @@ public class ResourceWallet{
         dices.add(dice);
     }
 
+    public void putDice(int t, Dice.Color color){
+        for(int i = 0; i < t; ++i)
+            putDice(new Dice(color));
+    }
+
     public int takeGears(int amount) throws NotEnoughResources {
         if(gears < amount){
             throw new NotEnoughResources("Not enough gears, expected " + amount + " got " + gears);
         }
         gears -= amount;
         return amount;
+    }
+
+    public void putGears(int amount){
+        gears += amount;
     }
 
 }
