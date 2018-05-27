@@ -11,4 +11,8 @@ public class Hand {
     Card take(int no){
         return cards.remove(no);
     }
+
+    public ArrayList<Card> getCards(){
+        return new ArrayList<>(cards);
+    }
 }
