@@ -33,4 +33,8 @@ public class CreateBoardFromStdInData {
         }
         return true;
     }
+
+    public static void main(String[] args) {
+        readBoardFromStdInData(new MapServer.BoardStructure());
+    }
 }
