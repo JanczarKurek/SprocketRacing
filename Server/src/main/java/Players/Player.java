@@ -2,7 +2,7 @@ package Players;
 
 public class Player {
     private int id;
-    int getId(){
+    public int getId(){
         return id;
     }
 }
