@@ -35,6 +35,9 @@ public class CreateBoardFromStdInData {
     }
 
     public static void main(String[] args) {
-        readBoardFromStdInData(new MapServer.BoardStructure());
+        if (readBoardFromStdInData(new MapServer.BoardStructure()))
+            System.out.println("File has been created successfully :)");
+        else
+            System.out.println("Something went wrong :(");
     }
 }
