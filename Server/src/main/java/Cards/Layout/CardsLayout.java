@@ -3,6 +3,8 @@ package Cards.Layout;
 import java.util.*;
 import Cards.*;
 import javafx.util.*;
+import ErrorsAndExceptions.*;
+
 
 public class CardsLayout {
     private LinkedList<CardInLayout> train = new java.util.LinkedList<>();
@@ -122,6 +124,58 @@ public class CardsLayout {
                 dfs(cards.get(pair), visited, cards);
         }
 
+    }
+
+    public HashMap<Pair<Integer, Integer>, VehicleCardData> getLayout()
+            throws IllegalCardsLayoutException {
+        if (!checkCorrectness())
+            throw new ErrorsAndExceptions.IllegalCardsLayoutException();
+        HashMap<Pair<Integer, Integer>, VehicleCardData> map = new HashMap<>();
+        for (CardInLayout cardInLayout : train)
+            map.put(cardInLayout.getCoordinates(), cardInLayout.getCard());
+        map.put(cockpit.getCoordinates(), cockpit.getCard());
+        return map;
+    }
+
+    public HashSet<Pair<Integer, Integer>> possiblePositions(VehicleCardData adding)
+            throws IllegalCardsLayoutException {
+        if (!checkCorrectness())
+            throw new IllegalCardsLayoutException();
+
+        HashSet<Pair<Integer, Integer>> usedPositions = new HashSet<>();
+        HashSet<Pair<Integer, Integer>> result = new HashSet<>();
+
+        for (CardInLayout cardInLayout : train)
+            usedPositions.add(cardInLayout.getCoordinates());
+        usedPositions.add(cockpit.getCoordinates());
+
+        for (CardInLayout cardInLayout : train)
+            result.addAll(cardInLayout.getPossibleNeighbors());
+        result.addAll(cockpit.getPossibleNeighbors());
+
+        result.removeAll(usedPositions);
+
+        return result;
+    }
+
+    public HashSet<Pair<Integer, Integer>> possiblePositions(VehicleCardData adding,
+                                                             Pair<Integer, Integer> referencePoint)
+        throws IllegalCardsLayoutException {
+        HashSet<Pair<Integer, Integer>> orginal = possiblePositions(adding);
+        HashSet<Pair<Integer, Integer>> result = new HashSet<>();
+
+        for(Pair<Integer, Integer> pair : orginal)
+            result.add(new Pair<>(pair.getKey() - referencePoint.getKey(),
+                    pair.getValue() - referencePoint.getValue()));
+
+        return result;
+    }
+
+    public HashSet<Pair<Integer, Integer>> possiblePositions(VehicleCardData adding,
+                                                             Integer xOfReferencePoint,
+                                                             Integer yOfReferencePoint)
+        throws IllegalCardsLayoutException {
+        return possiblePositions(adding, new Pair<>(xOfReferencePoint, yOfReferencePoint));
     }
 
 

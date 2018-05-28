@@ -2,6 +2,7 @@ package Cards.Layout;
 
 import javafx.util.*;
 import Cards.*;
+import java.util.*;
 
 public class CardInLayout {
     private Pair<Integer, Integer> coordinates;
@@ -41,5 +42,18 @@ public class CardInLayout {
                 myCard.equals(((CardInLayout) o).getCard()))
             return true;
         return false;
+    }
+
+    public HashSet<Pair<Integer, Integer>> getPossibleNeighbors() {
+        HashSet<Pair<Integer, Integer>> result = new HashSet<>();
+        if (myCard.getJoints().isLeft())
+            result.add(new Pair<>(coordinates.getKey() - 1, coordinates.getValue()));
+        if (myCard.getJoints().isRight())
+            result.add(new Pair<>(coordinates.getKey() + 1, coordinates.getValue()));
+        if (myCard.getJoints().isUp())
+            result.add(new Pair<>(coordinates.getKey(), coordinates.getValue() + 1));
+        if (myCard.getJoints().isDown())
+            result.add(new Pair<>(coordinates.getKey(), coordinates.getValue() - 1));
+        return result;
     }
 }

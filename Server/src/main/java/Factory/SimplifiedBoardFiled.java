@@ -68,7 +68,7 @@ public class SimplifiedBoardFiled implements MapServer.Field {
     @Override
     public Collection<Effect> getEffects() {
         LinkedList<Effect> list = new LinkedList<>(onStayEffects);
-        list.addAll(onStayEffects);
+        list.addAll(onPassEffects);
         return list;
     }
 
