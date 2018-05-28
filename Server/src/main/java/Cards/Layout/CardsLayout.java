@@ -26,8 +26,8 @@ public class CardsLayout {
     }
 
     public void setCockpit(CardInLayout cockpit) throws IllegalCardsLayoutException {
-        if (myMap.containsKey(cockpit.getCoordinates()))
-            throw new IllegalCardsLayoutException();
+        if (train.contains(cockpit))
+            train.remove(cockpit);
         if (this.cockpit != null)
             myMap.remove(this.cockpit.getCoordinates());
         this.cockpit = cockpit;
@@ -44,7 +44,6 @@ public class CardsLayout {
             throw new IllegalCardsLayoutException();
         train.add(card);
         myMap.put(card.getCoordinates(), card);
-        System.out.println(myMap.keySet());
     }
 
     public void add(VehicleCardData card, Integer x, Integer y) throws IllegalCardsLayoutException {
