@@ -1,5 +1,6 @@
 Arachnolegs
-false false false true
+0
+true true false false
 0 2 0 2
 2 2
 3
@@ -7,6 +8,7 @@ false false false true
 
 
 //nazwa
+//id
 //poloczenia (lewe, prawe, gorne, dolne)
 //koszt (ile czerwonych, zoltych, niebieskich, zebatki)
 //ilosc slotow, kolor kostki (0 - czerwona, 1 - zolta, 2 - niebieska)

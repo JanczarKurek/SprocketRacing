@@ -56,6 +56,10 @@ public class VisualDice implements VisualElement {
         }
     }
 
+    public Dice getDice(){
+        return dice;
+    }
+
     public Node draw(){
         Group group = new Group();
         group.getChildren().add(new ImageView(imageColor));
@@ -65,5 +69,31 @@ public class VisualDice implements VisualElement {
 
     public void actualize(){
 
+        Settings settings = Settings.getSettings();
+        String resPref = settings.getResourcesPath();
+        try {
+            this.dice = dice;
+            this.number = dice.getValue();
+            if(number == 1){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice1.png"));
+            }
+            else if(number ==2){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice2.png"));
+            }
+            else if(number == 3){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice3.png"));
+            }
+            else if(number == 4){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice4.png"));
+            }
+            else if(number == 5){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice5.png"));
+            }
+            else if(number ==6){
+                imageNumber = new Image(new FileInputStream(resPref+"VehicleCard/Dice/dice6.png"));
+            }
+        }catch (Exception e){
+            System.err.println("File not found!");
+        }
     }
 }
