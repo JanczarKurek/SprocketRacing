@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class VisualBoardCreator {
     private VisualBoard visualBoard;
-    VisualBoardCreator(Board logicalBoard){
+    public VisualBoardCreator(Board logicalBoard){
         visualBoard = new VisualBoard();
         visualBoard.setBoard(logicalBoard);
     }
