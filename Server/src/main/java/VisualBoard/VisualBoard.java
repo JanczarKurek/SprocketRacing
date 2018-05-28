@@ -2,19 +2,26 @@ package VisualBoard;
 
 import MapServer.Board;
 import SmallFunctionalFeaturesDamnYouJava.Functional;
+import VisualCards.ViewManager;
+import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Pair;
-
-import java.util.ArrayList;
+import javafx.scene.control.Button;
+import java.awt.*;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class VisualBoard implements VisualElement {
 
     private Image boardSprite;
+    private Application myApp;
+
+    public void setMyApp(Application myApp){
+        this.myApp = myApp;
+    }
 
     public void setBoardSprite(Image boardSprite) {
         this.boardSprite = boardSprite;
@@ -81,6 +88,11 @@ public class VisualBoard implements VisualElement {
             node.setTranslateX(fieldRecord.getPosition().getX());
             group.getChildren().add(node);
         }
+        Button button = new Button("USE VEHICLE");
+        button.setOnAction(event -> {
+            ((ViewManager)myApp).useVehicle();
+        });
+        group.getChildren().add(button);
         return group;
     }
 

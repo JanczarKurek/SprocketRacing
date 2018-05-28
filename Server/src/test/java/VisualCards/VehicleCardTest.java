@@ -25,25 +25,27 @@ public class VehicleCardTest extends Application {
         launch(args);
     }
 
-      @Override
-    public void start(Stage primaryStage){
 
-            Settings settings = Settings.getSettings();
-            String resPref = settings.getResourcesPath();
-            Group group = new Group();
-            VisualHand hand = new VisualHand();
-            File file = new File(resPref+"CardsDescription/arachnolegs.txt");
-            VisualCard vehicle = readCard(file);
-            hand.insertCard(0, vehicle);
-            vehicle = readCard(new File(resPref+"CardsDescription/boiler.txt"));
-            hand.insertCard(1, vehicle);
-            vehicle = readCard(new File(resPref+"CardsDescription/gyrostat.txt"));
-            hand.insertCard(2, vehicle);
-            vehicle = readCard(new File(resPref+"CardsDescription/aerostat.txt"));
-            hand.insertCard(3, vehicle);
-            group.getChildren().add(hand.draw());
-            primaryStage.setScene(new Scene(group));
-            primaryStage.show();
+    @Override
+    public void start(Stage primaryStage){
+        Settings settings = Settings.getSettings();
+        String resPref = settings.getResourcesPath();
+        Group group = new Group();
+        ReadCard read = new ReadCard();
+        VisualHand hand = new VisualHand(this);
+        CardMap.StaticMap map = new CardMap.StaticMap();
+        File file = new File(resPref+"CardsDescription/arachnolegs.txt");
+        VisualCard vehicle = read.readCard(file, map);
+        hand.insertCard(0, vehicle);
+        vehicle = read.readCard(new File(resPref+"CardsDescription/boiler.txt"), map);
+        hand.insertCard(1, vehicle);
+        vehicle = read.readCard(new File(resPref+"CardsDescription/gyrostat.txt"), map);
+        hand.insertCard(2, vehicle);
+        vehicle = read.readCard(new File(resPref+"CardsDescription/aerostat.txt"), map);
+        hand.insertCard(3, vehicle);
+        group.getChildren().add(hand.draw());
+        primaryStage.setScene(new Scene(group, 1003, 599));
+        primaryStage.show();
     }
     /*private VehicleCardData readCard(File file){
         try{
@@ -71,47 +73,7 @@ public class VehicleCardTest extends Application {
         }
         return null;
     }*/
-    private VisualCard readCard(File file){
-        try{
-            FileInputStream stream = new FileInputStream(file);
-            Scanner fileReader = new Scanner(stream);
-            VehicleCardData vehicle = new VehicleCardData();
-            vehicle.setName(fileReader.nextLine());
-            vehicle.setJoints(fileReader.nextBoolean(), fileReader.nextBoolean(), fileReader.nextBoolean(), fileReader.nextBoolean());
-            Cost cost = new Cost(fileReader.nextInt(), fileReader.nextInt(), fileReader.nextInt(), fileReader.nextInt());
-            vehicle.setCost(cost);
-            int size = fileReader.nextInt();
-            int color = fileReader.nextInt(); // 0-red, 1-yellow, 2-blue
-            VehicleCardEngine engine;
-            if(color==0)
-                engine = new VehicleCardEngine(null, null, new DiceSlotsImpl(size, Dice.Color.RED));
-            else if(color==1)
-                engine = new VehicleCardEngine(null, null, new DiceSlotsImpl(size, Dice.Color.YELLOW));
-            else
-                engine = new VehicleCardEngine(null, null, new DiceSlotsImpl(size, Dice.Color.BLUE));
-            vehicle.setEngine(engine);
-            VisualCard visualCard = new VisualCard(vehicle);
-            if(color==0)
-                visualCard.setColorSlot(Dice.Color.RED);
-            else if(color==1)
-                visualCard.setColorSlot(Dice.Color.YELLOW);
-            else
-                visualCard.setColorSlot(Dice.Color.BLUE);
-            visualCard.setNumberSlots(size);
-            visualCard.setUsagePipCost(fileReader.nextInt());
-            int effectsNumber = fileReader.nextInt();
-            for(int i=0; i<effectsNumber; i++){
-                int temp = fileReader.nextInt();
-                visualCard.addEffect(temp);
-            }
-            return visualCard;
-        }catch (FileNotFoundException e) {
-            System.err.println("Input file not found " +file.getPath());
-        }catch (NoSuchElementException e2){
-            System.err.println("No such element");
-        }
-        return null;
-    }
+
     private VehicleCardData readSpecialCard(File file){
         try{
             FileInputStream stream = new FileInputStream(file);
