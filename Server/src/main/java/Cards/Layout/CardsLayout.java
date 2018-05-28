@@ -7,38 +7,63 @@ import ErrorsAndExceptions.*;
 
 
 public class CardsLayout {
-    private LinkedList<CardInLayout> train = new java.util.LinkedList<>();
+
+    private HashMap<Pair<Integer, Integer>, CardInLayout> myMap = new HashMap<>();
+    private HashSet<CardInLayout> train = new java.util.HashSet<>();
     private CardInLayout cockpit;
 
-    public CardsLayout() {}
+    public CardsLayout() {
+        cockpit = null;
+    }
 
     public CardsLayout(CardInLayout cockpit, Collection<CardInLayout> train) {
         this.cockpit = cockpit;
-        this.train = new LinkedList<>(train);
+        this.train = new HashSet<>(train);
+
+        myMap.put(cockpit.getCoordinates(), cockpit);
+        for (CardInLayout cardInLayout : train)
+            myMap.put(cardInLayout.getCoordinates(), cardInLayout);
     }
 
-    public void setCockpit(CardInLayout cockpit) {
+    public void setCockpit(CardInLayout cockpit) throws IllegalCardsLayoutException {
+        if (myMap.containsKey(cockpit.getCoordinates()))
+            throw new IllegalCardsLayoutException();
+        if (this.cockpit != null)
+            myMap.remove(this.cockpit.getCoordinates());
         this.cockpit = cockpit;
+        myMap.put(cockpit.getCoordinates(), cockpit);
     }
 
-    public void setCockpit(VehicleCardData card, Integer x, Integer y) {
-        cockpit = new CardInLayout(card, x, y);
+    public void setCockpit(VehicleCardData card, Integer x, Integer y)
+            throws IllegalCardsLayoutException {
+        setCockpit(new CardInLayout(card, x, y));
     }
 
-    public void add(CardInLayout card) {
+    public void add(CardInLayout card) throws IllegalCardsLayoutException {
+        if (myMap.containsKey(card.getCoordinates()))
+            throw new IllegalCardsLayoutException();
         train.add(card);
+        myMap.put(card.getCoordinates(), card);
+        System.out.println(myMap.keySet());
     }
 
-    public void add(VehicleCardData card, Integer x, Integer y) {
-        train.add(new CardInLayout(card, x, y));
+    public void add(VehicleCardData card, Integer x, Integer y) throws IllegalCardsLayoutException {
+        add(new CardInLayout(card, x, y));
+    }
+
+    public void add(VehicleCardData card, Pair<Integer, Integer> coordinates)
+            throws IllegalCardsLayoutException {
+        add(card, coordinates.getKey(), coordinates.getValue());
     }
 
     public void remove(VehicleCardData card, Integer x, Integer y) {
         train.remove(new CardInLayout(card, x, y));
+        myMap.remove(new Pair<>(x, y));
     }
 
     public void remove(CardInLayout card) {
         train.remove(card);
+        myMap.remove(card.getCoordinates());
     }
 
     public CardInLayout getCockpit() {
@@ -46,7 +71,7 @@ public class CardsLayout {
     }
 
     public LinkedList<CardInLayout> getTrain() {
-        return train;
+        return new java.util.LinkedList<>(train);
     }
 
     public boolean checkCorrectness() {
@@ -135,6 +160,24 @@ public class CardsLayout {
             map.put(cardInLayout.getCoordinates(), cardInLayout.getCard());
         map.put(cockpit.getCoordinates(), cockpit.getCard());
         return map;
+    }
+
+    public HashMap<Pair<Integer, Integer>, VehicleCardData> getLayout(Pair<Integer, Integer> referencePoint)
+        throws IllegalCardsLayoutException {
+        HashMap<Pair<Integer, Integer>, VehicleCardData> orginal = getLayout();
+        HashMap<Pair<Integer, Integer>, VehicleCardData> result = new HashMap<>();
+
+        for (Pair<Integer, Integer> pair : orginal.keySet())
+            result.put(new Pair<>(pair.getKey() - referencePoint.getKey(),
+                    pair.getValue() - referencePoint.getValue()), orginal.get(pair));
+
+        return result;
+    }
+
+    public HashMap<Pair<Integer, Integer>, VehicleCardData> getLayout(Integer xOfReferencePoint,
+                                                                      Integer yOfReferencePoint)
+        throws IllegalCardsLayoutException {
+        return getLayout(new Pair<>(xOfReferencePoint, yOfReferencePoint));
     }
 
     public HashSet<Pair<Integer, Integer>> possiblePositions(VehicleCardData adding)
