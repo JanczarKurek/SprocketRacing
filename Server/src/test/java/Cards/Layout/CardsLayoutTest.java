@@ -39,6 +39,20 @@ public class CardsLayoutTest {
         vehicleCardDataArray[5][4].setJoints(true, true, true, true);
 
         assertTrue(cardsLayout.checkCorrectness());
+
+        try {
+            cardsLayout.add(vehicleCardDataArray[0][0], 2, 1);
+            fail();
+        } catch (ErrorsAndExceptions.IllegalCardsLayoutException e) {
+
+        }
+
+        try {
+            cardsLayout.add(vehicleCardDataArray[0][0], 3, 7);
+            fail();
+        } catch (ErrorsAndExceptions.IllegalCardsLayoutException e) {
+
+        }
     }
 
 }

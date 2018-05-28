@@ -1,4 +1,4 @@
 package ErrorsAndExceptions;
 
-public class IllegalCardsLayoutException extends Exception {
+public class IllegalCardsLayoutException extends RuntimeException {
 }
