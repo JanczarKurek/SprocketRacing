@@ -12,6 +12,9 @@ public class PutBoardStructure {
 
         LinkedList<Factory.SimplifiedBoardFiled> list = new LinkedList<>();
 
+        if (boardStructure.getPathToImage() != null)
+            jsonObject.put("pathToImage", boardStructure.getPathToImage());
+
         //tworzy list sbf na podstawie tree mapy wewnatrz boardStructure oraz umieszcza jej zawartosc w jsonObjecct
         try {
             java.lang.reflect.Field field = BoardStructure.class.getDeclaredField("fields");
@@ -34,9 +37,7 @@ public class PutBoardStructure {
 
                 list.add(sbf);
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
 
