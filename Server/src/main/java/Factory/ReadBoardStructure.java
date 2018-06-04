@@ -13,6 +13,7 @@ public class ReadBoardStructure {
             Object obj = parser.parse(new java.io.FileReader(fileName));
             JSONObject jsonObject = (JSONObject) obj;
             BoardStructure boardStructure = new BoardStructure();
+            boardStructure.setPathToImage((String) jsonObject.get("pathToImage"));
             try {
                 java.lang.reflect.Field field = BoardStructure.class.getDeclaredField("fields");
                 field.setAccessible(true);

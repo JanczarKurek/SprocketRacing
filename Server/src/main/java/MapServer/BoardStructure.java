@@ -6,6 +6,16 @@ import java.util.*;
 public class BoardStructure {                       //Board is a directed acyclic graph.
     private TreeMap<Integer, BoardField> fields;    //id to field. Between structures, fields are identified by ID.
                                                     //each field has distinct const ID.
+    private String pathToImage;
+
+    public void setPathToImage(String s) {
+        pathToImage = s;
+    }
+
+    public String getPathToImage() {
+        return pathToImage;
+    }
+
     public boolean checkPath(Path path){
         ArrayList<BoardField> internalPath = internalPath(path);
         for(int i = 0; i < (internalPath.size() - 1); ++i){
