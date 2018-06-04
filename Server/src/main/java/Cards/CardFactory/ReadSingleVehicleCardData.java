@@ -22,6 +22,8 @@ public class ReadSingleVehicleCardData {
 
         result.setName((String) jsonObject.get("Name"));
 
+        result.setPathToImage((String) jsonObject.get("pathToImage"));
+
         return result;
     }
 }
