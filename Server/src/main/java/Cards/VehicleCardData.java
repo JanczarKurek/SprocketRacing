@@ -8,15 +8,6 @@ public class VehicleCardData implements VehicleCard {
     private int id;
     private String name;
     private VehicleCardEngine engine;
-    private String pathToImage;
-
-    public void setPathToImage(String s) {
-        pathToImage = s;
-    }
-
-    public String getPathToImage() {
-        return pathToImage;
-    }
 
     public void setCost(Cost cost) {
         this.cost = cost;

@@ -25,12 +25,13 @@ public class ReadVehicleCardDataFromFile {
         return null; // zmien to potem
     }
 
-    public static VehicleCardData readSingleVehicleCardDataFromFile(String fileName) {
+    public static LoadedCard readLoadedCard(String fileName) {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse((new FileReader(fileName)));
             JSONObject jsonObject = (JSONObject) obj;
-            return readSingleVehicleCardData(jsonObject);
+            return new LoadedCard(readSingleVehicleCardData(jsonObject),
+                    (String) jsonObject.get("pathToImage"));
         } catch (java.io.IOException | ParseException e ) {
             e.printStackTrace();
         }
