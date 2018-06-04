@@ -23,6 +23,8 @@ public class ReadSimplifiedBoardField {
         for(int i=0; i<onPassEffects.size(); i++)
             sbf.add(getOnPassEffect((Long) onPassEffects.get(i)));
 
+       // System.out.println(sbf.getOnPassEffects());
+
         return sbf;
     }
 }
