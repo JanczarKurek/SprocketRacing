@@ -1,5 +1,7 @@
 package MapServer;
 
+import Players.Player;
+
 import static java.lang.Math.toIntExact;
 
 public class EffectsSet {
@@ -11,7 +13,7 @@ public class EffectsSet {
     public static MapServer.OnStayEffect getOnStayEffect(int id) {
         return new MapServer.OnStayEffect() {
             @Override
-            public void execute(Object who) {
+            public void execute(Player who) {
 
             }
 

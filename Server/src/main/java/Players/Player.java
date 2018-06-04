@@ -12,6 +12,14 @@ import misc.Cost;
 
 public class Player {
 
+    public enum Task{
+        MOVE,
+        SMOOTH,
+        VENT,
+        PARTBREAK
+    }
+
+    private HpBar hpBar = new HpBar(3, -6);
     private int id;
     public int getId(){
         return id;
@@ -21,6 +29,11 @@ public class Player {
     private Card chosenCard;
     private ResourceWallet myWallet = new ResourceWallet();
     private CardsLayout myVehicle = new CardsLayout();
+
+    public int value;
+
+    public Task task;
+
     public Player(Table table, int id){
         tableController = table.sitDown(this);
         this.id = id;
@@ -87,5 +100,9 @@ public class Player {
 
     public ResourceWallet getMyWallet() {
         return myWallet;
+    }
+
+    public HpBar getHpBar() {
+        return hpBar;
     }
 }

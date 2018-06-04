@@ -1,5 +1,6 @@
 package Cards.OnCardEffects;
 
+import Players.Player;
 import misc.Effect;
 
 public class HealEffect implements Effect {
@@ -11,8 +12,8 @@ public class HealEffect implements Effect {
     }
 
     @Override
-    public void execute(Object who) {
-
+    public void execute(Player who) {
+        who.getHpBar().healFor(value);
     }
 
     @Override

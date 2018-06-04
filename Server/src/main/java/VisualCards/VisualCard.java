@@ -12,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.transform.Scale;
 import misc.Cost;
 
 import java.io.File;
@@ -135,20 +136,20 @@ public class VisualCard implements VisualElement {
         ImageView imageView = new ImageView();
         imageView.setImage(background);
         group.getChildren().add(imageView);
-        if(card instanceof VehicleCard){
-            VehicleCardData cardData= (VehicleCardData) card;
+        if(card instanceof VehicleCard) {
+            VehicleCardData cardData = (VehicleCardData) card;
             //setCardVehicleEngine???
-           VehicleCardData.Joints joint = cardData.getJoints();
-            if(joint.isLeft()) {
+            VehicleCardData.Joints joint = cardData.getJoints();
+            if (joint.isLeft()) {
                 joints.add(new VisualJoint(true, false, false, false));
             }
-            if(joint.isRight()) {
+            if (joint.isRight()) {
                 joints.add(new VisualJoint(false, true, false, false));
             }
-            if(joint.isUp()) {
+            if (joint.isUp()) {
                 joints.add(new VisualJoint(false, false, true, false));
             }
-            if(joint.isDown()) {
+            if (joint.isDown()) {
                 joints.add(new VisualJoint(false, false, false, true));
             }
         }

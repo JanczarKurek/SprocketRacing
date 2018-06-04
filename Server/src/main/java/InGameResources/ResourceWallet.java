@@ -3,16 +3,26 @@ package InGameResources;
 import ErrorsAndExceptions.NotEnoughResources;
 import InGameResources.Dice.Dice;
 import InGameResources.Dice.DiceBunch;
+import SmallFunctionalFeaturesDamnYouJava.Functional;
 
 public class ResourceWallet{
     private DiceBunch dices = new DiceBunch();
     private int gears = 0;
 
+    public ResourceWallet(){}
+
+    public ResourceWallet(int r, int y, int b, int g){
+        dices = new DiceBunch(r, Dice.Color.RED);
+        dices.addAll(new DiceBunch(y, Dice.Color.YELLOW));
+        dices.addAll(new DiceBunch(b, Dice.Color.RED));
+        gears = g;
+    }
+
     public Dice takeDice(int i){
         return dices.remove(i);
     }
 
-    public void putDice(Dice dice){
+    private void putDice(Dice dice){
         dices.add(dice);
     }
 
@@ -33,4 +43,14 @@ public class ResourceWallet{
         gears += amount;
     }
 
+    public void transferFrom(ResourceWallet other){
+        dices.addAll(other.dices);
+        other.dices.clear();
+        gears += other.gears;
+        other.gears = 0;
+    }
+
+    public void transferTo(ResourceWallet other){
+        other.transferFrom(this);
+    }
 }

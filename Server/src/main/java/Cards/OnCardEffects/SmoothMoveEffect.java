@@ -1,5 +1,6 @@
 package Cards.OnCardEffects;
 
+import Players.Player;
 import misc.Effect;
 
 public class SmoothMoveEffect implements Effect {
@@ -10,8 +11,9 @@ public class SmoothMoveEffect implements Effect {
     }
 
     @Override
-    public void execute(Object who) {
-
+    public void execute(Player who) {
+        who.value = distance;
+        who.task = Player.Task.SMOOTH;
     }
 
     @Override

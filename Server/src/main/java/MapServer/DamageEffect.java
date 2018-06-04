@@ -1,22 +1,23 @@
 package MapServer;
 
+import Players.Player;
 import misc.IdGenerator;
 
 //Klaps w dziąsło
 public class DamageEffect implements OnPassEffect {
 
-    private int damage = 0;
+    private int damage;
     private int duration = 0;
     private static IdGenerator idGenerator = new IdGenerator();
     private int id = idGenerator.genId();
-    DamageEffect() {}
     DamageEffect(int damage){
         this.damage = damage;
     }
 
     @Override
-    public void execute(Object who) {
-        //Do damage
+    public void execute(Player who) {
+        who.getHpBar().hitFor(damage);
+
     }
 
     @Override
