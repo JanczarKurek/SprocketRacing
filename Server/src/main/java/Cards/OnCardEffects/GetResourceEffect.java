@@ -1,19 +1,20 @@
 package Cards.OnCardEffects;
 
 import InGameResources.ResourceWallet;
+import Players.Player;
 import misc.Effect;
 
 public class GetResourceEffect implements Effect {
 
-    ResourceWallet resourceWallet;
+    private ResourceWallet resourceWallet;
 
     public GetResourceEffect(ResourceWallet resourceWallet) {
         this.resourceWallet = resourceWallet;
     }
 
     @Override
-    public void execute(Object who) {
-
+    public void execute(Player who) {
+        who.getMyWallet().transferFrom(resourceWallet);
     }
 
     @Override

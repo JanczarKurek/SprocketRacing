@@ -1,17 +1,28 @@
 package Cards.OnCardEffects;
 
+import Cards.VehicleCard;
+import Cards.VehicleCardData;
+import ErrorsAndExceptions.WrongMove;
+import Players.Player;
 import misc.Effect;
 
 public class VentEffect implements Effect{
 
-    @Override
-    public void execute(Object who) {
+    private int value;
 
+    VentEffect(int v){
+        value = v;
+    }
+
+    @Override
+    public void execute(Player who) {
+        who.value += value;
+        who.task = Player.Task.VENT;
     }
 
     @Override
     public String getDescription() {
-        return "Vent";
+        return "Vent for " + value;
     }
 
     @Override

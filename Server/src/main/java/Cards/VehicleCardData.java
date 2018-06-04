@@ -9,6 +9,11 @@ public class VehicleCardData implements VehicleCard {
     private String name;
     private VehicleCardEngine engine;
 
+
+    public VehicleCardEngine getEngine() {
+        return engine;
+    }
+
     public void setCost(Cost cost) {
         this.cost = cost;
     }
