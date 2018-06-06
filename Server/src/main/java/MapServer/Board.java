@@ -2,6 +2,7 @@ package MapServer;
 
 import ErrorsAndExceptions.NoSuchPlayer;
 import ErrorsAndExceptions.WrongMove;
+import misc.Effect;
 
 import java.util.Collection;
 import java.util.TreeMap;
@@ -15,7 +16,7 @@ public class Board implements AbstractBoard {
         this.boardState = new BoardState(players, start);
     }
 
-    private Collection<OnPassEffect> movePlayer(Integer player, Path path) throws WrongMove{
+    private Collection<Effect> movePlayer(Integer player, Path path) throws WrongMove{
         if(!path.start().equals(boardState.getPlayerPosition(player)))
             throw new WrongMove("Logical error, path start does not match player's position.");
         if(!boardStructure.checkPath(path))
@@ -38,7 +39,7 @@ public class Board implements AbstractBoard {
         }
 
         @Override
-        public Collection<OnPassEffect> move(Path path) throws WrongMove {
+        public Collection<Effect> move(Path path) throws WrongMove {
             return movePlayer(playerId, path);
         }
 
@@ -49,9 +50,9 @@ public class Board implements AbstractBoard {
     }
 
     @Override
-    public PawnController getController(Integer playerId) throws NoSuchPlayer {
+    public PawnController getController(Integer playerId){
         if(!boardState.getPlayers().contains(playerId)){
-            throw new NoSuchPlayer();
+            boardState.putPlayer(playerId);
         }
         return new PawnControllerImpl(playerId);
     }

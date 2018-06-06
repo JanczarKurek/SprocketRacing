@@ -1,11 +1,12 @@
 package MapServer;
 
 import ErrorsAndExceptions.WrongMove;
+import misc.Effect;
 
 import java.util.Collection;
 
 public interface PawnController {
-    public Collection<OnPassEffect> move(Path path) throws WrongMove;
+    Collection<Effect> move(Path path) throws WrongMove;
 
-    public Collection<OnStayEffect> useEffectsOnField();
+    Collection<OnStayEffect> useEffectsOnField();
 }

@@ -6,7 +6,9 @@ import Cards.Hand;
 import ErrorsAndExceptions.EmptyDeck;
 import ErrorsAndExceptions.WrongMove;
 import MapServer.AbstractBoard;
+import MapServer.PawnController;
 import Players.Player;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -153,13 +155,13 @@ public class Table {
         }
     }
 
-    public TableController sitDown(Player player){
+    public Pair<TableController, PawnController> sitDown(Player player){
         if(players.contains(player))
             throw new IllegalStateException("Player already registered!");
         players.add(player);
         TableControllerImpl ret = new TableControllerImpl(player);
         controllers.add(ret);
-        return ret;
+        return new Pair<>(ret, board.getController(player.getId()));
     }
 
     private Hand getHand(){

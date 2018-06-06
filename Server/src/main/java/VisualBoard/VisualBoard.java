@@ -12,6 +12,7 @@ import javafx.util.Pair;
 import javafx.scene.control.Button;
 import java.awt.*;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 public class VisualBoard implements VisualElement {
@@ -92,7 +93,12 @@ public class VisualBoard implements VisualElement {
         button.setOnAction(event -> {
             ((ViewManager)myApp).useVehicle();
         });
+        Random random = new Random();
         group.getChildren().add(button);
+        if(random.nextBoolean()) {
+            group.setScaleX(0.8);
+            group.setScaleY(0.5);
+        }
         return group;
     }
 
