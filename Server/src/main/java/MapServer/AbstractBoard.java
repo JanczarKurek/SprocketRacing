@@ -5,7 +5,7 @@ import ErrorsAndExceptions.NoSuchPlayer;
 import java.util.TreeMap;
 
 public interface AbstractBoard {
-    PawnController getController(Integer playerId) throws NoSuchPlayer;
+    PawnController getController(Integer playerId);
 
     TreeMap<Integer, Integer> getPlayersPositions();
 }

@@ -16,7 +16,7 @@ public class Path implements Iterable<Integer>{ //represents path on board
         if(path == null) throw new IllegalArgumentException();
         this.path = new LinkedList<>(path.path);
     }
-    int length(){
+    public int length(){
         return path.size();
     }
     void append(Integer i){

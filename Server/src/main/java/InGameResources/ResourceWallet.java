@@ -5,6 +5,8 @@ import InGameResources.Dice.Dice;
 import InGameResources.Dice.DiceBunch;
 import SmallFunctionalFeaturesDamnYouJava.Functional;
 
+import java.util.Collection;
+
 public class ResourceWallet{
     private DiceBunch dices = new DiceBunch();
     private int gears = 0;
@@ -48,6 +50,11 @@ public class ResourceWallet{
         other.dices.clear();
         gears += other.gears;
         other.gears = 0;
+    }
+
+    public void transferFrom(Collection<Dice> dice){
+        dices.addAll(dice);
+        dice.clear();
     }
 
     public void transferTo(ResourceWallet other){

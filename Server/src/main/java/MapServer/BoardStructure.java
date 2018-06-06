@@ -1,6 +1,8 @@
 package MapServer;
 
 
+import misc.Effect;
+
 import java.util.*;
 
 public class BoardStructure {                       //Board is a directed acyclic graph.
@@ -48,8 +50,8 @@ public class BoardStructure {                       //Board is a directed acycli
         return end.getId();
     }
 
-    public Collection<OnPassEffect> effectsOnPath(Path path){
-        LinkedList<OnPassEffect> ret = new LinkedList<>();
+    public Collection<Effect> effectsOnPath(Path path){
+        LinkedList<Effect> ret = new LinkedList<>();
         ArrayList<BoardField> internalPath = internalPath(path);
         for(BoardField field : internalPath){
             ret.addAll(field.getOnPassEffects());

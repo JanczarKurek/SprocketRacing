@@ -8,10 +8,19 @@ public class BoardState {
     private TreeMap<Integer, Integer> playersOnBoard = new TreeMap<>(); //Maps players to fields (by ID)
     private LinkedList<GlobalEffect> globalEffects = new LinkedList<>();
 
+    private int start;
+
     BoardState(Collection<Integer> players, int start){
+        this.start = start;
         for(Integer player : players){
             playersOnBoard.put(player, start);
         }
+    }
+
+    public void putPlayer(Integer playerId){
+        if(playersOnBoard.containsKey(playerId))
+            throw new RuntimeException("Add every player only once");
+        playersOnBoard.put(playerId, start);
     }
 
     public Integer getPlayerPosition(Integer playerId){

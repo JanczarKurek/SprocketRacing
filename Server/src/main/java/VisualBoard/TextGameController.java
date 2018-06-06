@@ -20,12 +20,7 @@ public class TextGameController {
         this.game = game;
         controllers = new TreeMap<>();
         for(int player : Functional.range(game.getNumberOfPlayers())){
-            try {
                 controllers.put(player, game.getController(player));
-            } catch (NoSuchPlayer noSuchPlayer) {
-                System.err.println("No such player!");
-                System.exit(-1);
-            }
         }
     }
 

@@ -35,7 +35,7 @@ public class VehicleCardEngine {
             return effects;
         }
 
-        public void accept(){
+        public List<CardEffect> accept(){
             if(actualProposition != this){
                 throw new IllegalStateException("Error, trying to accept second time or similar");
             }
@@ -45,6 +45,7 @@ public class VehicleCardEngine {
                 throw new RuntimeException("Should not occurred, but caused by " + e);
             }
             actualProposition = null;
+            return effects;
         }
 
         public Collection<Dice> decline(){
@@ -69,7 +70,7 @@ public class VehicleCardEngine {
         this.diceSlots = diceSlots;
     }
 
-    Proposition getProposition(Collection<Dice> dices) throws WrongMove, WrongColor {
+    public Proposition getProposition(Collection<Dice> dices) throws WrongMove, WrongColor {
         return new Proposition(dices);
     }
 
