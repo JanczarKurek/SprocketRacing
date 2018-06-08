@@ -12,6 +12,11 @@ public class CardsLayout {
     private HashSet<CardInLayout> train = new java.util.HashSet<>();
     private CardInLayout cockpit;
 
+    public void BakuretsuBakuretsuBakuretsuNaNa(){
+        train.removeIf(x -> !cockpit.equals(x));
+        myMap.entrySet().removeIf(x -> x.getValue().equals(cockpit));
+    }
+
     public CardsLayout() {
         cockpit = null;
     }
@@ -69,6 +74,9 @@ public class CardsLayout {
         if(!myMap.containsKey(new Pair<>(x, y))){
             return null;
         }else{
+            if(myMap.get(new Pair<>(x, y)).equals(cockpit)){
+                return null;
+            }
             CardInLayout card = myMap.get(new Pair<>(x, y));
             myMap.remove(new Pair<>(x, y));
             return card.getCard();
