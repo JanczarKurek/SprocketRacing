@@ -3,6 +3,7 @@ package Players;
 import Cards.*;
 import Cards.Layout.CardsLayout;
 import ErrorsAndExceptions.IllegalCardsLayoutException;
+import ErrorsAndExceptions.NotEnoughResources;
 import ErrorsAndExceptions.WrongColor;
 import ErrorsAndExceptions.WrongMove;
 import InGameResources.Dice.Dice;
@@ -12,6 +13,7 @@ import MapServer.Path;
 import MapServer.PawnController;
 import Table.Table;
 import Table.TableController;
+import Table.Phase;
 import javafx.util.Pair;
 import misc.Cost;
 import misc.Effect;
@@ -21,7 +23,10 @@ import java.util.*;
 public class Player {
 
     public enum Task{
-        IDLE,
+        IDLEDRAFT,
+        IDLEVENT,
+        IDLERACE,
+        IDLEDAMAGE,
         AQUIREHAND,
         BREAKPART,
         BREAKONE,
@@ -33,6 +38,7 @@ public class Player {
         RUNATOMIC,
         MAKEMOVE,
         VENTONCE,
+        VENT,
         MOVESMOOTH,
         SELLCARD,
         TAKECARD,
@@ -40,7 +46,10 @@ public class Player {
         PUTCARD,
         TAKECARDFROMVEHICLE,
         REMOVECARD,
-        ACCEPTCARDS
+        ACCEPTCARDS,
+        DRAFTEND,
+        DAMAGEEND,
+        VOTE,
     }
 
     // Possible transitions:
@@ -48,8 +57,18 @@ public class Player {
     private static HashMap<Task, Set<Task> > transitions = new HashMap<>();
 
     static{
-        TreeSet<Task> put = new TreeSet<>(Arrays.asList(Task.AQUIREHAND, Task.USECARD, Task.CHANGEVEHICLE));
-        transitions.put(Task.IDLE, put);
+        TreeSet<Task> put = new TreeSet<>(Arrays.asList(Task.AQUIREHAND, Task.CHANGEVEHICLE));
+        transitions.put(Task.IDLEDRAFT, put);
+        put = new TreeSet<>(Arrays.asList(Task.VOTE));
+        transitions.put(Task.DRAFTEND, put);
+        put = new TreeSet<>(Arrays.asList(Task.USECARD, Task.CHANGEVEHICLE, Task.VOTE));
+        transitions.put(Task.IDLERACE, put);
+        put = new TreeSet<>(Arrays.asList(Task.CHANGEVEHICLE, Task.VENT, Task.VOTE));
+        transitions.put(Task.IDLEVENT, put);
+        put = new TreeSet<>(Arrays.asList(Task.BREAKPART));
+        transitions.put(Task.IDLEDAMAGE, put);
+        put = new TreeSet<>(Arrays.asList(Task.VOTE));
+        transitions.put(Task.DAMAGEEND, put);
         put = new TreeSet<>(Arrays.asList(Task.CHOOSECARD));
         transitions.put(Task.AQUIREHAND, put);
         put = new TreeSet<>(Arrays.asList(Task.SELLCARD, Task.TAKECARD));
@@ -60,8 +79,10 @@ public class Player {
         transitions.put(Task.ACCEPTUSE, put);
         put = new TreeSet<>(Arrays.asList(Task.RUNATOMIC));
         transitions.put(Task.RUNEFFECTS, put);
-        put = new TreeSet<>(Arrays.asList(Task.VENTONCE, Task.MOVESMOOTH, Task.MAKEMOVE));
+        put = new TreeSet<>(Arrays.asList(Task.VENT, Task.MOVESMOOTH, Task.MAKEMOVE));
         transitions.put(Task.RUNATOMIC, put);
+        put = new TreeSet<>(Arrays.asList(Task.VENTONCE));
+        transitions.put(Task.VENT, put);
         put = new TreeSet<>(Arrays.asList(Task.BREAKONE));
         transitions.put(Task.BREAKPART, put);
         put = new TreeSet<>(Arrays.asList(Task.PUTCARD, Task.TAKECARDFROMVEHICLE, Task.REMOVECARD, Task.ACCEPTCARDS));
@@ -105,12 +126,12 @@ public class Player {
         }
     }
 
-    public class VehicleArrangementManager{
+    class VehicleArrangementManager{
 
         /** Very important, one can not move cockpit **/
 
         ArrayList<VehicleCardData> cardsToUse = new ArrayList<>();
-        public void putCard(int cardIdx, int x, int y) throws WrongMove{
+        void putCard(int cardIdx, int x, int y) throws WrongMove{
             try{
                 myVehicle.add(cardsToUse.get(cardIdx), x, y);
                 cardsToUse.remove(cardIdx);
@@ -118,7 +139,7 @@ public class Player {
                 throw new WrongMove("Player " + getId() + ": can not put cards on coordinates (" + x + ", " + y + ")");
             }
         }
-        public void takeCard(int x, int y) throws WrongMove {
+        void takeCard(int x, int y) throws WrongMove {
             VehicleCardData card = myVehicle.remove(x, y);
             if(card == null){
                 throw new WrongMove("Player " + getId() + ": tried to get card from (" + x  + ", " + y + ") found nothing");
@@ -127,13 +148,13 @@ public class Player {
             }
         }
 
-        public void removeCard(int x, int y) throws WrongMove {
+        void removeCard(int x, int y) throws WrongMove {
             VehicleCardData card = myVehicle.remove(x, y);
             if(card == null)
                 throw new WrongMove("Player " + getId() + ": tried to remove card from (" + x  + ", " + y + ") found nothing");
         }
 
-        public void acceptArrangement() throws WrongMove{
+        void acceptArrangement() throws WrongMove{
             if(!myVehicle.checkCorrectness())
                 throw new WrongMove("Player " + getId() + ": tried to use invalid arrangement of vehicle");
         }
@@ -154,6 +175,29 @@ public class Player {
 
     public TaskManager taskManager = new TaskManager();
 
+    public void vote() throws WrongMove {
+        checkAction(Task.VOTE);
+        taskManager.finalizeTask();
+        taskManager.putTask(new PendingTask(Task.VOTE, 0));
+    }
+
+    public void nextPhase(Phase nextPhase){ //DO NOT USE, only table can use it.
+        taskManager.finalizeTask();
+        switch (nextPhase){
+            case DRAW:
+                taskManager.putTask(new PendingTask(Task.IDLEDRAFT, 0));
+                break;
+            case RACE:
+                taskManager.putTask(new PendingTask(Task.IDLERACE, 0));
+                break;
+            case VENT:
+                taskManager.putTask(new PendingTask(Task.IDLEVENT, 0));
+                break;
+            case DAMAGE:
+                taskManager.putTask(new PendingTask(Task.IDLEDAMAGE, 0));
+        }
+    }
+
     public Player(Table table, int id){
         Pair<TableController, PawnController> p = table.sitDown(this);
         tableController = p.getKey();
@@ -163,6 +207,7 @@ public class Player {
 
     public void aquireHand() throws WrongMove {
         checkAction(Task.AQUIREHAND);
+        taskManager.putTask(new PendingTask(Task.AQUIREHAND, 0));
         try {
             myHand = tableController.getHand();
         } catch (WrongMove wrongMove) {
@@ -218,19 +263,30 @@ public class Player {
         taskManager.finalizeTask(); //Pop arrangeVehicle task.
     }
 
-    public Card chooseCard(int idx) throws WrongMove {
+    public void chooseCard(int idx) throws WrongMove {
         checkAction(Task.CHOOSECARD);
-        taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
         if(chosenCard != null)
             throw new WrongMove("Player " + getId() + ": Card already chosen from this hand");
         Card card = myHand.take(idx);
         try {
             tableController.passHand(myHand);
-            return card;
+            chosenCard = card;
+            taskManager.finalizeTask();
+            taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
         } catch (WrongMove wrongMove) {
             taskManager.finalizeTask();
             myHand.putCard(card);
             throw new WrongMove("Player " + getId() + ": " + wrongMove.getMessage());
+        }
+    }
+
+    public void vent(int times) throws NotEnoughResources, WrongMove {
+        checkAction(Task.VENT);
+        try {
+            myWallet.takeGears(times * 2);
+            taskManager.putTask(new PendingTask(Task.VENT, times));
+        } catch (NotEnoughResources notEnoughResources) {
+            throw new NotEnoughResources("Player " + getId() + ": " + notEnoughResources);
         }
     }
 
@@ -247,7 +303,7 @@ public class Player {
         tableController.passHand(myHand);
         myHand = null;
         chosenCard = null;
-        taskManager.finalizeTask(); // After sell -> IDLE
+        taskManager.finalizeTask(); // After sell -> IDLEDRAFT
     }
 
     public void sellCard() throws WrongMove{
@@ -258,6 +314,15 @@ public class Player {
         myHand = null;
         chosenCard = null;
         taskManager.finalizeTask();
+    }
+
+    public void takeCard() throws WrongMove{
+        checkAction(Task.TAKECARD);
+        PendingTask task = new PendingTask(Task.CHANGEVEHICLE, 0);
+        task.manager = new VehicleArrangementManager();
+        task.manager.cardsToUse.add((VehicleCardData)chosenCard);
+        taskManager.finalizeTask();
+        taskManager.putTask(task);
     }
 
     public void useCard(int x, int y, DiceBunch dice) throws WrongMove{

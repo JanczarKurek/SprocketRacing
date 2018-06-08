@@ -24,13 +24,6 @@ public class Table {
         void run();
     }
 
-    public enum Phase{
-        DRAW,
-        VENT,
-        RACE,
-        DAMAGE
-    }
-
     private static TreeMap<Phase, Phase> phaseOrder = new TreeMap<>();
     static {
         phaseOrder.put(Phase.DRAW, Phase.VENT);
@@ -62,6 +55,7 @@ public class Table {
     private ArrayList<Deck> decks;
     private ArrayList<Deck> discards = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
+    private HashMap<Player, Boolean> hasNextHand = new HashMap<>();
     private ArrayList<TableControllerImpl> controllers = new ArrayList<>();
     private HashMap<Player, Hand> passedHands = new HashMap<>();
 
@@ -80,6 +74,7 @@ public class Table {
         boolean gotHand = false;
         boolean voted = false;
         boolean firstHand = true;
+        boolean passedLast = false;
         TreeMap<Phase, PhasePrep> phasePreps = new TreeMap<>();
         {
             phasePreps.put(Phase.DRAW, this::prepareDraw);
@@ -94,6 +89,8 @@ public class Table {
             firstHand = true;
             gotHand = false;
             voted = false;
+            passedLast = false;
+            passedHands = new HashMap<>();
             passedHands.put(player, null);
         }
 
@@ -143,12 +140,19 @@ public class Table {
             return Table.this.getHand();
         }
 
+        public Boolean hasNextHand(){
+            return !passedLast;
+        }
+
         public void passHand(Hand playersHand) throws WrongMove {
             if(playersHand == null)
                 throw new NullPointerException();
             checkPhase(Phase.DRAW, "passHand");
             if(passedHands.get(player) != null){
                 throw new WrongMove("Hand already passed in this phase");
+            }
+            if(playersHand.getHandSize() == 1){
+                passedLast = true;
             }
             gotHand = false;
             passedHands.put(player, playersHand);
@@ -183,6 +187,8 @@ public class Table {
             for(TableControllerImpl controller : controllers)
                 controller.prepNextPhase();
             currentPhase = phaseOrder.get(currentPhase);
+            for(Player player : players)
+                player.nextPhase(currentPhase);
         }
     }
 }

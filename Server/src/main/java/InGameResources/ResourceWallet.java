@@ -9,6 +9,11 @@ import java.util.Collection;
 
 public class ResourceWallet{
     private DiceBunch dices = new DiceBunch();
+
+    public int getGears() {
+        return gears;
+    }
+
     private int gears = 0;
 
     public ResourceWallet(){}
