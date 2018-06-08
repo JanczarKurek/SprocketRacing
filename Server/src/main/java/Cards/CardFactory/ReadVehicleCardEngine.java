@@ -10,7 +10,7 @@ public class ReadVehicleCardEngine {
     static Cards.VehicleCardEngine readVehicleCardEngine(JSONObject jsonObject) {
         return new Cards.VehicleCardEngine(
                 readCardUsageCost((JSONObject) jsonObject.get("CardUsageCost")),
-                readCardEffect((JSONObject) jsonObject.get("CardEffect")),
+                readCardEffect((JSONArray) jsonObject.get("CardEffect")),
                 readDiceSlots((JSONObject) jsonObject.get("DiceSlots")));
     }
 }

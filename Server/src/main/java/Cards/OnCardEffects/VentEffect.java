@@ -10,7 +10,7 @@ public class VentEffect implements Effect{
 
     private int value;
 
-    VentEffect(int v){
+    public VentEffect(int v){
         value = v;
     }
 
