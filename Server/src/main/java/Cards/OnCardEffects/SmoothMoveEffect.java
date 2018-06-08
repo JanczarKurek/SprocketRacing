@@ -12,8 +12,7 @@ public class SmoothMoveEffect implements Effect {
 
     @Override
     public void execute(Player who) {
-        who.value = distance;
-        who.task = Player.Task.SMOOTH;
+        who.taskManager.putTask(new Player.PendingTask(Player.Task.MOVESMOOTH, distance));
     }
 
     @Override

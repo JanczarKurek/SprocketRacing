@@ -16,31 +16,71 @@ import javafx.util.Pair;
 import misc.Cost;
 import misc.Effect;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class Player {
 
     public enum Task{
-        MOVE,
-        SMOOTH,
-        VENT,
-        PARTBREAK
+        IDLE,
+        AQUIREHAND,
+        CHOOSECARD,
+        CHANGEVEHICLE,
+        USECARD,
+        ACCEPTUSE,
+        RUNEFFECTS,
+        RUNATOMIC,
+        MAKEMOVE,
+        VENTONCE,
+        MOVESMOOTH,
+        SELLCARD,
+        TAKECART,
+        REFUSEUSE
     }
 
-    public class PendingTask{
-        PendingTask(Task task, int value){
-            this.task = task;
+    // Possible transitions:
+
+    private static HashMap<Task, Set<Task> > transitions = new HashMap<>();
+
+    static{
+        TreeSet<Task> put = new TreeSet<>(Arrays.asList(Task.AQUIREHAND, Task.USECARD, Task.CHANGEVEHICLE));
+        transitions.put(Task.IDLE, put);
+        put = new TreeSet<>(Arrays.asList(Task.CHOOSECARD));
+        transitions.put(Task.AQUIREHAND, put);
+        put = new TreeSet<>(Arrays.asList(Task.SELLCARD, Task.TAKECART));
+        transitions.put(Task.CHOOSECARD, put);
+        put = new TreeSet<>(Arrays.asList(Task.REFUSEUSE, Task.ACCEPTUSE));
+        transitions.put(Task.USECARD, put);
+        put = new TreeSet<>(Arrays.asList(Task.RUNEFFECTS));
+        transitions.put(Task.ACCEPTUSE, put);
+        put = new TreeSet<>(Arrays.asList(Task.RUNATOMIC));
+        transitions.put(Task.RUNEFFECTS, put);
+        put = new TreeSet<>(Arrays.asList(Task.VENTONCE, Task.MOVESMOOTH, Task.MAKEMOVE));
+        transitions.put(Task.RUNATOMIC, put);
+    }
+
+    private void checkAction(Task proposition) throws WrongMove {
+        Task task = taskManager.getCurrentTask().type;
+        if(!transitions.get(task).contains(proposition))
+            //todo create new exception for illegal state instructions.
+            throw new WrongMove("Player " + getId() + ": Illegal action during " + task + ", possible are " + transitions.get(task) + " got " + proposition);
+    }
+
+    static public class PendingTask{
+        public PendingTask(Task task, int value){
+            this.type = task;
             this.value = value;
         }
-        Task task;
+
+        VehicleCardEngine.Proposition actualProposition;
+        Iterator<CardEffect> processedEffects;
+        Iterator<Effect> atomicEffect;
+
+        Task type;
         int value;
     }
 
     public class TaskManager{
-        private Stack<PendingTask> pendingTasks = new Stack<>();
+        private LinkedList<PendingTask> pendingTasks = new LinkedList<>();
         public void putTask(PendingTask task){
             pendingTasks.push(task);
         }
@@ -64,17 +104,11 @@ public class Player {
     private Card chosenCard;
     private ResourceWallet myWallet = new ResourceWallet();
     private CardsLayout myVehicle = new CardsLayout();
-    private VehicleCardEngine.Proposition actualProposition;
-    private Iterator<CardEffect> processedEffects;
+
     private PawnController pawnController;
 
-    private TaskManager taskManager = new TaskManager();
+    public TaskManager taskManager = new TaskManager();
 
-    private Iterator<Effect> atomicEffect;
-
-    public int value;
-
-    public Task task;
 
     public Player(Table table, int id){
         Pair<TableController, PawnController> p = table.sitDown(this);
@@ -84,6 +118,7 @@ public class Player {
     }
 
     public void aquireHand() throws WrongMove {
+        checkAction(Task.AQUIREHAND);
         try {
             myHand = tableController.getHand();
         } catch (WrongMove wrongMove) {
@@ -96,6 +131,8 @@ public class Player {
     }
 
     public Card chooseCard(int idx) throws WrongMove {
+        checkAction(Task.CHOOSECARD);
+        taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
         if(chosenCard != null)
             throw new WrongMove("Player " + getId() + ": Card already chosen from this hand");
         Card card = myHand.take(idx);
@@ -103,14 +140,14 @@ public class Player {
             tableController.passHand(myHand);
             return card;
         } catch (WrongMove wrongMove) {
+            taskManager.finalizeTask();
             myHand.putCard(card);
             throw new WrongMove("Player " + getId() + ": " + wrongMove.getMessage());
         }
     }
 
     public void sellCard(Dice.Color type) throws WrongMove {
-        if(chosenCard == null)
-            throw new WrongMove("Player " + getId() + ": No card to sell");
+        checkAction(Task.SELLCARD);
         Cost cost = chosenCard.getCost();
         if(type == Dice.Color.RED){
             myWallet.putDice(cost.getRed(), type);
@@ -122,82 +159,89 @@ public class Player {
         tableController.passHand(myHand);
         myHand = null;
         chosenCard = null;
+        taskManager.finalizeTask(); // After sell -> IDLE
     }
 
     public void sellCard() throws WrongMove{
-        if(chosenCard == null)
-            throw new WrongMove("Player " + getId() + ": No card to sell");
+        checkAction(Task.SELLCARD);
         Cost cost = chosenCard.getCost();
         myWallet.putGears(cost.getCogs());
         tableController.passHand(myHand);
         myHand = null;
         chosenCard = null;
+        taskManager.finalizeTask();
     }
 
     public void useCard(int x, int y, DiceBunch dice) throws WrongMove{
-        if(actualProposition != null)
-            throw new WrongMove("Player " + getId() + ": another proposition in progress");
+        checkAction(Task.USECARD);
         VehicleCardData card = myVehicle.getLayout(x, y).get(new Pair<>(x, y));
         try {
-            actualProposition = card.getEngine().getProposition(dice);
-
+            PendingTask pendingTask = new PendingTask(Task.USECARD, 0);
+            pendingTask.actualProposition = card.getEngine().getProposition(dice);
+            taskManager.putTask(pendingTask);
         } catch (WrongColor wrongColor) {
             throw new WrongMove("Player " + getId() + ":" + wrongColor);
         }
     }
 
-    public void acceptProposition(){
-        processedEffects = actualProposition.accept().iterator();
-
+    public void acceptProposition() throws WrongMove {
+        checkAction(Task.ACCEPTUSE);
+        VehicleCardEngine.Proposition actualProposition = taskManager.getCurrentTask().actualProposition;
+        PendingTask pendingTask = new PendingTask(Task.ACCEPTUSE, 0);
+        pendingTask.processedEffects = actualProposition.accept().iterator();
+        taskManager.putTask(pendingTask);
     }
 
-    public void refuseProposition(){
-        myWallet.transferFrom(actualProposition.decline());
-        actualProposition = null;
+    public void refuseProposition() throws WrongMove {
+        checkAction(Task.REFUSEUSE);
+        myWallet.transferFrom(taskManager.getCurrentTask().actualProposition.decline());
+        taskManager.finalizeTask();
     }
 
     public void runEffects(int idx) throws WrongMove{
-        if(processedEffects == null)
-            throw new WrongMove("Player " + getId() + ": no effect to process");
-        atomicEffect = processedEffects.next().chooseEffect(idx).iterator();
-        if(!processedEffects.hasNext()) {
-            processedEffects = null;
+        checkAction(Task.RUNEFFECTS);
+        PendingTask actual = taskManager.getCurrentTask();
+        PendingTask newTask = new PendingTask(Task.RUNEFFECTS, 0);
+        newTask.atomicEffect = actual.processedEffects.next().chooseEffect(idx).iterator();
+        if(!actual.processedEffects.hasNext() && actual.type == Task.ACCEPTUSE) {
+            taskManager.finalizeTask();
         }
+        taskManager.putTask(newTask);
     }
 
     public void runAtomicEffect() throws WrongMove {
-        if(atomicEffect == null)
-            throw new WrongMove("Player " + getId() + ": no atomic effect to run");
-        Effect e = atomicEffect.next();
-        e.execute(this);
-        if(!atomicEffect.hasNext()) {
-            atomicEffect = null;
-            if(task == null)
-                actualProposition = null;
+        checkAction(Task.RUNATOMIC);
+        Effect e = taskManager.getCurrentTask().atomicEffect.next();
+        if(!taskManager.getCurrentTask().atomicEffect.hasNext()) {
+            taskManager.finalizeTask();
         }
     }
 
     public void makeMove(Path path) throws WrongMove {
-        if(task != Task.MOVE && task != Task.SMOOTH)
-            throw new WrongMove("Player " + getId() + ": should not move right now");
-        if(path.length() != value)
-            throw  new WrongMove("Player " + getId() + ": malformed path, expecting size " + value + " got " + path.length());
+        checkAction(Task.MAKEMOVE);
+        if(path.length() != taskManager.getCurrentTask().value)
+            throw  new WrongMove("Player " + getId() + ": malformed path, expecting size " +taskManager.getCurrentTask().value + " got " + path.length());
         try {
-            atomicEffect = pawnController.move(path).iterator();
-            if(task == Task.SMOOTH)
-                atomicEffect = null;
+            PendingTask actual = taskManager.getCurrentTask();
+            PendingTask newTask = new PendingTask(Task.RUNEFFECTS, 0);
+            Collection<Effect> effects = pawnController.move(path);
+            if(effects.size() != 0 && actual.type != Task.MOVESMOOTH) {
+                newTask.atomicEffect = pawnController.move(path).iterator();
+                taskManager.putTask(newTask);
+            }
         } catch (WrongMove wrongMove) {
             throw new WrongMove("Player " + getId() + ": tried to move, wrong move " + wrongMove);
         }
     }
 
     public void ventOnce(int x, int y, int diceIdx) throws WrongMove {
+        checkAction(Task.VENTONCE);
         VehicleCardData card = myVehicle.getLayout(x, y).get(new Pair<>(x, y));
         try {
             card.getDiceSlots().decrement(diceIdx);
-            value--;
-            if(value == 0)
-                task = null;
+            taskManager.getCurrentTask().value--;
+            if(taskManager.getCurrentTask().value == 0)
+                taskManager.finalizeTask();
         } catch (WrongMove wrongMove) {
             throw new WrongMove("Player " + getId() + ": " + wrongMove);
         }

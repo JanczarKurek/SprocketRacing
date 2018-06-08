@@ -12,8 +12,7 @@ public class MoveEffect implements Effect {
 
     @Override
     public void execute(Player who) {
-        who.value = distance;
-        who.task = Player.Task.MOVE;
+        who.taskManager.putTask(new Player.PendingTask(Player.Task.MAKEMOVE, distance));
     }
 
     @Override
