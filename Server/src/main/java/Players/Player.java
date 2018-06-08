@@ -24,6 +24,7 @@ public class Player {
     public enum Task{
         IDLE,
         AQUIREHAND,
+        BREAKPART,
         CHOOSECARD,
         CHANGEVEHICLE,
         USECARD,
@@ -96,6 +97,9 @@ public class Player {
     }
 
     public class VehicleArrangementManager{
+
+        /** Very important, one can not move cockpit **/
+
         ArrayList<VehicleCardData> cardsToUse = new ArrayList<>();
         public void putCard(int cardIdx, int x, int y) throws WrongMove{
             try{
@@ -112,6 +116,17 @@ public class Player {
             }else{
                 cardsToUse.add(card);
             }
+        }
+
+        public void removeCard(int x, int y) throws WrongMove {
+            VehicleCardData card = myVehicle.remove(x, y);
+            if(card == null)
+                throw new WrongMove("Player " + getId() + ": tried to remove card from (" + x  + ", " + y + ") found nothing");
+        }
+
+        public void acceptArrangement() throws WrongMove{
+            if(!myVehicle.checkCorrectness())
+                throw new WrongMove("Player " + getId() + ": tried to use invalid arrangement of vehicle");
         }
     }
 
