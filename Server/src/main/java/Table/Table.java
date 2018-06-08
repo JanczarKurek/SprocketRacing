@@ -157,7 +157,7 @@ public class Table {
 
     public Pair<TableController, PawnController> sitDown(Player player){
         if(players.contains(player))
-            throw new IllegalStateException("Player already registered!");
+            throw new IllegalStateException("Player " + player.getId() + " already registered!");
         players.add(player);
         TableControllerImpl ret = new TableControllerImpl(player);
         controllers.add(ret);
