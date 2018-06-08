@@ -16,8 +16,7 @@ public class VentEffect implements Effect{
 
     @Override
     public void execute(Player who) {
-        who.value += value;
-        who.task = Player.Task.VENT;
+        who.taskManager.putTask(new Player.PendingTask(Player.Task.VENTONCE, value));
     }
 
     @Override
