@@ -2,6 +2,7 @@ package Players;
 
 import Cards.*;
 import Cards.Layout.CardsLayout;
+import ErrorsAndExceptions.IllegalCardsLayoutException;
 import ErrorsAndExceptions.WrongColor;
 import ErrorsAndExceptions.WrongMove;
 import InGameResources.Dice.Dice;
@@ -85,12 +86,32 @@ public class Player {
             pendingTasks.push(task);
         }
 
-        public PendingTask getCurrentTask(){
+        PendingTask getCurrentTask(){
             return pendingTasks.peek();
         }
 
-        public void finalizeTask(){
+        void finalizeTask(){
             pendingTasks.pop();
+        }
+    }
+
+    public class VehicleArrangementManager{
+        ArrayList<VehicleCardData> cardsToUse = new ArrayList<>();
+        public void putCard(int cardIdx, int x, int y) throws WrongMove{
+            try{
+                myVehicle.add(cardsToUse.get(cardIdx), x, y);
+                cardsToUse.remove(cardIdx);
+            }catch(IllegalCardsLayoutException exception){
+                throw new WrongMove("Player " + getId() + ": can not put cards on coordinates (" + x + ", " + y + ")");
+            }
+        }
+        public void takeCard(int x, int y) throws WrongMove {
+            VehicleCardData card = myVehicle.remove(x, y);
+            if(card == null){
+                throw new WrongMove("Player " + getId() + ": tried to get card from (" + x  + ", " + y + ") found nothing");
+            }else{
+                cardsToUse.add(card);
+            }
         }
     }
 

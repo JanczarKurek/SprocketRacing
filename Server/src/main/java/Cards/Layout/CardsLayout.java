@@ -65,6 +65,25 @@ public class CardsLayout {
         myMap.remove(card.getCoordinates());
     }
 
+    public VehicleCardData remove(int x, int y){
+        if(!myMap.containsKey(new Pair<>(x, y))){
+            return null;
+        }else{
+            CardInLayout card = myMap.get(new Pair<>(x, y));
+            myMap.remove(new Pair<>(x, y));
+            return card.getCard();
+        }
+    }
+
+    public VehicleCardData getCardByCoordinates(int x, int y){
+        if(!myMap.containsKey(new Pair<>(x, y))){
+            return null;
+        }else{
+            CardInLayout card = myMap.get(new Pair<>(x, y));
+            return card.getCard();
+        }
+    }
+
     public CardInLayout getCockpit() {
         return cockpit;
     }
