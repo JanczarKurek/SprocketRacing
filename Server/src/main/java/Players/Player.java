@@ -8,7 +8,6 @@ import ErrorsAndExceptions.WrongMove;
 import InGameResources.Dice.Dice;
 import InGameResources.Dice.DiceBunch;
 import InGameResources.ResourceWallet;
-import MapServer.OnPassEffect;
 import MapServer.Path;
 import MapServer.PawnController;
 import Table.Table;
@@ -25,6 +24,7 @@ public class Player {
         IDLE,
         AQUIREHAND,
         BREAKPART,
+        BREAKONE,
         CHOOSECARD,
         CHANGEVEHICLE,
         USECARD,
@@ -35,8 +35,12 @@ public class Player {
         VENTONCE,
         MOVESMOOTH,
         SELLCARD,
-        TAKECART,
-        REFUSEUSE
+        TAKECARD,
+        REFUSEUSE,
+        PUTCARD,
+        TAKECARDFROMVEHICLE,
+        REMOVECARD,
+        ACCEPTCARDS
     }
 
     // Possible transitions:
@@ -48,7 +52,7 @@ public class Player {
         transitions.put(Task.IDLE, put);
         put = new TreeSet<>(Arrays.asList(Task.CHOOSECARD));
         transitions.put(Task.AQUIREHAND, put);
-        put = new TreeSet<>(Arrays.asList(Task.SELLCARD, Task.TAKECART));
+        put = new TreeSet<>(Arrays.asList(Task.SELLCARD, Task.TAKECARD));
         transitions.put(Task.CHOOSECARD, put);
         put = new TreeSet<>(Arrays.asList(Task.REFUSEUSE, Task.ACCEPTUSE));
         transitions.put(Task.USECARD, put);
@@ -58,6 +62,10 @@ public class Player {
         transitions.put(Task.RUNEFFECTS, put);
         put = new TreeSet<>(Arrays.asList(Task.VENTONCE, Task.MOVESMOOTH, Task.MAKEMOVE));
         transitions.put(Task.RUNATOMIC, put);
+        put = new TreeSet<>(Arrays.asList(Task.BREAKONE));
+        transitions.put(Task.BREAKPART, put);
+        put = new TreeSet<>(Arrays.asList(Task.PUTCARD, Task.TAKECARDFROMVEHICLE, Task.REMOVECARD, Task.ACCEPTCARDS));
+        transitions.put(Task.CHANGEVEHICLE, put);
     }
 
     private void checkAction(Task proposition) throws WrongMove {
@@ -76,6 +84,7 @@ public class Player {
         VehicleCardEngine.Proposition actualProposition;
         Iterator<CardEffect> processedEffects;
         Iterator<Effect> atomicEffect;
+        VehicleArrangementManager manager;
 
         Task type;
         int value;
@@ -145,7 +154,6 @@ public class Player {
 
     public TaskManager taskManager = new TaskManager();
 
-
     public Player(Table table, int id){
         Pair<TableController, PawnController> p = table.sitDown(this);
         tableController = p.getKey();
@@ -164,6 +172,50 @@ public class Player {
 
     public Hand getMyHand() {
         return myHand;
+    }
+
+    public void arrangeVehicle() throws WrongMove {
+        checkAction(Task.CHANGEVEHICLE);
+        PendingTask task = new PendingTask(Task.CHANGEVEHICLE, 0);
+        task.manager = new VehicleArrangementManager();
+        taskManager.putTask(task);
+
+    }
+
+    public void obligatoryRemoveOne(int x, int y) throws WrongMove {
+        checkAction(Task.BREAKONE);
+        if(myVehicle.justCockpit()){
+            //todo Explosion
+            taskManager.finalizeTask();
+        }else{
+            taskManager.getCurrentTask().manager.removeCard(x, y); //Throws if wrong, it's ok.
+            taskManager.getCurrentTask().value--;
+            if(taskManager.getCurrentTask().value == 0){
+                taskManager.finalizeTask();
+                taskManager.putTask(new PendingTask(Task.CHANGEVEHICLE, 0)); //Make your vehicle working after break.
+            }
+        }
+    }
+
+    public void putCard(int cardIdx, int x, int y) throws WrongMove {
+        checkAction(Task.PUTCARD);
+        taskManager.getCurrentTask().manager.putCard(cardIdx, x, y);
+    }
+
+    public void takeCard(int x, int y) throws WrongMove {
+        checkAction(Task.TAKECARDFROMVEHICLE);
+        taskManager.getCurrentTask().manager.takeCard(x, y); //Throws if wrong and that's gut.
+    }
+
+    public void removeCard(int x, int y) throws WrongMove {
+        checkAction(Task.REMOVECARD);
+        taskManager.getCurrentTask().manager.removeCard(x, y); //Throws if wrong and that's gut.
+    }
+
+    public void acceptVehicleLayout() throws WrongMove {
+        checkAction(Task.ACCEPTCARDS);
+        taskManager.getCurrentTask().manager.acceptArrangement();
+        taskManager.finalizeTask(); //Pop arrangeVehicle task.
     }
 
     public Card chooseCard(int idx) throws WrongMove {

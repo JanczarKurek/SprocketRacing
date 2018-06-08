@@ -17,6 +17,10 @@ public class CardsLayout {
         myMap.entrySet().removeIf(x -> x.getValue().equals(cockpit));
     }
 
+    public boolean justCockpit(){
+        return myMap.size() == 1;
+    }
+
     public CardsLayout() {
         cockpit = null;
     }
