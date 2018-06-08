@@ -10,7 +10,7 @@ public class DamageEffect implements OnPassEffect {
     private int duration = 0;
     private static IdGenerator idGenerator = new IdGenerator();
     private int id = idGenerator.genId();
-    DamageEffect(int damage){
+    public DamageEffect(int damage){
         this.damage = damage;
     }
 
