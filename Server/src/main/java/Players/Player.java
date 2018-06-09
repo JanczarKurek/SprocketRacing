@@ -50,6 +50,9 @@ public class Player {
         DRAFTEND,
         DAMAGEEND,
         VOTE,
+        ROLL,
+        REROLL,
+        INCREASE
     }
 
     // Possible transitions:
@@ -61,7 +64,7 @@ public class Player {
         transitions.put(Task.IDLEDRAFT, put);
         put = new TreeSet<>(Arrays.asList(Task.VOTE));
         transitions.put(Task.DRAFTEND, put);
-        put = new TreeSet<>(Arrays.asList(Task.USECARD, Task.CHANGEVEHICLE, Task.VOTE));
+        put = new TreeSet<>(Arrays.asList(Task.USECARD, Task.CHANGEVEHICLE, Task.VOTE, Task.ROLL, Task.REROLL, Task.INCREASE));
         transitions.put(Task.IDLERACE, put);
         put = new TreeSet<>(Arrays.asList(Task.CHANGEVEHICLE, Task.VENT, Task.VOTE));
         transitions.put(Task.IDLEVENT, put);
@@ -162,48 +165,55 @@ public class Player {
 
     private HpBar hpBar = new HpBar(3, -6);
     private int id;
-    public int getId(){
-        return id;
-    }
     private TableController tableController;
     private Hand myHand;
     private Card chosenCard;
     private ResourceWallet myWallet = new ResourceWallet();
     private CardsLayout myVehicle = new CardsLayout();
-
     private PawnController pawnController;
-
     public TaskManager taskManager = new TaskManager();
 
-    public void vote() throws WrongMove {
-        checkAction(Task.VOTE);
-        taskManager.finalizeTask();
-        taskManager.putTask(new PendingTask(Task.VOTE, 0));
-    }
-
-    public void nextPhase(Phase nextPhase){ //DO NOT USE, only table can use it.
-        taskManager.finalizeTask();
-        switch (nextPhase){
-            case DRAW:
-                taskManager.putTask(new PendingTask(Task.IDLEDRAFT, 0));
-                break;
-            case RACE:
-                taskManager.putTask(new PendingTask(Task.IDLERACE, 0));
-                break;
-            case VENT:
-                taskManager.putTask(new PendingTask(Task.IDLEVENT, 0));
-                break;
-            case DAMAGE:
-                taskManager.putTask(new PendingTask(Task.IDLEDAMAGE, 0));
-        }
-    }
-
-    public Player(Table table, int id){
+    public Player(Table table, int id, VehicleCardData cockpit){
         Pair<TableController, PawnController> p = table.sitDown(this);
         tableController = p.getKey();
         pawnController = p.getValue();
+        myVehicle.setCockpit(cockpit, 0, 0);
         this.id = id;
     }
+
+    /** Getters for getting info **/
+
+    public Card getChosenCard() {
+        return chosenCard;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public Hand getMyHand() {
+        return myHand;
+    }
+
+    public int getHandSize(){
+        return myHand.getHandSize();
+    }
+
+    public CardsLayout getMyVehicle() {
+        return myVehicle;
+    }
+
+    public ResourceWallet getMyWallet() {
+        return myWallet;
+    }
+
+    public HpBar getHpBar() {
+        return hpBar;
+    }
+
+    /******************************/
+
+    /** Draw phase functions **/
 
     public void aquireHand() throws WrongMove {
         checkAction(Task.AQUIREHAND);
@@ -215,9 +225,61 @@ public class Player {
         }
     }
 
-    public Hand getMyHand() {
-        return myHand;
+    public void chooseCard(int idx) throws WrongMove {
+        checkAction(Task.CHOOSECARD);
+        if(chosenCard != null)
+            throw new WrongMove("Player " + getId() + ": Card already chosen from this hand");
+        Card card = myHand.take(idx);
+        try {
+            tableController.passHand(myHand);
+            chosenCard = card;
+            taskManager.finalizeTask();
+            taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
+        } catch (WrongMove wrongMove) {
+            taskManager.finalizeTask();
+            myHand.putCard(card);
+            throw new WrongMove("Player " + getId() + ": " + wrongMove.getMessage());
+        }
     }
+
+    public void sellCard(Dice.Color type) throws WrongMove {
+        checkAction(Task.SELLCARD);
+        Cost cost = chosenCard.getCost();
+        if(type == Dice.Color.RED){
+            myWallet.putDice(cost.getRed(), type);
+        }else if(type == Dice.Color.YELLOW){
+            myWallet.putDice(cost.getYellow(), type);
+        }else if(type == Dice.Color.BLUE){
+            myWallet.putDice(cost.getBlue(), type);
+        }
+        tableController.passHand(myHand);
+        myHand = null;
+        chosenCard = null;
+        taskManager.finalizeTask(); // After sell -> IDLEDRAFT
+    }
+
+    public void sellCard() throws WrongMove{
+        checkAction(Task.SELLCARD);
+        Cost cost = chosenCard.getCost();
+        myWallet.putGears(cost.getCogs());
+        tableController.passHand(myHand);
+        myHand = null;
+        chosenCard = null;
+        taskManager.finalizeTask();
+    }
+
+    public void takeCard() throws WrongMove{
+        checkAction(Task.TAKECARD);
+        PendingTask task = new PendingTask(Task.CHANGEVEHICLE, 0);
+        task.manager = new VehicleArrangementManager();
+        task.manager.cardsToUse.add((VehicleCardData)chosenCard);
+        taskManager.finalizeTask();
+        taskManager.putTask(task);
+    }
+
+    /**************************/
+
+    /** Arranging vehicle functions **/
 
     public void arrangeVehicle() throws WrongMove {
         checkAction(Task.CHANGEVEHICLE);
@@ -263,76 +325,42 @@ public class Player {
         taskManager.finalizeTask(); //Pop arrangeVehicle task.
     }
 
-    public void chooseCard(int idx) throws WrongMove {
-        checkAction(Task.CHOOSECARD);
-        if(chosenCard != null)
-            throw new WrongMove("Player " + getId() + ": Card already chosen from this hand");
-        Card card = myHand.take(idx);
-        try {
-            tableController.passHand(myHand);
-            chosenCard = card;
-            taskManager.finalizeTask();
-            taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
-        } catch (WrongMove wrongMove) {
-            taskManager.finalizeTask();
-            myHand.putCard(card);
-            throw new WrongMove("Player " + getId() + ": " + wrongMove.getMessage());
-        }
+    /*********************************/
+
+    /** Using of dices in hand **/
+
+    public void roll() throws WrongMove {
+        checkAction(Task.ROLL);
+        myWallet.rollUnrolled();
     }
 
-    public void vent(int times) throws NotEnoughResources, WrongMove {
-        checkAction(Task.VENT);
-        try {
-            myWallet.takeGears(times * 2);
-            taskManager.putTask(new PendingTask(Task.VENT, times));
-        } catch (NotEnoughResources notEnoughResources) {
-            throw new NotEnoughResources("Player " + getId() + ": " + notEnoughResources);
-        }
+    public void reroll(int idx) throws WrongMove, NotEnoughResources {
+        checkAction(Task.REROLL);
+        myWallet.takeGears(2);
+        myWallet.reroll(idx);
     }
 
-    public void sellCard(Dice.Color type) throws WrongMove {
-        checkAction(Task.SELLCARD);
-        Cost cost = chosenCard.getCost();
-        if(type == Dice.Color.RED){
-            myWallet.putDice(cost.getRed(), type);
-        }else if(type == Dice.Color.YELLOW){
-            myWallet.putDice(cost.getYellow(), type);
-        }else if(type == Dice.Color.BLUE){
-            myWallet.putDice(cost.getBlue(), type);
-        }
-        tableController.passHand(myHand);
-        myHand = null;
-        chosenCard = null;
-        taskManager.finalizeTask(); // After sell -> IDLEDRAFT
+    public void increase(int idx) throws WrongMove, NotEnoughResources {
+        checkAction(Task.INCREASE);
+        myWallet.takeGears(1);
+        myWallet.increase(idx);
     }
 
-    public void sellCard() throws WrongMove{
-        checkAction(Task.SELLCARD);
-        Cost cost = chosenCard.getCost();
-        myWallet.putGears(cost.getCogs());
-        tableController.passHand(myHand);
-        myHand = null;
-        chosenCard = null;
-        taskManager.finalizeTask();
-    }
+    /****************************/
 
-    public void takeCard() throws WrongMove{
-        checkAction(Task.TAKECARD);
-        PendingTask task = new PendingTask(Task.CHANGEVEHICLE, 0);
-        task.manager = new VehicleArrangementManager();
-        task.manager.cardsToUse.add((VehicleCardData)chosenCard);
-        taskManager.finalizeTask();
-        taskManager.putTask(task);
-    }
+    /** Race **/
 
-    public void useCard(int x, int y, DiceBunch dice) throws WrongMove{
+    public void useCard(int x, int y, Collection<Integer> indices) throws WrongMove{
         checkAction(Task.USECARD);
+        DiceBunch dice = new DiceBunch();
         VehicleCardData card = myVehicle.getLayout(x, y).get(new Pair<>(x, y));
         try {
+            dice = myWallet.takeSome(indices);
             PendingTask pendingTask = new PendingTask(Task.USECARD, 0);
             pendingTask.actualProposition = card.getEngine().getProposition(dice);
             taskManager.putTask(pendingTask);
         } catch (WrongColor wrongColor) {
+            myWallet.putDices(dice);
             throw new WrongMove("Player " + getId() + ":" + wrongColor);
         }
     }
@@ -400,19 +428,39 @@ public class Player {
         }
     }
 
-    public int getHandSize(){
-        return myHand.getHandSize();
+    public void vent(int times) throws NotEnoughResources, WrongMove {
+        checkAction(Task.VENT);
+        try {
+            myWallet.takeGears(times * 2);
+            taskManager.putTask(new PendingTask(Task.VENT, times));
+        } catch (NotEnoughResources notEnoughResources) {
+            throw new NotEnoughResources("Player " + getId() + ": " + notEnoughResources);
+        }
     }
 
-    public CardsLayout getMyVehicle() {
-        return myVehicle;
+    /**********/
+
+    public void vote() throws WrongMove {
+        checkAction(Task.VOTE);
+        taskManager.finalizeTask();
+        taskManager.putTask(new PendingTask(Task.VOTE, 0));
     }
 
-    public ResourceWallet getMyWallet() {
-        return myWallet;
+    public void nextPhase(Phase nextPhase){ //DO NOT USE, only table can use it.
+        taskManager.finalizeTask();
+        switch (nextPhase){
+            case DRAW:
+                taskManager.putTask(new PendingTask(Task.IDLEDRAFT, 0));
+                break;
+            case RACE:
+                taskManager.putTask(new PendingTask(Task.IDLERACE, 0));
+                break;
+            case VENT:
+                taskManager.putTask(new PendingTask(Task.IDLEVENT, 0));
+                break;
+            case DAMAGE:
+                taskManager.putTask(new PendingTask(Task.IDLEDAMAGE, 0));
+        }
     }
 
-    public HpBar getHpBar() {
-        return hpBar;
-    }
 }

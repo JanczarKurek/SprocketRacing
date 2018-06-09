@@ -46,6 +46,34 @@ public class ResourceWallet{
         return amount;
     }
 
+    public void rollUnrolled(){
+        for(Dice d : dices)
+            if(d.getValue() == 0)
+                d.roll();
+    }
+
+    public void reroll(int idx){
+        dices.get(idx).roll();
+    }
+
+    public void increase(int idx){
+        dices.get(idx).increase();
+    }
+
+    public DiceBunch takeSome(Collection<Integer> indices){
+        DiceBunch bunch = new DiceBunch();
+        for(Integer index : indices){
+            bunch.add(dices.get(index));
+        }
+        dices.removeIf(bunch::contains);
+        return bunch;
+    }
+
+    public void putDices(DiceBunch bunch){
+        dices.addAll(bunch);
+        bunch.clear();
+    }
+
     public void putGears(int amount){
         gears += amount;
     }

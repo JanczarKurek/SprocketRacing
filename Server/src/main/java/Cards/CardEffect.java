@@ -15,4 +15,10 @@ public class CardEffect {
         for (ArrayList<misc.Effect> a : collection)
             effects.add(new java.util.ArrayList<>(a));
     }
+
+    public CardEffect(Effect e[][]){
+        for(Effect[] k : e){
+            effects.add(new ArrayList<>(Arrays.asList(k)));
+        }
+    }
 }

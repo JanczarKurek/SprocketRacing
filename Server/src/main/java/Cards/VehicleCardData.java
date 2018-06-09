@@ -9,6 +9,15 @@ public class VehicleCardData implements VehicleCard {
     private String name;
     private VehicleCardEngine engine;
 
+    public VehicleCardData(Cost cost, int id, String name, VehicleCardEngine engine, Joints joints) {
+        this.cost = cost;
+        this.id = id;
+        this.name = name;
+        this.engine = engine;
+        this.joints = joints;
+    }
+
+    public VehicleCardData(){};
 
     public VehicleCardEngine getEngine() {
         return engine;
@@ -34,14 +43,14 @@ public class VehicleCardData implements VehicleCard {
         return joints;
     }
 
-    public class Joints{
+    static public class Joints{
 
         private boolean left;
         private boolean right;
         private boolean up;
         private boolean down;
 
-        Joints(boolean left, boolean right, boolean up, boolean down) {
+        public Joints(boolean left, boolean right, boolean up, boolean down) {
             this.left = left;
             this.right = right;
             this.up = up;

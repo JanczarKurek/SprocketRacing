@@ -18,6 +18,11 @@ public class Dice implements InGameResource{
         return pips;
     }
 
+    public void increase(){
+        if(pips < 6 && pips != 0)
+            pips++;
+    }
+
     public int getValue(){
         return pips;
     }
