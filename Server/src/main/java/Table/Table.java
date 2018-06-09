@@ -67,6 +67,7 @@ public class Table {
         for(Deck d : decks){
             discards.add(new Deck(-1));
         }
+        this.currentPhase = Phase.DRAW;
     }
 
     class TableControllerImpl implements TableController{
