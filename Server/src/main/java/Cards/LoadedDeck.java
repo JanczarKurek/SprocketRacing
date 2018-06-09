@@ -4,10 +4,12 @@ import java.util.*;
 import java.io.*;
 
 import static Cards.CardFactory.ReadVehicleCardDataFromFile.readLoadedCard;
+import VisualCards.*;
 
 public class LoadedDeck {
     Deck deck;
     LinkedList<Cards.LoadedCard> loadedCards = new LinkedList<>();
+    HashMap<Cards.VehicleCardData, VisualCard> map = new HashMap<>();
 
     static int idGen = 0;
     static String[] names = {"tempus", "fugit", "aeternitas", "manet"};
@@ -30,8 +32,14 @@ public class LoadedDeck {
 
         deck = new Deck(idGen, names[idGen % 4]);
         idGen++;
-        for (LoadedCard loadedCard : loadedCards)
+        for (LoadedCard loadedCard : loadedCards) {
             deck.put(loadedCard.getVehicleCardData());
+            map.put(loadedCard.getVehicleCardData(), loadedCard.getVisualCard());
+        }
+    }
+
+    public VisualCard getVisualCard(Cards.VehicleCardData vehicleCardData) {
+        return map.get(vehicleCardData);
     }
 
     public Cards.Deck getDeck() {
