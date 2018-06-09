@@ -57,7 +57,46 @@ public class ExDeckMaker {
     }
 
     static void putRandomCardEffect(JSONObject jsonObject) {
+        int r = new java.util.Random().nextInt(6);
+        JSONObject o = new org.json.simple.JSONObject();
+        if (r == 0)
+            o.put("effectType", "GetResourceEffect");
+        else if (r == 1)
+            o.put("effectType", "MoveEffect");
+        else if (r == 2)
+            o.put("effectType", "HealEffect");
+        else if (r == 3)
+            o.put("effectType", "SmoothMoveEffect");
+        else if (r == 4)
+            o.put("effectType", "VentEffect");
+        else
+            o.put("effectType", "DamageEffect");
 
+        if (r > 0)
+            o.put("value", new java.util.Random().nextInt(3));
+        else {
+            o.put("red", new java.util.Random().nextInt(3));
+            o.put("blue", new java.util.Random().nextInt(3));
+            o.put("yellow", new java.util.Random().nextInt(3));
+            o.put("gears", new java.util.Random().nextInt(3));
+        }
+
+    }
+
+    static void putRandomCardEffectArray(JSONObject jsonObject) {
+        int r = new java.util.Random().nextInt(2);
+        JSONArray jsonArray = new org.json.simple.JSONArray();
+        for (int i = 0; i < r; i++) {
+            int p = new java.util.Random().nextInt(1) + 1;
+            JSONArray ja = new org.json.simple.JSONArray();
+            for (int j = 0; j < p; j++) {
+                JSONObject o = new org.json.simple.JSONObject();
+                putRandomCardEffect(o);
+                ja.add(o);
+            }
+            jsonArray.add(ja);
+        }
+        jsonObject.put("CardEffect", jsonArray);
     }
 
     static void putRandomCardUsageCost(JSONObject jsonObject) {
