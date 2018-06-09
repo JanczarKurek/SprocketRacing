@@ -38,7 +38,7 @@ public class VisualCard implements VisualElement {
     private Dice.Color color;
     private int slotsNumber;
 
-    public VisualCard(Card card, Dice.Color color, int numberOfSlots, int usagePipCost, Collection<Effect> effectsList) throws FileNotFoundException{
+    public VisualCard(Card card, Dice.Color colorOfSlots, int numberOfSlots, int usagePipCost, Collection<Effect> effectsList) throws FileNotFoundException{
         this.card = card;
         if(card instanceof VehicleCard) {
             Settings settings = Settings.getSettings();
@@ -53,8 +53,9 @@ public class VisualCard implements VisualElement {
         }
         name = new VisualName(card.getName());
         cost = card.getCost();
-        setColorSlot(color);
+        setColorSlot(colorOfSlots);
         setUsagePipCost(usagePipCost);
+        setNumberSlots(numberOfSlots);
         for(Effect effect : effectsList)
             addEffect(effect.getId());
 
@@ -77,7 +78,7 @@ public class VisualCard implements VisualElement {
         this.color = color;
     }
 
-    public void setNumberSlots(int numberSlots){
+    private void setNumberSlots(int numberSlots){
         this.slotsNumber = numberSlots;
     }
 
