@@ -49,7 +49,11 @@ public class ExDeckMaker {
     }
 
     static void putRandomDiceSlots(JSONObject jsonObject) {
-
+        JSONObject o = new org.json.simple.JSONObject();
+        o.put("size", new java.util.Random().nextInt(6) + 1);
+        o.put("Color", new Random().nextInt(2) == 0 ? "red" :
+                (new Random().nextBoolean() ? "blue" : "yellow"));
+        jsonObject.put("DiceSlots", o);
     }
 
     static void putRandomCardEffect(JSONObject jsonObject) {
@@ -57,7 +61,13 @@ public class ExDeckMaker {
     }
 
     static void putRandomCardUsageCost(JSONObject jsonObject) {
-
+        JSONObject o = new org.json.simple.JSONObject();
+        if (new java.util.Random().nextInt(10) < 8) {
+            o.put("isCardUsagePipeCost", new Boolean(true));
+            o.put("cost", new java.util.Random().nextInt(6) + 1);
+        } else
+            o.put("isCardUsagePipeCost", new Boolean(false));
+        jsonObject.put("CardUsageCost", o);
     }
 
     static void putRandomVehicleCardEngineToJson(JSONObject jsonObject) {
