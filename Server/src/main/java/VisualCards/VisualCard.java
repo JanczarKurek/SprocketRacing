@@ -12,13 +12,13 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.transform.Scale;
 import misc.Cost;
-
+import misc.Effect;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -38,7 +38,7 @@ public class VisualCard implements VisualElement {
     private Dice.Color color;
     private int slotsNumber;
 
-    VisualCard(Card card) throws FileNotFoundException{
+    public VisualCard(Card card, Dice.Color colorOfSlots, int numberOfSlots, int usagePipCost, Collection<Effect> effectsList) throws FileNotFoundException{
         this.card = card;
         if(card instanceof VehicleCard) {
             Settings settings = Settings.getSettings();
@@ -53,6 +53,11 @@ public class VisualCard implements VisualElement {
         }
         name = new VisualName(card.getName());
         cost = card.getCost();
+        setColorSlot(colorOfSlots);
+        setUsagePipCost(usagePipCost);
+        setNumberSlots(numberOfSlots);
+        for(Effect effect : effectsList)
+            addEffect(effect.getId());
 
     }
 
@@ -61,19 +66,19 @@ public class VisualCard implements VisualElement {
         height = y;
     }
 
-    public void setUsagePipCost(int cost){
+    private void setUsagePipCost(int cost){
         usagePipCost = cost;
     }
 
-    public void addEffect(int effect){
+    private void addEffect(int effect){
         effects.add(effect);
     }
 
-    public void setColorSlot(Dice.Color color){
+    private void setColorSlot(Dice.Color color){
         this.color = color;
     }
 
-    public void setNumberSlots(int numberSlots){
+    private void setNumberSlots(int numberSlots){
         this.slotsNumber = numberSlots;
     }
 
@@ -136,23 +141,25 @@ public class VisualCard implements VisualElement {
         ImageView imageView = new ImageView();
         imageView.setImage(background);
         group.getChildren().add(imageView);
-        if(card instanceof VehicleCard) {
-            VehicleCardData cardData = (VehicleCardData) card;
+        if(card instanceof VehicleCard){
+            VehicleCardData cardData= (VehicleCardData) card;
             //setCardVehicleEngine???
-            VehicleCardData.Joints joint = cardData.getJoints();
-            if (joint.isLeft()) {
+           VehicleCardData.Joints joint = cardData.getJoints();
+            if(joint.isLeft()) {
                 joints.add(new VisualJoint(true, false, false, false));
             }
-            if (joint.isRight()) {
+            if(joint.isRight()) {
                 joints.add(new VisualJoint(false, true, false, false));
             }
-            if (joint.isUp()) {
+            if(joint.isUp()) {
                 joints.add(new VisualJoint(false, false, true, false));
             }
-            if (joint.isDown()) {
+            if(joint.isDown()) {
                 joints.add(new VisualJoint(false, false, false, true));
             }
+            group.getChildren().add(new VisualVehicleCardController(this, imageView).draw());
         }
+
         return group;
     }
 
