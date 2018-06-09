@@ -20,6 +20,10 @@ public class DiceSlotsImpl implements DiceSlots {
         return dice.size() == size;
     }
 
+    public Dice.Color getColor() {
+        return color;
+    }
+
     @Override
     public int getSize() {
         return size;

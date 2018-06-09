@@ -7,7 +7,7 @@ import static java.lang.Math.toIntExact;
 
 
 public class ReadDiceSlots {
-    static DiceSlots readDiceSlots(JSONObject jsonObject) {
+    static DiceSlotsImpl readDiceSlots(JSONObject jsonObject) {
         return new InGameResources.Dice.DiceSlotsImpl(
                 toIntExact((Long) jsonObject.get("size")),
                 readDiceColor(jsonObject));

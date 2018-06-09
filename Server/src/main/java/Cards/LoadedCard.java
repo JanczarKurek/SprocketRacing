@@ -1,24 +1,22 @@
 package Cards;
 
+import VisualCards.*;
+import InGameResources.Dice.*;
 public class LoadedCard {
     Cards.VehicleCardData vehicleCardData;
-    String pathToImage;
+    VisualCard visualCard;
 
-    public LoadedCard(Cards.VehicleCardData vehicleCardData, String pathtoImage) {
+    public LoadedCard(Cards.VehicleCardData vehicleCardData) {
         this.vehicleCardData = vehicleCardData;
-        this.pathToImage = pathtoImage;
+       /* this.visualCard = new VisualCards.VisualCard(vehicleCardData,
+                ((DiceSlotsImpl) vehicleCardData.getDiceSlots()).getColor(),
+                ((DiceSlotsImpl) vehicleCardData.getDiceSlots()).getSize(),
+                vehicleCardData.getEngine().
+        )*/
     }
 
-    public void setPathToImage(String pathToImage) {
-        this.pathToImage = pathToImage;
-    }
-
-    public void setVehicleCardData(Cards.VehicleCardData vehicleCardData) {
-        this.vehicleCardData = vehicleCardData;
-    }
-
-    public String getPathToImage() {
-        return pathToImage;
+    public VisualCards.VisualCard getVisualCard() {
+        return visualCard;
     }
 
     public Cards.VehicleCardData getVehicleCardData() {
