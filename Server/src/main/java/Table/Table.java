@@ -51,7 +51,7 @@ public class Table {
     private Phase currentPhase;
     private AbstractBoard board;
     private ArrayList<Deck> decks;
-    private ArrayList<Deck> originalDecks;
+    private ArrayList<Deck> originalDecks = new ArrayList<>();
     private ArrayList<Deck> discards = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
     private HashMap<Player, Boolean> hasNextHand = new HashMap<>();
@@ -132,6 +132,7 @@ public class Table {
                 int pos = players.indexOf(player);
                 pos = (pos - 1 + players.size()) % players.size();
                 Player myPred = players.get(pos);
+                System.err.println(player.getId() + " takes hand from " + myPred.getId());
                 if(passedHands.get(myPred) == null){
                     throw new WrongMove("No hand to take, prev players should pass hand first");
                 }
