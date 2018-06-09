@@ -4,8 +4,9 @@ import ErrorsAndExceptions.EmptyDeck;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
-public class Deck{
+public class Deck implements Iterable<Card> {
     private int id;
 
     private String description = "";
@@ -19,6 +20,16 @@ public class Deck{
     public Deck(int id, String description) {
         this.id = id;
         this.description = description;
+    }
+
+    public Deck(int id, Deck other){
+        this.id = id;
+        this.description = "Copy of " + other.description;
+        this.cards = new ArrayList<>(other.cards);
+    }
+
+    public boolean contains(Object o){
+        return cards.contains(o);
     }
 
     public void put(Card card){
@@ -41,5 +52,18 @@ public class Deck{
 
     public String getDescription() {
         return description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void clear(){
+        cards.clear();
+    }
+
+    @Override
+    public Iterator<Card> iterator() {
+        return cards.iterator();
     }
 }

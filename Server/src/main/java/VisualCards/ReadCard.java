@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class ReadCard {
     public VisualCard readCard(File file, CardMap.StaticMap map){
-        try{
+        /*try{
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             VehicleCardData vehicle = new VehicleCardData();
@@ -56,6 +56,7 @@ public class ReadCard {
         }catch (Exception e){
             System.err.println("Other exception");
         }
+        */
         return null;
     }
 }

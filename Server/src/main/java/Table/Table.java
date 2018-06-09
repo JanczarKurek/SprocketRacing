@@ -32,8 +32,6 @@ public class Table {
         phaseOrder.put(Phase.DAMAGE, Phase.DRAW);
     }
 
-
-
     private void checkPhase(Phase expecting, String dsc){
         if(expecting != currentPhase)
             throw new WrongPhaseException(dsc + ": not in appropriate phase, should be " + expecting + " got " + currentPhase);
@@ -53,6 +51,7 @@ public class Table {
     private Phase currentPhase;
     private AbstractBoard board;
     private ArrayList<Deck> decks;
+    private ArrayList<Deck> originalDecks;
     private ArrayList<Deck> discards = new ArrayList<>();
     private ArrayList<Player> players = new ArrayList<>();
     private HashMap<Player, Boolean> hasNextHand = new HashMap<>();
@@ -64,6 +63,9 @@ public class Table {
     public Table(AbstractBoard board, Collection<Deck> decks){
         this.board = board;
         this.decks = new ArrayList<>(decks);
+        for(Deck deck : this.decks){
+            originalDecks.add(new Deck(1000 + deck.getId(), deck));
+        }
         for(Deck d : decks){
             discards.add(new Deck(-1));
         }
@@ -158,6 +160,16 @@ public class Table {
             gotHand = false;
             passedHands.put(player, playersHand);
         }
+
+        @Override
+        public void discard(Card card) {
+            for(int i = 0; i < originalDecks.size(); ++i){
+                if(originalDecks.get(i).contains(card)){
+                    discards.get(i).put(card);
+                    break;
+                }
+            }
+        }
     }
 
     public Pair<TableController, PawnController> sitDown(Player player){
@@ -171,11 +183,21 @@ public class Table {
 
     private Hand getHand(){
             ArrayList<Card> cards = new ArrayList<>();
-            for(Deck deck : decks){
+            for(int i = 0; i < decks.size(); ++i){
+                Deck deck = decks.get(i);
                 try {
                     cards.add(deck.take());
                 } catch (EmptyDeck emptyDeck) {
-                    //todo add reshuffling.
+                    discards.get(i).shuffle();
+                    for(Card card : discards.get(i)){
+                        deck.put(card);
+                    }
+                    discards.get(i).clear();
+                    try {
+                        cards.add(deck.take());
+                    } catch (EmptyDeck emptyDeck1) {
+                        throw new RuntimeException("NO MORE CARDS FOR YOU!!!!!!!!");
+                    }
                 }
             }
             return new Hand(cards);
