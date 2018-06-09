@@ -50,11 +50,11 @@ public class ReadCardEffect {
     }
 
     static MoveEffect readMoveEffect(JSONObject jsonObject) {
-        return new MoveEffect(toIntExact((Long) jsonObject.get("distance")));
+        return new MoveEffect(toIntExact((Long) jsonObject.get("value")));
     }
 
     static SmoothMoveEffect readSmoothMoveEffect(JSONObject jsonObject) {
-        return new SmoothMoveEffect(toIntExact((Long) jsonObject.get("distance")));
+        return new SmoothMoveEffect(toIntExact((Long) jsonObject.get("value")));
     }
 
     static VentEffect readVentEffect(JSONObject jsonObject) {
@@ -62,6 +62,6 @@ public class ReadCardEffect {
     }
 
     static MapServer.DamageEffect readDamageEffect(JSONObject jsonObject) {
-        return new MapServer.DamageEffect(toIntExact((Long) jsonObject.get("damage")));
+        return new MapServer.DamageEffect(toIntExact((Long) jsonObject.get("value")));
     }
 }

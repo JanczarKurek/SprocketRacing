@@ -12,8 +12,6 @@ public class PutBoardStructure {
 
         LinkedList<Factory.SimplifiedBoardFiled> list = new LinkedList<>();
 
-        if (boardStructure.getPathToImage() != null)
-            jsonObject.put("pathToImage", boardStructure.getPathToImage());
 
         //tworzy list sbf na podstawie tree mapy wewnatrz boardStructure oraz umieszcza jej zawartosc w jsonObjecct
         try {

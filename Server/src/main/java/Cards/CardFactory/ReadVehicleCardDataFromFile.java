@@ -30,8 +30,7 @@ public class ReadVehicleCardDataFromFile {
         try {
             Object obj = parser.parse((new FileReader(fileName)));
             JSONObject jsonObject = (JSONObject) obj;
-            return new LoadedCard(readSingleVehicleCardData(jsonObject),
-                    (String) jsonObject.get("pathToImage"));
+            return new LoadedCard(readSingleVehicleCardData(jsonObject));
         } catch (java.io.IOException | ParseException e ) {
             e.printStackTrace();
         }
