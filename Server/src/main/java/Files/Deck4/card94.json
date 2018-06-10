@@ -1,1 +1,1 @@
-{"VehicleCardEngine":{"DiceSlots":{"size":2,"Color":"red"},"CardUsageCost":{"isCardUsagePipeCost":false}},"Id":463,"Joints":[true,true,true,true],"Name":{"red":0,"blue":0,"yellow":2}}
+{"VehicleCardEngine":{"DiceSlots":{"size":2,"Color":"yellow"},"CardEffect":[],"CardUsageCost":{"isCardUsagePipeCost":false}},"Id":463,"Cost":{"red":0,"blue":2,"yellow":0},"Joints":[true,true,true,true],"Name":"vanitatum"}

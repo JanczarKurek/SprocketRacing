@@ -25,15 +25,10 @@ public class ReadVehicleCardDataFromFile {
         return null; // zmien to potem
     }
 
-    public static LoadedCard readLoadedCard(String fileName) {
+    public static LoadedCard readLoadedCard(String fileName) throws java.io.IOException, org.json.simple.parser.ParseException, java.io.FileNotFoundException{
         JSONParser parser = new JSONParser();
-        try {
-            Object obj = parser.parse((new FileReader(fileName)));
-            JSONObject jsonObject = (JSONObject) obj;
-            return new LoadedCard(readSingleVehicleCardData(jsonObject));
-        } catch (java.io.IOException | ParseException e ) {
-            e.printStackTrace();
-        }
-        return null;
+        Object obj = parser.parse((new FileReader(fileName)));
+        JSONObject jsonObject = (JSONObject) obj;
+        return new LoadedCard(readSingleVehicleCardData(jsonObject));
     }
 }

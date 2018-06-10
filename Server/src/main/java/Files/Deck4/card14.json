@@ -1,1 +1,1 @@
-{"VehicleCardEngine":{"DiceSlots":{"size":1,"Color":"yellow"},"CardUsageCost":{"isCardUsagePipeCost":false}},"Id":383,"Joints":[true,false,true,true],"Name":{"red":0,"blue":2,"yellow":0}}
+{"VehicleCardEngine":{"DiceSlots":{"size":2,"Color":"red"},"CardEffect":[[{"value":1,"effectType":"SmoothMoveEffect"}]],"CardUsageCost":{"isCardUsagePipeCost":false}},"Id":383,"Cost":{"red":2,"blue":0,"yellow":0},"Joints":[true,false,true,true],"Name":"et"}

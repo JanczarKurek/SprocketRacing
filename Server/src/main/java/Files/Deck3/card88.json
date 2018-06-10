@@ -1,1 +1,1 @@
-{"VehicleCardEngine":{"DiceSlots":{"size":6,"Color":"red"},"CardUsageCost":{"cost":2,"isCardUsagePipeCost":true}},"Id":334,"Joints":[true,true,true,true],"Name":{"red":0,"blue":2,"yellow":0}}
+{"VehicleCardEngine":{"DiceSlots":{"size":6,"Color":"yellow"},"CardEffect":[[{"red":1,"blue":0,"yellow":0,"effectType":"GetResourceEffect","gears":2}]],"CardUsageCost":{"cost":4,"isCardUsagePipeCost":true}},"Id":334,"Cost":{"red":2,"blue":0,"yellow":0},"Joints":[true,false,true,true],"Name":"vanitas"}

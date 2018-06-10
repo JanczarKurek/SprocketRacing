@@ -88,9 +88,9 @@ public class ExDeckMaker {
             int p = new java.util.Random().nextInt(1) + 1;
             JSONArray ja = new org.json.simple.JSONArray();
             for (int j = 0; j < p; j++) {
-                JSONObject o = new org.json.simple.JSONObject();
-                putRandomCardEffect(o);
-                ja.add(o);
+                JSONObject adding = new JSONObject();
+                putRandomCardEffect(adding);
+                ja.add(adding);
             }
             jsonArray.add(ja);
         }
@@ -110,7 +110,7 @@ public class ExDeckMaker {
     static void putRandomVehicleCardEngineToJson(JSONObject jsonObject) {
         JSONObject o = new org.json.simple.JSONObject();
         putRandomDiceSlots(o);
-        putRandomCardEffect(o);
+        putRandomCardEffectArray(o);
         putRandomCardUsageCost(o);
         jsonObject.put("VehicleCardEngine", o);
     }
@@ -121,7 +121,7 @@ public class ExDeckMaker {
         o.put("red", r == 0 ? 2 : 0);
         o.put("blue", r == 1 ? 2 : 0);
         o.put("yellow", r == 2 ? 2 : 0);
-        jsonObject.put("Name", o);
+        jsonObject.put("Cost", o);
     }
 
     static void putRandomVehicleCardDataToJson(JSONObject jsonObject) {

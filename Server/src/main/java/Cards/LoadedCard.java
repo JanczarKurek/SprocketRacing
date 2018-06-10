@@ -10,8 +10,8 @@ public class LoadedCard {
         this.vehicleCardData = vehicleCardData;
         try {
             this.visualCard = new VisualCard(vehicleCardData);
-        } catch (java.io.FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (java.io.FileNotFoundException ignored) {
+
         }
     }
 
