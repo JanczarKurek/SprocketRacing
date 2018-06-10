@@ -5,6 +5,10 @@ import misc.Effect;
 
 public class HealEffect implements Effect {
 
+    public int getValue() {
+        return value;
+    }
+
     private int value;
 
     public HealEffect(int value) {

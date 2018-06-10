@@ -4,6 +4,10 @@ import Players.Player;
 import misc.Effect;
 
 public class SmoothMoveEffect implements Effect {
+    public int getDistance() {
+        return distance;
+    }
+
     private int distance;
 
     public SmoothMoveEffect(int distance) {

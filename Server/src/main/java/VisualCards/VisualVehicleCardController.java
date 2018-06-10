@@ -92,7 +92,7 @@ public class VisualVehicleCardController implements VisualElement{
         return cost;
     }
     private Node drawEffects(LinkedList<Integer> effects){
-        Group group = new  Group();
+        /*Group group = new  Group();
         int slashes = 0;
         int width = 0;
         for(Integer i : effects){
@@ -116,7 +116,8 @@ public class VisualVehicleCardController implements VisualElement{
             }
             group.getChildren().add(effect);
         }
-        return group;
+        return group;*/
+        return null;
     }
     @Override
     public Node draw() {
