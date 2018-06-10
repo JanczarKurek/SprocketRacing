@@ -4,7 +4,7 @@ import misc.Effect;
 
 import java.util.*;
 
-public class CardEffect {
+public class CardEffect implements Iterable<ArrayList<Effect> > {
     private ArrayList<ArrayList<Effect>> effects = new ArrayList<>();
     public ArrayList<Effect> chooseEffect(int i){
         return effects.get(i);
@@ -22,5 +22,10 @@ public class CardEffect {
             ArrayList<Effect> effects = new ArrayList<>(Arrays.asList(k));
             this.effects.add(effects);
         }
+    }
+
+    @Override
+    public Iterator<ArrayList<Effect>> iterator() {
+        return effects.iterator();
     }
 }

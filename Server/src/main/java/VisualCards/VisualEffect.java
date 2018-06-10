@@ -147,4 +147,8 @@ public class VisualEffect implements VisualElement {
     public void actualize() {
 
     }
+
+    public double getShift() {
+        return shift;
+    }
 }
