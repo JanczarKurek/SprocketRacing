@@ -1,9 +1,6 @@
 package VisualCards;
 
-import Cards.Card;
-import Cards.VehicleCard;
-import Cards.VehicleCardData;
-import Cards.VehicleCardEngine;
+import Cards.*;
 import InGameResources.Dice.Dice;
 import InGameResources.Dice.DiceSlots;
 import VisualBoard.VisualElement;
@@ -31,14 +28,13 @@ public class VisualCard implements VisualElement {
     private ArrayList<VisualJoint> joints = new ArrayList<>();
     private VisualName name;
     private Cost cost;
-    private DiceSlots slots;
     private VehicleCardEngine engine;
-    private int usagePipCost;
     private LinkedList<Integer> effects;
     private Dice.Color color;
     private int slotsNumber;
+    private int usagePipCost;
 
-    public VisualCard(Card card, Dice.Color colorOfSlots, int numberOfSlots, int usagePipCost, Collection<Effect> effectsList) throws FileNotFoundException{
+    public VisualCard(Card card) throws FileNotFoundException{
         this.card = card;
         if(card instanceof VehicleCard) {
             Settings settings = Settings.getSettings();
@@ -48,16 +44,18 @@ public class VisualCard implements VisualElement {
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             setXY(fileReader.nextInt(), fileReader.nextInt());
-            slots = ((VehicleCardData)card).getDiceSlots();
             effects = new LinkedList<>();
         }
         name = new VisualName(card.getName());
         cost = card.getCost();
-        setColorSlot(colorOfSlots);
-        setUsagePipCost(usagePipCost);
-        setNumberSlots(numberOfSlots);
-        for(Effect effect : effectsList)
-            addEffect(effect.getId());
+        setColorSlot(((VehicleCardData)card).getEngine().getDiceSlots().getColor());
+        if(((VehicleCardData)card).getEngine().getUsageCost() instanceof CardUsageDiceCost)
+            setUsagePipCost(7);
+        else
+            setUsagePipCost(((CardUsagePipCost)((VehicleCardData)card).getEngine().getUsageCost()).getPipCost());
+        setNumberSlots(((VehicleCardData)card).getEngine().getDiceSlots().getSize());
+        /*for(CardEffect effect : ((VehicleCardData)card).getEngine().getEffects())
+            addEffect(effect.getId());*/ // jak wyciagnac efekt
 
     }
 
@@ -110,7 +108,7 @@ public class VisualCard implements VisualElement {
     }
 
     public DiceSlots getSlots(){
-        return slots;
+        return ((VehicleCardData)card).getDiceSlots();
     }
 
     public int getUsagePipCost(){
