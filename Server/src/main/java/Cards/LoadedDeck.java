@@ -16,10 +16,11 @@ public class LoadedDeck {
 
     private static boolean isOk(String fileName) {
         int s = fileName.length();
-        if (s > 5 && fileName.substring(s - 5, s - 1).equals(".json"))
+        if (s > 5 && fileName.substring(s - 5, s ).equals(".json"))
             return true;
         return false;
     }
+
 
     public LoadedDeck(String pathToFolder) {
         File folder = new File(pathToFolder);
@@ -28,7 +29,7 @@ public class LoadedDeck {
 
         for (File f : files)
             if (isOk(f.getName()))
-                loadedCards.add(readLoadedCard(f.getName()));
+                loadedCards.add(readLoadedCard(pathToFolder + f.getName()));
 
         deck = new Deck(idGen, names[idGen % 4]);
         idGen++;
