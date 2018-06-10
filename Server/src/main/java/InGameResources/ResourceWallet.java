@@ -25,7 +25,7 @@ public class ResourceWallet{
     public ResourceWallet(int r, int y, int b, int g){
         dices = new DiceBunch(r, Dice.Color.RED);
         dices.addAll(new DiceBunch(y, Dice.Color.YELLOW));
-        dices.addAll(new DiceBunch(b, Dice.Color.RED));
+        dices.addAll(new DiceBunch(b, Dice.Color.BLUE));
         gears = g;
     }
 
