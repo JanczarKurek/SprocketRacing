@@ -8,11 +8,11 @@ public class LoadedCard {
 
     public LoadedCard(Cards.VehicleCardData vehicleCardData) {
         this.vehicleCardData = vehicleCardData;
-       /* this.visualCard = new VisualCards.VisualCard(vehicleCardData,
-                ((DiceSlotsImpl) vehicleCardData.getDiceSlots()).getColor(),
-                ((DiceSlotsImpl) vehicleCardData.getDiceSlots()).getSize(),
-                vehicleCardData.getEngine().
-        )*/
+        try {
+            this.visualCard = new VisualCard(vehicleCardData);
+        } catch (java.io.FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public VisualCards.VisualCard getVisualCard() {
