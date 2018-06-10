@@ -10,4 +10,5 @@ public interface DiceSlots extends DiceWallet{
     int getSize();
     void tryInsert(Dice dice) throws WrongMove, WrongColor;
     void tryInsertAll(Collection<Dice> dice) throws WrongMove, WrongColor;
+    Dice.Color getColor();
 }
