@@ -29,7 +29,12 @@ public class LoadedDeck {
 
         for (File f : files)
             if (isOk(f.getName()))
-                loadedCards.add(readLoadedCard(pathToFolder + f.getName()));
+                try {
+                    LoadedCard loadedCard = readLoadedCard(pathToFolder + "/" +  f.getName());
+                    loadedCards.add(loadedCard);
+                } catch (java.io.IOException | org.json.simple.parser.ParseException ignored) {
+
+                }
 
         deck = new Deck(idGen, names[idGen % 4]);
         idGen++;
