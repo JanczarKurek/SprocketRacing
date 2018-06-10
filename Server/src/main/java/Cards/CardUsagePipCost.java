@@ -15,4 +15,7 @@ public class CardUsagePipCost implements CardUsageCost {
         int sum = Functional.foldl(dice, 0, (Integer acc, Dice d) -> acc + d.getValue());
         return sum / cost;
     }
+    public int getPipCost(){
+        return cost;
+    }
 }

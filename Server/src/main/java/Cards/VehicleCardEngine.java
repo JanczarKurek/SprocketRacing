@@ -74,5 +74,12 @@ public class VehicleCardEngine {
         return new Proposition(dices);
     }
 
+    public CardUsageCost getUsageCost(){
+        return cardUsageCost;
+    }
+
+    public Collection<CardEffect> getEffects(){
+        return actualProposition.getEffects();
+    }
 
 }
