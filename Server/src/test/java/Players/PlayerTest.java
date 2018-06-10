@@ -5,10 +5,12 @@ import Cards.OnCardEffects.HealEffect;
 import Cards.OnCardEffects.MoveEffect;
 import Cards.OnCardEffects.SmoothMoveEffect;
 import Cards.OnCardEffects.VentEffect;
+import ErrorsAndExceptions.WrongMove;
 import InGameResources.Dice.Dice;
 import InGameResources.Dice.DiceSlots;
 import InGameResources.Dice.DiceSlotsImpl;
 import MapServer.*;
+import Table.Phase;
 import misc.Cost;
 import misc.Effect;
 import org.junit.Before;
@@ -25,7 +27,7 @@ public class PlayerTest {
     Player player0, player1;
 
     @Before
-    void prep(){
+    public void prep(){
         BoardStructure boardStructure = new BoardStructure();
 
         BoardField boardField1 = new BoardField(new SimpleField(0));
@@ -115,8 +117,8 @@ public class PlayerTest {
         table = new Table(board, Arrays.asList(deck0, deck1));
 
         cost = new Cost(1, 1, 0, 1);
-        c = new CardUsagePipCost(2);
-        slots = new DiceSlotsImpl(1, Dice.Color.BLUE);
+        c = new CardUsageDiceCost();
+        slots = new DiceSlotsImpl(1, Dice.Color.YELLOW);
         Effect[][] kek5 = {{moveOnce}, {moveOnce, moveOnce}};
         e = new CardEffect(kek5);
         engine = new VehicleCardEngine(c, e, slots);
@@ -135,7 +137,30 @@ public class PlayerTest {
     }
 
     @Test
-    void test1(){
-
+    public void test1() throws WrongMove {
+        player0.aquireHand();
+        player1.aquireHand();
+        player0.chooseCard(0);
+        player1.chooseCard(0);
+        player0.sellCard();
+        player1.takeCard();
+        player1.putCard(0, 0, 1); // I hope felix uses this kind of coordinates.
+        player1.acceptVehicleLayout();
+        player0.aquireHand();
+        player1.aquireHand();
+        player0.chooseCard(0);
+        player1.chooseCard(0);
+        player0.sellCard(Dice.Color.YELLOW);
+        player1.sellCard(Dice.Color.BLUE);
+        player0.vote();
+        player1.vote();
+        assertEquals(Phase.VENT, table.getCurrentPhase());
+        player0.vote();
+        player1.vote();
+        assertEquals(Phase.RACE, table.getCurrentPhase());
+        player1.roll();
+        player0.roll();
+        assertEquals(player0.getMyVehicle().getLayout().size(), 1);
+        assertEquals(player1.getMyVehicle().getLayout().size(), 2);
     }
 }

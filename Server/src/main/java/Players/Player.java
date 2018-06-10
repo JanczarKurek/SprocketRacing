@@ -62,7 +62,7 @@ public class Player {
     static{
         TreeSet<Task> put = new TreeSet<>(Arrays.asList(Task.AQUIREHAND, Task.CHANGEVEHICLE));
         transitions.put(Task.IDLEDRAFT, put);
-        put = new TreeSet<>(Arrays.asList(Task.VOTE));
+        put = new TreeSet<>(Arrays.asList(Task.VOTE, Task.CHANGEVEHICLE));
         transitions.put(Task.DRAFTEND, put);
         put = new TreeSet<>(Arrays.asList(Task.USECARD, Task.CHANGEVEHICLE, Task.VOTE, Task.ROLL, Task.REROLL, Task.INCREASE));
         transitions.put(Task.IDLERACE, put);
@@ -115,6 +115,10 @@ public class Player {
     }
 
     public class TaskManager{
+        TaskManager(){
+            pendingTasks.add(new PendingTask(Task.IDLEDRAFT, 0));
+        }
+
         private LinkedList<PendingTask> pendingTasks = new LinkedList<>();
         public void putTask(PendingTask task){
             pendingTasks.push(task);
@@ -155,11 +159,14 @@ public class Player {
             VehicleCardData card = myVehicle.remove(x, y);
             if(card == null)
                 throw new WrongMove("Player " + getId() + ": tried to remove card from (" + x  + ", " + y + ") found nothing");
+            tableController.discard(card);
         }
 
         void acceptArrangement() throws WrongMove{
             if(!myVehicle.checkCorrectness())
                 throw new WrongMove("Player " + getId() + ": tried to use invalid arrangement of vehicle");
+            for(Card card : cardsToUse)
+                tableController.discard(card);
         }
     }
 
@@ -217,29 +224,26 @@ public class Player {
 
     public void aquireHand() throws WrongMove {
         checkAction(Task.AQUIREHAND);
-        taskManager.putTask(new PendingTask(Task.AQUIREHAND, 0));
+
         try {
             myHand = tableController.getHand();
+            if(myHand.getHandSize() == 1){
+                taskManager.finalizeTask();
+                taskManager.putTask(new PendingTask(Task.DRAFTEND, 0));
+            }
+            taskManager.putTask(new PendingTask(Task.AQUIREHAND, 0));
         } catch (WrongMove wrongMove) {
-            throw new WrongMove("Player " + getId() + wrongMove.getMessage());
+            throw new WrongMove("Player " + getId() +": " +  wrongMove.getMessage());
         }
     }
 
     public void chooseCard(int idx) throws WrongMove {
         checkAction(Task.CHOOSECARD);
-        if(chosenCard != null)
-            throw new WrongMove("Player " + getId() + ": Card already chosen from this hand");
-        Card card = myHand.take(idx);
-        try {
-            tableController.passHand(myHand);
-            chosenCard = card;
-            taskManager.finalizeTask();
-            taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
-        } catch (WrongMove wrongMove) {
-            taskManager.finalizeTask();
-            myHand.putCard(card);
-            throw new WrongMove("Player " + getId() + ": " + wrongMove.getMessage());
-        }
+        chosenCard = myHand.take(idx);
+        taskManager.finalizeTask();
+        tableController.passHand(myHand);
+        taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
+
     }
 
     public void sellCard(Dice.Color type) throws WrongMove {
@@ -252,8 +256,8 @@ public class Player {
         }else if(type == Dice.Color.BLUE){
             myWallet.putDice(cost.getBlue(), type);
         }
-        tableController.passHand(myHand);
         myHand = null;
+        tableController.discard(chosenCard);
         chosenCard = null;
         taskManager.finalizeTask(); // After sell -> IDLEDRAFT
     }
@@ -262,8 +266,8 @@ public class Player {
         checkAction(Task.SELLCARD);
         Cost cost = chosenCard.getCost();
         myWallet.putGears(cost.getCogs());
-        tableController.passHand(myHand);
         myHand = null;
+        tableController.discard(chosenCard);
         chosenCard = null;
         taskManager.finalizeTask();
     }
@@ -444,6 +448,7 @@ public class Player {
         checkAction(Task.VOTE);
         taskManager.finalizeTask();
         taskManager.putTask(new PendingTask(Task.VOTE, 0));
+        tableController.voteEndPhase();
     }
 
     public void nextPhase(Phase nextPhase){ //DO NOT USE, only table can use it.
