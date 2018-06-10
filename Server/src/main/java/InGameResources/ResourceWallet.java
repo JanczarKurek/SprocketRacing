@@ -8,6 +8,10 @@ import SmallFunctionalFeaturesDamnYouJava.Functional;
 import java.util.Collection;
 
 public class ResourceWallet{
+    public DiceBunch getDices() {
+        return dices;
+    }
+
     private DiceBunch dices = new DiceBunch();
 
     public int getGears() {
