@@ -1,5 +1,6 @@
 package VisualCards;
 
+import Cards.Joints;
 import Cards.Layout.CardInLayout;
 import Cards.Layout.CardsLayout;
 import Cards.VehicleCardData;
@@ -7,8 +8,6 @@ import InGameResources.Dice.Dice;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
 import javafx.application.Application;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -51,11 +50,11 @@ public class VisualVehicle implements VisualElement {
 
     private void drawPlaces(Group group, VehicleCardData data){
         System.out.println("drawPlaces");
-        VehicleCardData.Joints joints = data.getJoints();
+        Joints joints = data.getJoints();
         CardShadow shadow;
         for(CardInLayout card : nodeMap.keySet()) {
             Node node = nodeMap.get(card);
-            VehicleCardData.Joints joints2 = card.getCard().getJoints();
+            Joints joints2 = card.getCard().getJoints();
             if (joints2.isLeft() && joints.isRight()) {
                 System.out.println("n1");
                 shadow = new CardShadow();

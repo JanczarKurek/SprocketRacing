@@ -10,12 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import misc.Cost;
-import misc.Effect;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -142,7 +141,7 @@ public class VisualCard implements VisualElement {
         if(card instanceof VehicleCard){
             VehicleCardData cardData= (VehicleCardData) card;
             //setCardVehicleEngine???
-           VehicleCardData.Joints joint = cardData.getJoints();
+           Joints joint = cardData.getJoints();
             if(joint.isLeft()) {
                 joints.add(new VisualJoint(true, false, false, false));
             }
