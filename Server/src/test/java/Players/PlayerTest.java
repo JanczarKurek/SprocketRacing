@@ -63,7 +63,7 @@ public class PlayerTest {
         boardStructure.setStart(boardField1);
         boardStructure.setEnd(boardField7);
 
-        LinkedList<Integer> PlayersList = new LinkedList<>(Arrays.asList(0, 1, 2, 3));
+        LinkedList<Integer> PlayersList = new LinkedList<>(Arrays.asList(0, 1));
 
         Board board = new Board(boardStructure, PlayersList, 0);
 
@@ -126,8 +126,8 @@ public class PlayerTest {
         player0 = new Player(table, 0, card);
 
         cost = new Cost(1, 1, 0, 1);
-        c = new CardUsagePipCost(1);
-        slots = new DiceSlotsImpl(1, Dice.Color.YELLOW);
+        c = new CardUsageDiceCost();
+        slots = new DiceSlotsImpl(1, Dice.Color.RED);
         Effect[][] kek6 = {{moveOnce}, {moveOnce, moveOnce}};
         e = new CardEffect(kek6);
         engine = new VehicleCardEngine(c, e, slots);
@@ -151,7 +151,9 @@ public class PlayerTest {
         player0.chooseCard(0);
         player1.chooseCard(0);
         player0.sellCard(Dice.Color.YELLOW);
-        player1.sellCard(Dice.Color.BLUE);
+        player1.sellCard(Dice.Color.RED);
+        assertEquals(1, player0.getMyWallet().getDices().size());
+        assertEquals(1, player1.getMyWallet().getDices().size());
         player0.vote();
         player1.vote();
         assertEquals(Phase.VENT, table.getCurrentPhase());
@@ -160,7 +162,19 @@ public class PlayerTest {
         assertEquals(Phase.RACE, table.getCurrentPhase());
         player1.roll();
         player0.roll();
-        assertEquals(player0.getMyVehicle().getLayout().size(), 1);
-        assertEquals(player1.getMyVehicle().getLayout().size(), 2);
+        assertEquals(1, player0.getMyVehicle().getLayout().size());
+        assertEquals(2, player1.getMyVehicle().getLayout().size());
+        player1.useCard(0, 0, Arrays.asList(0));
+        player1.acceptProposition();
+        player1.runEffects(1);
+        player1.runAtomicEffect();
+        assertEquals(Player.Task.MAKEMOVE, player1.taskManager.getCurrentTask().type);
+        player1.makeMove(new Path(Arrays.asList(0, 1)));
+        assertEquals(Player.Task.RUNEFFECTS, player1.taskManager.getCurrentTask().type);
+        player1.runAtomicEffect();
+        player1.makeMove(new Path(Arrays.asList(1, 2)));
+        System.err.println(table.getBoard().getPlayersPositions());
+        assertEquals(Integer.valueOf(2), table.getBoard().getPlayersPositions().get(player1.getId()));
+        assertEquals(Player.Task.IDLERACE, player1.taskManager.getCurrentTask().type);
     }
 }

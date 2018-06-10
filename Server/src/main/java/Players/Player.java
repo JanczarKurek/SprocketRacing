@@ -82,14 +82,16 @@ public class Player {
         transitions.put(Task.ACCEPTUSE, put);
         put = new TreeSet<>(Arrays.asList(Task.RUNATOMIC));
         transitions.put(Task.RUNEFFECTS, put);
-        put = new TreeSet<>(Arrays.asList(Task.VENT, Task.MOVESMOOTH, Task.MAKEMOVE));
-        transitions.put(Task.RUNATOMIC, put);
         put = new TreeSet<>(Arrays.asList(Task.VENTONCE));
         transitions.put(Task.VENT, put);
         put = new TreeSet<>(Arrays.asList(Task.BREAKONE));
         transitions.put(Task.BREAKPART, put);
         put = new TreeSet<>(Arrays.asList(Task.PUTCARD, Task.TAKECARDFROMVEHICLE, Task.REMOVECARD, Task.ACCEPTCARDS));
         transitions.put(Task.CHANGEVEHICLE, put);
+        put = new TreeSet<>(Arrays.asList(Task.MAKEMOVE));
+        transitions.put(Task.MAKEMOVE, put);
+        put = new TreeSet<>(Arrays.asList(Task.MAKEMOVE));
+        transitions.put(Task.MOVESMOOTH, put);
     }
 
     private void checkAction(Task proposition) throws WrongMove {
@@ -181,11 +183,11 @@ public class Player {
     public TaskManager taskManager = new TaskManager();
 
     public Player(Table table, int id, VehicleCardData cockpit){
+        this.id = id;
         Pair<TableController, PawnController> p = table.sitDown(this);
         tableController = p.getKey();
         pawnController = p.getValue();
         myVehicle.setCockpit(cockpit, 0, 0);
-        this.id = id;
     }
 
     /** Getters for getting info **/
@@ -372,6 +374,7 @@ public class Player {
     public void acceptProposition() throws WrongMove {
         checkAction(Task.ACCEPTUSE);
         VehicleCardEngine.Proposition actualProposition = taskManager.getCurrentTask().actualProposition;
+        taskManager.finalizeTask();
         PendingTask pendingTask = new PendingTask(Task.ACCEPTUSE, 0);
         pendingTask.processedEffects = actualProposition.accept().iterator();
         taskManager.putTask(pendingTask);
@@ -400,16 +403,20 @@ public class Player {
         if(!taskManager.getCurrentTask().atomicEffect.hasNext()) {
             taskManager.finalizeTask();
         }
+        taskManager.putTask(new PendingTask(Task.RUNATOMIC, 0));
+        e.execute(this);
     }
 
     public void makeMove(Path path) throws WrongMove {
         checkAction(Task.MAKEMOVE);
-        if(path.length() != taskManager.getCurrentTask().value)
-            throw  new WrongMove("Player " + getId() + ": malformed path, expecting size " +taskManager.getCurrentTask().value + " got " + path.length());
+        if(path.length() - 1 != taskManager.getCurrentTask().value)
+            throw  new WrongMove("Player " + getId() + ": malformed path, expecting size " + taskManager.getCurrentTask().value + " got " + (path.length() - 1));
         try {
             PendingTask actual = taskManager.getCurrentTask();
             PendingTask newTask = new PendingTask(Task.RUNEFFECTS, 0);
             Collection<Effect> effects = pawnController.move(path);
+            taskManager.finalizeTask();
+            taskManager.finalizeTask();
             if(effects.size() != 0 && actual.type != Task.MOVESMOOTH) {
                 newTask.atomicEffect = pawnController.move(path).iterator();
                 taskManager.putTask(newTask);

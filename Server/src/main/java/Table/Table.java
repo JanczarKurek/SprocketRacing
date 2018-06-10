@@ -49,6 +49,11 @@ public class Table {
     }
 
     private Phase currentPhase;
+
+    public AbstractBoard getBoard() {
+        return board;
+    }
+
     private AbstractBoard board;
     private ArrayList<Deck> decks;
     private ArrayList<Deck> originalDecks = new ArrayList<>();
