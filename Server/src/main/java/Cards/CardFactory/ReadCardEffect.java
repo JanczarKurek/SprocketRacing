@@ -58,7 +58,16 @@ public class ReadCardEffect {
     }
 
     static VentEffect readVentEffect(JSONObject jsonObject) {
-        return new VentEffect(toIntExact((Long) jsonObject.get("value")));
+        String s =(String) jsonObject.get("color");
+        InGameResources.Dice.Dice.Color color;
+        if (s.equals("red"))
+            color = InGameResources.Dice.Dice.Color.RED;
+        else if (s.equals("blue"))
+            color = InGameResources.Dice.Dice.Color.BLUE;
+        else
+            color = InGameResources.Dice.Dice.Color.YELLOW;
+
+        return new VentEffect(toIntExact((Long) jsonObject.get("value")), color);
     }
 
     static MapServer.DamageEffect readDamageEffect(JSONObject jsonObject) {
