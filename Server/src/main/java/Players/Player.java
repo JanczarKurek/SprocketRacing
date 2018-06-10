@@ -111,6 +111,7 @@ public class Player {
         Iterator<CardEffect> processedEffects;
         Iterator<Effect> atomicEffect;
         VehicleArrangementManager manager;
+        public Dice.Color color;
 
         Task type;
         int value;
@@ -430,6 +431,9 @@ public class Player {
         checkAction(Task.VENTONCE);
         VehicleCardData card = myVehicle.getLayout(x, y).get(new Pair<>(x, y));
         try {
+            if(taskManager.getCurrentTask().color != Dice.Color.ANY)
+                if(card.getDiceSlots().getDice(diceIdx).getColor() != taskManager.getCurrentTask().color)
+                    throw new WrongMove("Wrong color, expecting " + taskManager.getCurrentTask().color + " got " + card.getDiceSlots().getDice(diceIdx).getColor());
             card.getDiceSlots().decrement(diceIdx);
             taskManager.getCurrentTask().value--;
             if(taskManager.getCurrentTask().value == 0)
@@ -443,7 +447,9 @@ public class Player {
         checkAction(Task.VENT);
         try {
             myWallet.takeGears(times * 2);
-            taskManager.putTask(new PendingTask(Task.VENT, times));
+            PendingTask task = new PendingTask(Task.VENT, times);
+            task.color = Dice.Color.ANY;
+            taskManager.putTask(task);
         } catch (NotEnoughResources notEnoughResources) {
             throw new NotEnoughResources("Player " + getId() + ": " + notEnoughResources);
         }

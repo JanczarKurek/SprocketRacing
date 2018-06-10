@@ -6,6 +6,10 @@ import misc.Effect;
 
 public class GetResourceEffect implements Effect {
 
+    public ResourceWallet getResourceWallet() {
+        return resourceWallet;
+    }
+
     private ResourceWallet resourceWallet;
 
     public GetResourceEffect(ResourceWallet resourceWallet) {
