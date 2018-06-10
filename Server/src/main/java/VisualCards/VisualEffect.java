@@ -41,6 +41,8 @@ public class VisualEffect implements VisualElement {
     }
     private Effect effect;
 
+    private double shift = 0.0;
+
     public VisualEffect(Effect effect){
         this.effect = effect;
     }
@@ -51,10 +53,10 @@ public class VisualEffect implements VisualElement {
         while(i-- != 0){
             ImageView view = new ImageView(image);
             view.setTranslateX(rightShift);
-            System.err.println(view.getFitWidth());
-            rightShift += view.getFitWidth();
+            rightShift += 25.0;
             group.getChildren().add(view);
         }
+        shift += rightShift;
         return group;
     }
 
@@ -98,22 +100,25 @@ public class VisualEffect implements VisualElement {
         for(Dice dice : effect.getResourceWallet().getDices()){
             switch (dice.getColor()){
                 case RED:
-                    view = new ImageView(images.get("RedDice"));
+                    view = new ImageView(images.get("RedCube"));
                     view.setTranslateX(shiftRight);
-                    shiftRight += view.getFitWidth();
+                    shiftRight += 25.0;
                     group.getChildren().add(view);
+                    break;
                 case YELLOW:
-                    view = new ImageView(images.get("YellowDice"));
+                    view = new ImageView(images.get("YellowCube"));
                     view.setTranslateX(shiftRight);
-                    shiftRight += view.getFitWidth();
+                    shiftRight += 25.0;
                     group.getChildren().add(view);
+                    break;
                 case BLUE:
-                    view = new ImageView(images.get("BlueDice"));
+                    view = new ImageView(images.get("BlueCube"));
                     view.setTranslateX(shiftRight);
-                    shiftRight += view.getFitWidth();
+                    shiftRight += 25.0;
                     group.getChildren().add(view);
             }
         }
+        shift += shiftRight;
         Group kek = multiply(images.get("Cog"), effect.getResourceWallet().getGears());
         kek.setTranslateX(shiftRight);
         group.getChildren().add(kek);
@@ -122,6 +127,7 @@ public class VisualEffect implements VisualElement {
 
     @Override
     public Node draw() {
+        shift = 0;
         if(effect instanceof MoveEffect)
             return draw((MoveEffect)effect);
         if(effect instanceof SmoothMoveEffect)
