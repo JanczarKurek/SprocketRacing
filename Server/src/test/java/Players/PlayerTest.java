@@ -82,7 +82,7 @@ public class PlayerTest {
 
         Deck deck0 = new Deck(0, "Ex deck no 0");
 
-        VehicleCardData card = new VehicleCardData(cost, 0, "Ex card 0", engine, new VehicleCardData.Joints(false, false, true, true));
+        VehicleCardData card = new VehicleCardData(cost, 0, "Ex card 0", engine, new Joints(false, false, true, true));
         deck0.put(card);
 
         cost = new Cost(0, 2, 2, 3);
@@ -91,7 +91,7 @@ public class PlayerTest {
         e = new CardEffect(kek2);
         slots = new DiceSlotsImpl(2, Dice.Color.BLUE);
         engine = new VehicleCardEngine(c, e, slots);
-        card = new VehicleCardData(cost, 1, "Ex card 1", engine, new VehicleCardData.Joints(true, true, true, true));
+        card = new VehicleCardData(cost, 1, "Ex card 1", engine, new Joints(true, true, true, true));
         deck0.put(card);
 
         Deck deck1 = new Deck(1, "Ex deck no 1");
@@ -102,7 +102,7 @@ public class PlayerTest {
         Effect[][] kek3 = {{heal}};
         e = new CardEffect(kek3);
         engine = new VehicleCardEngine(c, e, slots);
-        card = new VehicleCardData(cost, 2, "Ex card 2", engine, new VehicleCardData.Joints(true, false, true, true));
+        card = new VehicleCardData(cost, 2, "Ex card 2", engine, new Joints(true, false, true, true));
         deck1.put(card);
 
         cost = new Cost(1, 1, 0, 1);
@@ -111,7 +111,7 @@ public class PlayerTest {
         Effect[][] kek4 = {{moveOnce}, {moveOnce, moveOnce}};
         e = new CardEffect(kek4);
         engine = new VehicleCardEngine(c, e, slots);
-        card = new VehicleCardData(cost, 3, "Ex card 3", engine, new VehicleCardData.Joints(true, false, true, false));
+        card = new VehicleCardData(cost, 3, "Ex card 3", engine, new Joints(true, false, true, false));
         deck1.put(card);
 
         table = new Table(board, Arrays.asList(deck0, deck1));
@@ -122,7 +122,7 @@ public class PlayerTest {
         Effect[][] kek5 = {{moveOnce}, {moveOnce, moveOnce}};
         e = new CardEffect(kek5);
         engine = new VehicleCardEngine(c, e, slots);
-        card = new VehicleCardData(cost, 4, "cockpit0", engine, new VehicleCardData.Joints(true, false, true, false));
+        card = new VehicleCardData(cost, 4, "cockpit0", engine, new Joints(true, false, true, false));
         player0 = new Player(table, 0, card);
 
         cost = new Cost(1, 1, 0, 1);
@@ -131,7 +131,7 @@ public class PlayerTest {
         Effect[][] kek6 = {{moveOnce}, {moveOnce, moveOnce}};
         e = new CardEffect(kek6);
         engine = new VehicleCardEngine(c, e, slots);
-        card = new VehicleCardData(cost, 5, "cockpit1", engine, new VehicleCardData.Joints(true, false, true, false));
+        card = new VehicleCardData(cost, 5, "cockpit1", engine, new Joints(true, false, true, false));
         player1 = new Player(table, 1, card);
         
     }
