@@ -18,6 +18,7 @@ import org.junit.Test;
 import Table.Table;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
@@ -164,7 +165,7 @@ public class PlayerTest {
         player0.roll();
         assertEquals(1, player0.getMyVehicle().getLayout().size());
         assertEquals(2, player1.getMyVehicle().getLayout().size());
-        player1.useCard(0, 0, Arrays.asList(0));
+        player1.useCard(0, 0, Collections.singletonList(0));
         player1.acceptProposition();
         player1.runEffects(1);
         player1.runAtomicEffect();

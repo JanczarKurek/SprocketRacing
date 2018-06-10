@@ -9,7 +9,8 @@ public class Dice implements InGameResource{
     public enum Color{
         RED,
         YELLOW,
-        BLUE
+        BLUE,
+        ANY
     }
     private Color color;
     private static Random generator = new Random();
