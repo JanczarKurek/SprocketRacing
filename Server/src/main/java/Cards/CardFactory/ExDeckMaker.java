@@ -22,27 +22,27 @@ public class ExDeckMaker {
         JSONArray jsonArray = new JSONArray();
         if (r < 60)
             for (int i = 0; i < 4; i++)
-                jsonArray.add(new Boolean(true));
+                jsonArray.add(Boolean.TRUE);
         else if (r < 70) {
-            jsonArray.add(new Boolean(false));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
+            jsonArray.add(Boolean.FALSE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
         } else if (r < 80) {
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(false));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.FALSE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
         } else if (r < 90) {
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(false));
-            jsonArray.add(new Boolean(true));
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.FALSE);
+            jsonArray.add(Boolean.TRUE);
         } else {
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(true));
-            jsonArray.add(new Boolean(false));
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.TRUE);
+            jsonArray.add(Boolean.FALSE);
         }
 
         jsonObject.put("Joints", jsonArray);
@@ -71,14 +71,21 @@ public class ExDeckMaker {
         else
             jsonObject.put("effectType", "DamageEffect");
 
-        if (r > 0)
-            jsonObject.put("value", new java.util.Random().nextInt(3));
-        else {
+
+
+        if (r == 0) {
             jsonObject.put("red", new java.util.Random().nextInt(3));
             jsonObject.put("blue", new java.util.Random().nextInt(3));
             jsonObject.put("yellow", new java.util.Random().nextInt(3));
             jsonObject.put("gears", new java.util.Random().nextInt(3));
-        }
+        } else if (r == 4) {
+            jsonObject.put("value", new java.util.Random().nextInt(3));
+            jsonObject.put("color", new java.util.Random().nextInt(3) == 0 ? "blue" : (
+                    new java.util.Random().nextBoolean() ? "red" : "yellow"
+                    ));
+        } else
+            jsonObject.put("value", new java.util.Random().nextInt(3));
+
     }
 
     static void putRandomCardEffectArray(JSONObject jsonObject) {
@@ -100,10 +107,10 @@ public class ExDeckMaker {
     static void putRandomCardUsageCost(JSONObject jsonObject) {
         JSONObject o = new org.json.simple.JSONObject();
         if (new java.util.Random().nextInt(10) < 8) {
-            o.put("isCardUsagePipeCost", new Boolean(true));
+            o.put("isCardUsagePipeCost", Boolean.TRUE);
             o.put("cost", new java.util.Random().nextInt(6) + 1);
         } else
-            o.put("isCardUsagePipeCost", new Boolean(false));
+            o.put("isCardUsagePipeCost", Boolean.FALSE);
         jsonObject.put("CardUsageCost", o);
     }
 

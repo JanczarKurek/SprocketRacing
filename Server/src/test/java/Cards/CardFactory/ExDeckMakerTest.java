@@ -27,6 +27,8 @@ public class ExDeckMakerTest {
                 VehicleCardData card = (VehicleCardData) o;
                 System.out.println(card.getID());
             }
+
+
         }
     }
 
