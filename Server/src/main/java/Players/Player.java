@@ -332,6 +332,10 @@ public class Player {
         taskManager.finalizeTask(); //Pop arrangeVehicle task.
     }
 
+    public ArrayList<VehicleCardData> getUnusedCards(){
+        return taskManager.getCurrentTask().manager.cardsToUse;
+    }
+
     /*********************************/
 
     /** Using of dices in hand **/
