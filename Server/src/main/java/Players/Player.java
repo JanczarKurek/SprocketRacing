@@ -240,9 +240,19 @@ public class Player {
         }
     }
 
-    public void chooseCard(int idx) throws WrongMove {
+    public void chooseCard(int id) throws WrongMove {
         checkAction(Task.CHOOSECARD);
-        chosenCard = myHand.take(idx);
+        boolean x = true;
+        for(int i = 0; i < myHand.getHandSize(); ++i){
+            if(myHand.getCards().get(i).getID() == id){
+                chosenCard = myHand.take(i);
+                x = false;
+                break;
+            }
+        }
+        if(x){
+            throw new WrongMove("Player " + getId() + ": wrong id, no such a card in hand " + id);
+        }
         taskManager.finalizeTask();
         tableController.passHand(myHand);
         taskManager.putTask(new PendingTask(Task.CHOOSECARD, 0));
