@@ -33,17 +33,25 @@ public class VisualCard implements VisualElement {
     private int slotsNumber;
     private int usagePipCost;
 
-    public VisualCard(Card card) throws FileNotFoundException{
+    public VisualCard(Card card){
         this.card = card;
         if(card instanceof VehicleCard) {
             Settings settings = Settings.getSettings();
             String resPref = settings.getResourcesPath();
-            background = new Image(new FileInputStream(resPref+"VehicleCard/CardVehicle.png"));
-            File file = new File(resPref+"VehicleCard/VehicleCardDescription.txt");
-            FileInputStream stream = new FileInputStream(file);
-            Scanner fileReader = new Scanner(stream);
-            setXY(fileReader.nextInt(), fileReader.nextInt());
-            effects = new LinkedList<>();
+            try {
+                background = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/CardVehicle.png"));
+            }catch (Exception e){
+                System.out.println("tu łapię " + e.getClass().getName());
+            }
+            try {
+                File file = new File("Server/src/test/resources/VehicleCard/VehicleCardDescription.txt");
+                FileInputStream stream = new FileInputStream(file);
+                Scanner fileReader = new Scanner(stream);
+                setXY(fileReader.nextInt(), fileReader.nextInt());
+                effects = new LinkedList<>();
+            }catch (Exception e){
+                System.out.println("tu też");
+            }
         }
         name = new VisualName(card.getName());
         cost = card.getCost();
@@ -54,7 +62,7 @@ public class VisualCard implements VisualElement {
             setUsagePipCost(((CardUsagePipCost)((VehicleCardData)card).getEngine().getUsageCost()).getPipCost());
         setNumberSlots(((VehicleCardData)card).getEngine().getDiceSlots().getSize());
         /*for(CardEffect effect : ((VehicleCardData)card).getEngine().getEffects())
-            addEffect(effect.getId());*/ // jak wyciagnac efekt
+            addEffect(effect.getId()); // jak wyciagnac efekt*/
 
     }
 

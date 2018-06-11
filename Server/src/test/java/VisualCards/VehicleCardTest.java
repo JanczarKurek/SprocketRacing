@@ -28,7 +28,7 @@ public class VehicleCardTest extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        Settings settings = Settings.getSettings();
+       /* Settings settings = Settings.getSettings();
         String resPref = settings.getResourcesPath();
         Group group = new Group();
         ReadCard read = new ReadCard();
@@ -45,7 +45,7 @@ public class VehicleCardTest extends Application {
         hand.insertCard(3, vehicle);
         group.getChildren().add(hand.draw());
         primaryStage.setScene(new Scene(group, 1003, 599));
-        primaryStage.show();
+        primaryStage.show();*/
     }
     /*private VehicleCardData readCard(File file){
         try{
@@ -73,20 +73,4 @@ public class VehicleCardTest extends Application {
         }
         return null;
     }*/
-
-    private VehicleCardData readSpecialCard(File file){
-        try{
-            FileInputStream stream = new FileInputStream(file);
-            Scanner fileReader = new Scanner(stream);
-            VehicleCardData vehicle = new VehicleCardData();
-            vehicle.setName(fileReader.nextLine());
-            vehicle.setJoints(fileReader.nextBoolean(), fileReader.nextBoolean(), fileReader.nextBoolean(), fileReader.nextBoolean());
-            Cost cost = new Cost(fileReader.nextInt(), fileReader.nextInt(), fileReader.nextInt(), fileReader.nextInt());
-            vehicle.setCost(cost);
-            return vehicle;
-        }catch (Exception e) {
-            System.err.println("File not found");
-        }
-        return null;
-    }
 }

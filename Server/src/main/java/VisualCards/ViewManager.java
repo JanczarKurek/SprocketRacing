@@ -1,5 +1,6 @@
 package VisualCards;
 
+import Cards.Deck;
 import Cards.Hand;
 import Cards.Layout.CardsLayout;
 import Cards.VehicleCardData;
@@ -8,6 +9,7 @@ import MapServer.BoardField;
 import MapServer.BoardStructure;
 import MapServer.SimpleField;
 import Players.Player;
+import Cards.LoadedDeck;
 import Settings.Settings;
 import Table.Table;
 import VisualBoard.VisualBoardCreator;
@@ -15,9 +17,11 @@ import VisualBoard.VisualBoard;
 import VisualDice.VisualDice;
 import javafx.application.Application;
 import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+import VisualBoard.StartPage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -26,17 +30,15 @@ import java.util.TreeMap;
 
 public class ViewManager extends Application {
     private TreeMap<Integer, VehicleCardData> cardsData = new TreeMap<>();
-    private CardMap.StaticMap cardsVisual = new CardMap.StaticMap();
     private ArrayList<Boolean> useCard = new ArrayList<>();
+    private ArrayList<Stage> stages = new ArrayList<>();
     private static Random generator = new Random();
-    private VisualHand hand;
-    private VisualVehicle vehicle;
     private VisualBoard visualBoard;
     private UseVehicle use;
     private Stage stage;
-    private Player player;
+    private Table table;
     private Board board;
-    private int position=0;
+    private int position=1;
 
     public static void main(String[] args){
         launch(args);
@@ -44,55 +46,66 @@ public class ViewManager extends Application {
 
     @Override
     public void start(Stage primaryStage){
-        board = gameSetup();
-        try {
-            Settings settings = Settings.getSettings();
-            String resPref = settings.getResourcesPath();
-           VisualBoardCreator boardCreator = new VisualBoardCreator(board);
-            boardCreator.setBoardSprite(resPref+"GraphicDescription/board.jpg");
-            boardCreator.getInfoFromFile(resPref+"GraphicDescription/description.txt");
-            boardCreator.setPawn(0, resPref+"pionek3.jpg");
-            boardCreator.setPawn(1, resPref+"pionek4.jpg");
-            visualBoard = boardCreator.getVisualBoard();
-        }catch (Exception e){}
         stage = primaryStage;
-        readResorces();
-        CardsLayout layout = new CardsLayout();
-        vehicle = new VisualVehicle(layout, this);
-        hand = new VisualHand(this);
-        vehicle.setMap(cardsVisual);
-        visualHand(4);
+        board = gameSetup();
+        ArrayList<Deck> list = new ArrayList();
+        list.add(new LoadedDeck("Server/src/main/java/Files/Deck1").getDeck());
+        list.add(new LoadedDeck("Server/src/main/java/Files/Deck2").getDeck());
+        list.add(new LoadedDeck("Server/src/main/java/Files/Deck3").getDeck());
+        list.add(new LoadedDeck("Server/src/main/java/Files/Deck4").getDeck());
+        table = new Table(board, list);
+        System.out.println("size deck from list " +list.get(0).size());
+        System.out.println(table.getCurrentPhase().getClass().getName());
+        //plansza - do zmiany
+        try {
+            VisualBoardCreator boardCreator = new VisualBoardCreator(board);
+            boardCreator.setBoardSprite("Server/src/test/resources/GraphicDescription/board.jpg");
+            boardCreator.getInfoFromFile("Server/src/test/resources/GraphicDescription/description.txt");
+            boardCreator.setPawn(0, "Server/src/test/resources/pionek3.jpg");
+            boardCreator.setPawn(1, "Server/src/test/resources/pionek4.jpg");
+            visualBoard = boardCreator.getVisualBoard();
+        }catch (Exception e){
+            System.out.println("file not found "+e.getMessage());
+        }
+        startPage();
         stage.show();
     }
 
-    private void randomHand(int i){
-        ArrayList<Integer> tempUse = new ArrayList<>();
-        for(int j=0; j<i; j++){
-            int random = generator.nextInt(6);
-            while(useCard.get(random)==true || tempUse.contains(random)){
-                random = generator.nextInt(6);
-            }
-            System.out.print(random+" ");
-            hand.insertCard(random, cardsVisual.get(random));
-            tempUse.add(random);
-        }System.out.println();
+    public void addPlayer(){
+        stages.add(new Stage());
     }
 
-    void visualHand(int i){
-        hand.clear();
-        randomHand(i);
+
+    void startPage(){
         Group group = new Group();
-        group.getChildren().add(hand.draw());
-        stage.setScene(new Scene(group, 1003, 599));
+        group.getChildren().add(new StartPage(this).draw());
+        stage.setScene(new Scene(group));
     }
 
-    void visualVehicle(){
+    public void showStages(){
+        int playerID = 0;
+        visualHand();
+        for(Stage stagePlayer : stages) {
+            playerID++;
+            stagePlayer.show();
+        }
+    }
+
+    void visualHand(){
+        for(int i=0; i<table.numberOfPlayers(); i++) {
+            Group group =  new Group();
+            group.getChildren().add(new VisualHand(this, table.getPlayer(i)).draw());
+            stages.get(i).setScene(new Scene(group, 1003, 599));
+        }
+    }
+
+    void visualVehicle(int playerID){
         Group group = new Group();
-        group.getChildren().add(vehicle.draw());
-        stage.setScene(new Scene(group, 1003, 599));
+        group.getChildren().add(new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID)).draw());
+        stages.get(playerID).setScene(new Scene(group, 1003, 599));
     }
 
-    void visualBoard(){
+    void visualBoard(int playerID){
         visualBoard.setMyApp(this);
         Group group = new Group();
         visualBoard.actualize();
@@ -100,28 +113,33 @@ public class ViewManager extends Application {
         stage.setScene(new Scene(group, 1003, 599));
     }
 
-    public void useVehicle(){
+    void waitForPrevPlayer(int playerID){
         Group group = new Group();
+        stages.get(playerID).setScene(new Scene(group, 1003, 599));
+    }
+
+    public void useVehicle(){
+        /*Group group = new Group();
         use = new UseVehicle(vehicle.getLayout(), this);
         use.setMap(cardsVisual);
         group.getChildren().add(use.draw());
-        stage.setScene(new Scene(group, 1003, 599));
+        stage.setScene(new Scene(group, 1003, 599));*/
     }
 
     public void setPosition(int i){
         position += i;
     }
 
+    public Table getTable(){
+        return table;
+    }
     public int getPosition(){
         return position;
     }
 
-    void addDice(VisualDice dice){
-        vehicle.addDice(dice);
-    }
 
     void addCard(VisualCard card){
-        vehicle.addCard(card);
+        // vehicle.addCard(card);
     }
 
     ArrayList<Boolean> getUseCard(){
@@ -132,39 +150,11 @@ public class ViewManager extends Application {
         return board;
     }
 
-    private void readResorces(){
-        Settings settings = Settings.getSettings();
-        String resPref = settings.getResourcesPath();
-        ReadCard read = new ReadCard();
-        File file = new File(resPref+"CardsDescription/arachnolegs.txt");
-        VisualCard vehicle = read.readCard(file, cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref+"CardsDescription/boiler.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref +"CardsDescription/gyrostat.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref+"CardsDescription/aerostat.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref+"CardsDescription/blastPipe.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref+"CardsDescription/heatSink.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-        vehicle = read.readCard(new File(resPref+"CardsDescription/hoverJets.txt"), cardsVisual);
-        cardsData.put(vehicle.getCard().getID(), (VehicleCardData)vehicle.getCard());
-        useCard.add(false);
-    }
-
     private static Board gameSetup(){
         LinkedList<Integer> PlayersList = new LinkedList<>();
-        for (int i = 0; i < 2; i++) {
+        /*for (int i = 0; i < 2; i++) {
             PlayersList.add(i);
-        }
+        }*/
         BoardStructure boardStructure = new BoardStructure();
 
         BoardField boardField1 = new BoardField(new SimpleField(0));
