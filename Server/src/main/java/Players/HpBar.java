@@ -9,7 +9,7 @@ public class HpBar {
     private int hp;
     private final int UPPER_BOUND;
     private final int LOWER_BOUND;
-    HpBar(int ub, int lb){
+    public HpBar(int ub, int lb){
         UPPER_BOUND = ub;
         LOWER_BOUND = lb;
     }

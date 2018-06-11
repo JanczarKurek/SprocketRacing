@@ -16,8 +16,8 @@ import java.util.HashMap;
 
 public class VisualUsageCost implements VisualElement {
 
-    CardUsageCost cost;
-    static HashMap<Integer, Image> images = new HashMap<>();
+    private CardUsageCost cost;
+    private static HashMap<Integer, Image> images = new HashMap<>();
 
     static{
         String resPref = Settings.getSettings().getResourcesPath();
