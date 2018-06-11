@@ -21,7 +21,7 @@ public class VisualWallet implements VisualElement{
 
     static {
         try {
-            cogImage = new Image(new FileInputStream("Effects/cog.png"));
+            cogImage = new Image(new FileInputStream(Settings.getSettings().getResourcesPath() + "Effects/cog.png"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -37,9 +37,10 @@ public class VisualWallet implements VisualElement{
         Group ret = new Group();
         ret.getChildren().add(new ImageView(cogImage));
         Text text = new Text(String.valueOf(wallet.getGears()));
-        text.setFont(new Font(20));
+        wallet.reroll(3);
+        text.setFont(new Font(40));
         text.setTranslateX(50);
-        text.setTranslateY(50);
+        text.setTranslateY(30);
         text.setFill(Color.RED);
         ret.getChildren().add(text);
         Node bunch = new VisualDiceBunch(wallet.getDices()).draw();

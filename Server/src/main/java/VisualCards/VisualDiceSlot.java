@@ -19,13 +19,13 @@ public class VisualDiceSlot implements VisualElement {
             String resPref = settings.getResourcesPath();
             this.color = color;
             if (color == Dice.Color.RED) {
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/FireDicePool.png"));
+                image = new Image(new FileInputStream(resPref + "VehicleCard/FireDicePool.png"));
             }
             else if(color == Dice.Color.BLUE ){
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/SteamDicePool.png"));
+                image = new Image(new FileInputStream(resPref + "VehicleCard/SteamDicePool.png"));
             }
             else{
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/EletricityDicePool.png"));
+                image = new Image(new FileInputStream(resPref + "VehicleCard/EletricityDicePool.png"));
             }
         }catch (Exception e){
             System.err.println("File not found!");

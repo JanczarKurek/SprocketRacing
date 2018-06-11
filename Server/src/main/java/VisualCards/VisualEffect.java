@@ -23,18 +23,18 @@ public class VisualEffect implements VisualElement {
         try {
             Settings settings = Settings.getSettings();
             String resPref = settings.getResourcesPath();
-            images.put("SilverWheel", new Image(new FileInputStream("Server/src/test/resources/Effects/silverWheel.png")));
-            images.put("GoldWheel", new Image(new FileInputStream("Server/src/test/resources/Effects/goldWheel.png")));
-            images.put("Cog", new Image(new FileInputStream("Server/src/test/resources/Effects/cog.png")));
-            images.put("Shield", new Image(new FileInputStream("Server/src/test/resources/Effects/shield.png")));
-            images.put("ShieldX", new Image(new FileInputStream("Server/src/test/resources/Effects/shieldX.png")));
-            images.put("RedCube", new Image(new FileInputStream("Server/src/test/resources/Effects/redCube.png")));
-            images.put("YellowCube", new Image(new FileInputStream("Server/src/test/resources/Effects/yellowCube.png")));
-            images.put("BlueCube", new Image(new FileInputStream("Server/src/test/resources/Effects/blueCube.png")));
-            images.put("RedCubeOut", new Image(new FileInputStream("Server/src/test/resources/Effects/redCubeOut.png")));
-            images.put("YellowCubeOut", new Image(new FileInputStream("Server/src/test/resources/Effects/yellowCubeOut.png")));
-            images.put("BlueCubeOut", new Image(new FileInputStream("Server/src/test/resources/Effects/blueCubeOut.png")));
-            images.put("Slash", new Image(new FileInputStream("Server/src/test/resources/Effects/slash.png")));
+            images.put("SilverWheel", new Image(new FileInputStream(resPref + "/Effects/silverWheel.png")));
+            images.put("GoldWheel", new Image(new FileInputStream(resPref + "/Effects/goldWheel.png")));
+            images.put("Cog", new Image(new FileInputStream(resPref + "/Effects/cog.png")));
+            images.put("Shield", new Image(new FileInputStream(resPref + "/Effects/shield.png")));
+            images.put("ShieldX", new Image(new FileInputStream(resPref + "/Effects/shieldX.png")));
+            images.put("RedCube", new Image(new FileInputStream(resPref + "/Effects/redCube.png")));
+            images.put("YellowCube", new Image(new FileInputStream(resPref + "/Effects/yellowCube.png")));
+            images.put("BlueCube", new Image(new FileInputStream(resPref + "/Effects/blueCube.png")));
+            images.put("RedCubeOut", new Image(new FileInputStream(resPref + "/Effects/redCubeOut.png")));
+            images.put("YellowCubeOut", new Image(new FileInputStream(resPref + "/Effects/yellowCubeOut.png")));
+            images.put("BlueCubeOut", new Image(new FileInputStream(resPref + "/Effects/blueCubeOut.png")));
+            images.put("Slash", new Image(new FileInputStream(resPref + "/Effects/slash.png")));
             } catch (Exception e){
             throw new RuntimeException(e);
         }

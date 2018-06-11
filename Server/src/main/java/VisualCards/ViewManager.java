@@ -1,28 +1,22 @@
 package VisualCards;
 
 import Cards.Deck;
-import Cards.Hand;
-import Cards.Layout.CardsLayout;
 import Cards.VehicleCardData;
 import MapServer.Board;
 import MapServer.BoardField;
 import MapServer.BoardStructure;
 import MapServer.SimpleField;
-import Players.Player;
 import Cards.LoadedDeck;
 import Settings.Settings;
 import Table.Table;
 import VisualBoard.VisualBoardCreator;
 import VisualBoard.VisualBoard;
-import VisualDice.VisualDice;
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import VisualBoard.StartPage;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -48,21 +42,22 @@ public class ViewManager extends Application {
     public void start(Stage primaryStage){
         stage = primaryStage;
         board = gameSetup();
+        String pref = Settings.getSettings().getResourcesPath();
         ArrayList<Deck> list = new ArrayList();
-        list.add(new LoadedDeck("Server/src/main/java/Files/Deck1").getDeck());
-        list.add(new LoadedDeck("Server/src/main/java/Files/Deck2").getDeck());
-        list.add(new LoadedDeck("Server/src/main/java/Files/Deck3").getDeck());
-        list.add(new LoadedDeck("Server/src/main/java/Files/Deck4").getDeck());
+        list.add(new LoadedDeck(pref + "/Files/Deck1").getDeck());
+        list.add(new LoadedDeck(pref + "/Files/Deck2").getDeck());
+        list.add(new LoadedDeck(pref + "/Files/Deck3").getDeck());
+        list.add(new LoadedDeck(pref + "/Files/Deck4").getDeck());
         table = new Table(board, list);
         System.out.println("size deck from list " +list.get(0).size());
         System.out.println(table.getCurrentPhase().getClass().getName());
         //plansza - do zmiany
         try {
             VisualBoardCreator boardCreator = new VisualBoardCreator(board);
-            boardCreator.setBoardSprite("Server/src/test/resources/GraphicDescription/board.jpg");
-            boardCreator.getInfoFromFile("Server/src/test/resources/GraphicDescription/description.txt");
-            boardCreator.setPawn(0, "Server/src/test/resources/pionek3.jpg");
-            boardCreator.setPawn(1, "Server/src/test/resources/pionek4.jpg");
+            boardCreator.setBoardSprite(pref + "/GraphicDescription/board.jpg");
+            boardCreator.getInfoFromFile(pref + "/GraphicDescription/description.txt");
+            boardCreator.setPawn(0, pref + "/pionek3.jpg");
+            boardCreator.setPawn(1, pref + "/pionek4.jpg");
             visualBoard = boardCreator.getVisualBoard();
         }catch (Exception e){
             System.out.println("file not found "+e.getMessage());

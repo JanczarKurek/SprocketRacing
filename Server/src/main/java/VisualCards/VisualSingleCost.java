@@ -27,18 +27,18 @@ public class VisualSingleCost implements VisualElement {
         this.color = color;
         try {
             if (color == 0) {
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Cost/RedCube.png"));
+                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/RedCube.png"));
             }
             else if(color ==1 ){
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Cost/YellowCube.png"));
+                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/YellowCube.png"));
             }
             else if(color ==2){
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Cost/BlueCube.png"));
+                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/BlueCube.png"));
             }
             else{
-                image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Cost/steam.png"));
+                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/steam.png"));
             }
-            slash = new ImageView(new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Cost/slash.png")));
+            slash = new ImageView(new Image(new FileInputStream(resPref + "/VehicleCard/Cost/slash.png")));
         }catch (Exception e){
             System.err.println("File not found!");
         }
