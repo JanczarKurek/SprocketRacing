@@ -37,7 +37,6 @@ public class VisualWallet implements VisualElement{
         Group ret = new Group();
         ret.getChildren().add(new ImageView(cogImage));
         Text text = new Text(String.valueOf(wallet.getGears()));
-        wallet.reroll(3);
         text.setFont(new Font(40));
         text.setTranslateX(50);
         text.setTranslateY(30);
