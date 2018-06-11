@@ -25,31 +25,31 @@ public class VisualDice implements VisualElement {
             this.color = dice.getColor();
             this.number = dice.getValue();
             if (color == Dice.Color.RED) {
-                imageColor = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/redBackgroud.png"));
+                imageColor = new Image(new FileInputStream(resPref + "VehicleCard/Dice/redBackgroud.png"));
             }
             else if(color == Dice.Color.BLUE ){
-                imageColor = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/blueBackground.png"));
+                imageColor = new Image(new FileInputStream(resPref + "VehicleCard/Dice/blueBackground.png"));
             }
             else{
-                imageColor = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/yellowBackground.png"));
+                imageColor = new Image(new FileInputStream(resPref +"VehicleCard/Dice/yellowBackground.png"));
             }
             if(number == 1){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice1.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice1.png"));
             }
             else if(number ==2){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice2.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice2.png"));
             }
             else if(number == 3){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice3.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice3.png"));
             }
             else if(number == 4){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice4.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice4.png"));
             }
             else if(number == 5){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice5.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice5.png"));
             }
             else if(number ==6){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice6.png"));
+                imageNumber = new Image(new FileInputStream(resPref +"VehicleCard/Dice/dice6.png"));
             }
         }catch (Exception e){
             System.err.println("File not found!");
@@ -75,22 +75,22 @@ public class VisualDice implements VisualElement {
             this.dice = dice;
             this.number = dice.getValue();
             if(number == 1){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice1.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice1.png"));
             }
             else if(number ==2){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice2.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice2.png"));
             }
             else if(number == 3){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice3.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice3.png"));
             }
             else if(number == 4){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice4.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice4.png"));
             }
             else if(number == 5){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice5.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice5.png"));
             }
             else if(number ==6){
-                imageNumber = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Dice/dice6.png"));
+                imageNumber = new Image(new FileInputStream("VehicleCard/Dice/dice6.png"));
             }
         }catch (Exception e){
             System.err.println("File not found!");

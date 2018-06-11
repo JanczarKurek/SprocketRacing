@@ -19,25 +19,25 @@ public class VisualPipCost implements VisualElement {
             switch (pips) {
 
                 case 1:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow1.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow1.png"));
                     break;
                 case 2:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow2.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow2.png"));
                     break;
                 case 3:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow3.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow3.png"));
                     break;
                 case 4:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow4.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow4.png"));
                     break;
                 case 5:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow5.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow5.png"));
                     break;
                 case 6:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow6.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow6.png"));
                     break;
                 case 7:
-                    image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Arrows/arrow7.png"));
+                    image = new Image(new FileInputStream(resPref + "/VehicleCard/Arrows/arrow7.png"));
                     break;
             }
         }catch (Exception e){

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Set;
 
 public class VisualJoint implements VisualElement {
 
@@ -37,8 +38,8 @@ public class VisualJoint implements VisualElement {
                 position = 3;
                 rotation = 180;
             }
-            image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Joint.png"));
-            File file = new File("Server/src/test/resources/VehicleCard/JointDescription.txt");
+            image = new Image(new FileInputStream(Settings.getSettings().getResourcesPath() + "VehicleCard/Joint.png"));
+            File file = new File(Settings.getSettings().getResourcesPath() + "VehicleCard/JointDescription.txt");
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             width  = fileReader.nextInt();

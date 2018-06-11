@@ -39,12 +39,12 @@ public class VisualCard implements VisualElement {
             Settings settings = Settings.getSettings();
             String resPref = settings.getResourcesPath();
             try {
-                background = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/CardVehicle.png"));
+                background = new Image(new FileInputStream(resPref + "VehicleCard/CardVehicle.png"));
             }catch (Exception e){
                 System.out.println("tu łapię " + e.getClass().getName());
             }
             try {
-                File file = new File("Server/src/test/resources/VehicleCard/VehicleCardDescription.txt");
+                File file = new File(resPref + "VehicleCard/VehicleCardDescription.txt");
                 FileInputStream stream = new FileInputStream(file);
                 Scanner fileReader = new Scanner(stream);
                 setXY(fileReader.nextInt(), fileReader.nextInt());

@@ -140,11 +140,11 @@ public class Player {
 
         /** Very important, one can not move cockpit **/
 
-        ArrayList<VehicleCardData> cardsToUse = new ArrayList<>();
-        void putCard(int cardIdx, int x, int y) throws WrongMove{
+        HashMap<Integer, VehicleCardData> cardsById = new HashMap<>();
+        void putCard(int cardId, int x, int y) throws WrongMove{
             try{
-                myVehicle.add(cardsToUse.get(cardIdx), x, y);
-                cardsToUse.remove(cardIdx);
+                myVehicle.add(cardsById.get(cardId), x, y);
+                cardsById.remove(cardId);
             }catch(IllegalCardsLayoutException exception){
                 throw new WrongMove("Player " + getId() + ": can not put cards on coordinates (" + x + ", " + y + ")");
             }
@@ -154,7 +154,7 @@ public class Player {
             if(card == null){
                 throw new WrongMove("Player " + getId() + ": tried to get card from (" + x  + ", " + y + ") found nothing");
             }else{
-                cardsToUse.add(card);
+                cardsById.put(card.getID(), card);
             }
         }
 
@@ -168,7 +168,7 @@ public class Player {
         void acceptArrangement() throws WrongMove{
             if(!myVehicle.checkCorrectness())
                 throw new WrongMove("Player " + getId() + ": tried to use invalid arrangement of vehicle");
-            for(Card card : cardsToUse)
+            for(Card card : cardsById.values())
                 tableController.discard(card);
         }
     }
@@ -279,7 +279,7 @@ public class Player {
         checkAction(Task.TAKECARD);
         PendingTask task = new PendingTask(Task.CHANGEVEHICLE, 0);
         task.manager = new VehicleArrangementManager();
-        task.manager.cardsToUse.add((VehicleCardData)chosenCard);
+        task.manager.cardsById.put(chosenCard.getID(), (VehicleCardData)chosenCard);
         taskManager.finalizeTask();
         taskManager.putTask(task);
     }
@@ -297,7 +297,7 @@ public class Player {
     }
 
     public void obligatoryRemoveOne(int x, int y) throws WrongMove {
-        checkAction(Task.BREAKONE);
+        checkAction(Task.BREAKPART);
         if(myVehicle.justCockpit()){
             //todo Explosion
             taskManager.finalizeTask();
@@ -332,8 +332,8 @@ public class Player {
         taskManager.finalizeTask(); //Pop arrangeVehicle task.
     }
 
-    public ArrayList<VehicleCardData> getUnusedCards(){
-        return taskManager.getCurrentTask().manager.cardsToUse;
+    public Collection<VehicleCardData> getUnusedCards(){
+        return taskManager.getCurrentTask().manager.cardsById.values();
     }
 
     /*********************************/
