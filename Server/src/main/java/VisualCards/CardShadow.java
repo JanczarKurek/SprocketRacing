@@ -16,9 +16,7 @@ public class CardShadow implements VisualElement {
     public CardShadow() {
 
         try{
-            Settings settings = Settings.getSettings();
-            String resPref = settings.getResourcesPath();
-            image = new Image(new FileInputStream(resPref+"VehicleCard/cardShadow.png"));
+            image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/cardShadow.png"));
         }catch (FileNotFoundException e){
             System.err.println("File not found!");
         }

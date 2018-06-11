@@ -224,4 +224,8 @@ public class Table {
     public Player getPlayer(int i){
         return players.get(i);
     }
+
+    public int numberOfPlayers(){
+        return players.size();
+    }
 }

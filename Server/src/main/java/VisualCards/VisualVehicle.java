@@ -1,10 +1,11 @@
 package VisualCards;
 
-import Cards.Joints;
+import Cards.*;
 import Cards.Layout.CardInLayout;
 import Cards.Layout.CardsLayout;
-import Cards.VehicleCardData;
+import Cards.LoadedCard;
 import InGameResources.Dice.Dice;
+import Players.Player;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
 import javafx.application.Application;
@@ -19,29 +20,20 @@ public class VisualVehicle implements VisualElement {
     private CardsLayout layout;
     private LinkedList<CardInLayout> vehicle;
     private CardMap.StaticMap map;
-    private LinkedList<VisualDice> dices;
-    private LinkedList<VisualCard> cards;
     private Application myApp;
     private VisualCard waitingCard;
     private HashMap<CardInLayout, Node> nodeMap = new HashMap<>();
     private VisualDice waitingDice;
+    private Player player;
 
-    public VisualVehicle(CardsLayout layout, Application app){
+    public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
-        dices = new LinkedList<>();
-        cards = new LinkedList<>();
         vehicle = new LinkedList<>();
         this.layout = layout;
         vehicle.addAll(layout.getTrain());
+        this.player = player;
     }
 
-    void addDice(VisualDice dice){
-        dices.add(dice);
-    }
-
-    void addCard(VisualCard card){
-        cards.add(card);
-    }
 
     public void  setMap(CardMap.StaticMap map){
         this.map=map;
@@ -120,19 +112,17 @@ public class VisualVehicle implements VisualElement {
     }
     public Node draw(){
         Group group = new Group();
-        System.out.println("Number of dices "+dices.size());
         //button
-        if(dices.getFirst().getDice().getValue()==0) {
+        if(player.getMyWallet().getDices().get(0)!=null) {
             Button roll = new Button("ROLL");
             roll.setOnAction(event -> {
-                for (VisualDice visualDice : dices) {
-                    Dice dice = visualDice.getDice();
-                    dice.roll();
+                for (int i=0; i<player.getMyWallet().getDices().size() ; i++) {
+                    player.getMyWallet().getDices().get(i).roll();
                     group.getChildren().remove(roll);
                 }
                 int j = 1;
-                for (VisualDice visualDice : dices) {
-                    visualDice.actualize();
+                for (int i=0; i<player.getMyWallet().getDices().size() ; i++) {
+                    VisualDice visualDice = new VisualDice(player.getMyWallet().getDices().get(i));
                     Node node = visualDice.draw();
                     node.setTranslateX(10 + 60 * j);
                     node.setTranslateY(30);
@@ -151,15 +141,15 @@ public class VisualVehicle implements VisualElement {
 
         Button board = new Button("RACE!");
         board.setOnAction(event -> {
-            ((ViewManager)myApp).visualBoard();
+            ((ViewManager)myApp).visualBoard(player.getId());
         });
         group.getChildren().add(board);
         board.setTranslateY(60);
         board.setTranslateX(10);
 
         //dices
-        int i=1;
-        for(VisualDice visualDice : dices){
+        for (int i=1; i<=player.getMyWallet().getDices().size() ; i++) {
+            VisualDice visualDice = new VisualDice(player.getMyWallet().getDices().get(i-1));
             Node node = visualDice.draw();
             node.setTranslateX(10+60*i);
             node.setTranslateY(30);
@@ -168,11 +158,11 @@ public class VisualVehicle implements VisualElement {
                 System.out.println("dice click");
                 waitingDice = visualDice;
             });
-            i++;
         }
         //names
-        i=0;
-        for(VisualCard visualCard : cards){
+        int i=0;
+       /* for(Card card : player.getMyHand().getCards()){
+            VisualCard visualCard = new LoadedCard((VehicleCardData)card).getVisualCard();
             Node node2 = visualCard.getName().draw();
             node2.setTranslateX(40+150*i);
             node2.setTranslateY(20);
@@ -188,11 +178,10 @@ public class VisualVehicle implements VisualElement {
                     waitingCard = visualCard;
                     drawPlaces(group, (VehicleCardData) visualCard.getCard());
                 }
-                cards.remove(visualCard);
                 //actualize();
             });
             i++;
-        }
+        }*/
         //vehicle
         for(CardInLayout card : vehicle){
             try {
@@ -206,7 +195,6 @@ public class VisualVehicle implements VisualElement {
                     System.out.println("card click");
                     try {
                         card.getCard().getDiceSlots().insert(waitingDice.getDice());
-                        dices.remove(waitingDice);
                     }catch (Exception e){
                         System.err.println("Dice error "+e.getClass().getName());
                     }
@@ -222,7 +210,7 @@ public class VisualVehicle implements VisualElement {
     }
     public void actualize(){
         vehicle = layout.getTrain();
-        ((ViewManager) myApp).visualVehicle();
+        ((ViewManager) myApp).visualVehicle(player.getId());
     }
     public CardsLayout getLayout(){
         return layout;

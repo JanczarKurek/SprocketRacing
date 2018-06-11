@@ -3,6 +3,7 @@ package Cards;
 import ErrorsAndExceptions.EmptyDeck;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -65,5 +66,9 @@ public class Deck implements Iterable<Card> {
     @Override
     public Iterator<Card> iterator() {
         return cards.iterator();
+    }
+
+    public Collection<Card> getCards(){
+        return cards;
     }
 }

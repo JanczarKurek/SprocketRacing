@@ -26,7 +26,7 @@ public class VisualVehicleTest extends Application {
         launch(args);
     }
     public void start(Stage primaryStage) {
-        Settings settings = Settings.getSettings();
+      /*  Settings settings = Settings.getSettings();
         String resPref = settings.getResourcesPath();
         Group group = new Group();
         File file = new File(resPref+"CardsDescription/gyrostat.txt");
@@ -56,6 +56,6 @@ public class VisualVehicleTest extends Application {
         veh.setMap(map);
         group.getChildren().add(veh.draw());
         primaryStage.setScene(new Scene(group));
-        primaryStage.show();
+        primaryStage.show();*/
     }
 }

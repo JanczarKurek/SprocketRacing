@@ -25,10 +25,12 @@ public class UseVehicle implements VisualElement {
     private CardMap.StaticMap map;
     private Application myApp;
     TreeMap<Integer, PawnController> controllers;
+    private int playerID;
 
-    public UseVehicle(CardsLayout layout, Application app){
+    public UseVehicle(CardsLayout layout, Application app, int playerID){
         myApp = app;
         vehicle = new LinkedList<>();
+        this.playerID = playerID;
         this.layout = layout;
         vehicle.addAll(layout.getTrain());
         controllers = new TreeMap<>();
@@ -46,13 +48,13 @@ public class UseVehicle implements VisualElement {
         this.map=map;
     }
 
-       public Node draw(){
+    public Node draw(){
         Group group = new Group();
         //button
 
         Button board = new Button("RACE!");
         board.setOnAction(event -> {
-            ((ViewManager)myApp).visualBoard();
+            ((ViewManager)myApp).visualBoard(playerID);
         });
         group.getChildren().add(board);
         board.setTranslateY(40);
@@ -109,6 +111,6 @@ public class UseVehicle implements VisualElement {
     }
     public void actualize(){
         vehicle = layout.getTrain();
-        ((ViewManager) myApp).visualVehicle();
+        ((ViewManager) myApp).visualVehicle(playerID);
     }
 }
