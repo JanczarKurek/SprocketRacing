@@ -1,11 +1,14 @@
 package VisualCards;
 
+import Cards.CardEffect;
 import Cards.VehicleCardData;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import misc.Effect;
 
+import java.util.Collection;
 import java.util.LinkedList;
 
 public class VisualVehicleCardController implements VisualElement{
@@ -91,18 +94,18 @@ public class VisualVehicleCardController implements VisualElement{
         cost.setTranslateY(node.getTranslateY()+100);
         return cost;
     }
-    private Node drawEffects(LinkedList<Integer> effects){
-        /*Group group = new  Group();
+    private Node drawEffects(Collection<CardEffect> effects){
+       /* Group group = new  Group();
         int slashes = 0;
         int width = 0;
-        for(Integer i : effects){
+        for(int i=0; i<){
             if(i==11) {
                 width = 0;
                 slashes++;
             }
             Node effect;
             if(i==11) {
-                effect = new VisualEffect(i).draw();
+                effect = new VisualEffect().draw();
                 effect.setTranslateY(node.getTranslateY()+70+slashes*50 - 45);
                 effect.setTranslateX(node.getTranslateX()+210+width*45);
                 width = 0;
@@ -117,14 +120,11 @@ public class VisualVehicleCardController implements VisualElement{
             group.getChildren().add(effect);
         }
         return group;*/
-        return null;
+       return null;
     }
     @Override
     public Node draw() {
         Group group = new Group();
-        /*ImageView imageView = new ImageView();
-        imageView.setImage(handSprite);
-        group.getChildren().add(imageView);*/
         int i=0;
         for (VisualJoint joint : card.getJoints()) {
             group.getChildren().add(drawJoint(joint, card));
@@ -165,7 +165,7 @@ public class VisualVehicleCardController implements VisualElement{
         }
         group.getChildren().add(drawSlots());
         group.getChildren().add(drawPipCost());
-        group.getChildren().add(drawEffects(card.getEffects()));
+        //group.getChildren().add(drawEffects(((VehicleCardData)card.getCard()).getEngine().getEffects()));
         return group;
     }
     @Override

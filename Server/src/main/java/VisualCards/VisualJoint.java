@@ -19,10 +19,8 @@ public class VisualJoint implements VisualElement {
     private int heigth;
     private int width;
 
-    VisualJoint(boolean left, boolean right, boolean up, boolean down ) {
+    public VisualJoint(boolean left, boolean right, boolean up, boolean down ) {
         try {
-            Settings settings = Settings.getSettings();
-            String resPref = settings.getResourcesPath();
             if (left) {
                 position = 0;
                 rotation = 270;
@@ -39,8 +37,8 @@ public class VisualJoint implements VisualElement {
                 position = 3;
                 rotation = 180;
             }
-            image = new Image(new FileInputStream(resPref + "VehicleCard/Joint.png"));
-            File file = new File(resPref+"VehicleCard/JointDescription.txt");
+            image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Joint.png"));
+            File file = new File("Server/src/test/resources/VehicleCard/JointDescription.txt");
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             width  = fileReader.nextInt();
