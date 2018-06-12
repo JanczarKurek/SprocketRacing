@@ -182,6 +182,7 @@ public class Player {
     private CardsLayout myVehicle = new CardsLayout();
     private PawnController pawnController;
     public TaskManager taskManager = new TaskManager();
+    boolean waiting = false;
 
     public Player(Table table, int id, VehicleCardData cockpit){
         this.id = id;
@@ -495,4 +496,7 @@ public class Player {
         }
     }
 
+    public void getInformed(){
+
+    }
 }
