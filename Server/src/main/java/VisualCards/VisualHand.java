@@ -6,22 +6,16 @@ import Cards.VehicleCardData;
 import ErrorsAndExceptions.WrongMove;
 import InGameResources.Dice.Dice;
 import Players.Player;
-import VisualCards.ViewManager;
 import VisualBoard.VisualElement;
-import VisualDice.VisualDice;
 import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.TreeMap;
 
 public class VisualHand implements VisualElement {
 
@@ -52,40 +46,40 @@ public class VisualHand implements VisualElement {
         VisualSingleCost singlecost=null;
         for(int j=0; j<card.getCard().getCost().getRed(); j++) {
             singlecost = new VisualSingleCost(0, card.getCard().getCost().getRed());
-            costs.add(new Pair(drawCost(singlecost,position), 0));
+            costs.add(new Pair<>(drawCost(singlecost,position), 0));
             position++;
         }
         if(singlecost != null && card.getCard().getCost().getRed()>0)
             singlecost = null;
         if(card.getCard().getCost().getYellow()>0){
-            group.getChildren().add(drawSlash(  singlecost.getSlash(), position));
+            group.getChildren().add(drawSlash(  VisualSingleCost.getSlash(), position));
             position++;
         }
         for(int j=0; j<card.getCard().getCost().getYellow(); j++) {
             singlecost = new VisualSingleCost(1, card.getCard().getCost().getYellow());
-            costs.add(new Pair(drawCost(singlecost,position), 1));
+            costs.add(new Pair<>(drawCost(singlecost,position), 1));
             position++;
         }
         if(card.getCard().getCost().getYellow()>0)
             singlecost = null;
         if(singlecost != null && card.getCard().getCost().getBlue()>0){
-            group.getChildren().add(drawSlash( singlecost.getSlash(), position));
+            group.getChildren().add(drawSlash( VisualSingleCost.getSlash(), position));
             position++;
         }
         for(int j=0; j<card.getCard().getCost().getBlue(); j++) {
             singlecost = new VisualSingleCost(2, card.getCard().getCost().getBlue());
-            costs.add(new Pair(drawCost(singlecost,position), 2));
+            costs.add(new Pair<>(drawCost(singlecost,position), 2));
             position++;
         }
         if(card.getCard().getCost().getBlue()>0)
             singlecost = null;
         if(singlecost != null && card.getCard().getCost().getCogs()>0){
-            group.getChildren().add(drawSlash(singlecost.getSlash(), position));
+            group.getChildren().add(drawSlash(VisualSingleCost.getSlash(), position));
             position++;
         }
         for(int j=0; j<card.getCard().getCost().getCogs(); j++) {
             singlecost = new VisualSingleCost(3, card.getCard().getCost().getCogs());
-            costs.add(new Pair(drawCost(singlecost,position), 3));
+            costs.add(new Pair<>(drawCost(singlecost,position), 3));
             position++;
         }
         return costs;
