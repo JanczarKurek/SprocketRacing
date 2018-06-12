@@ -16,7 +16,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import VisualBoard.StartPage;
-
+import javafx.scene.control.ScrollPane;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
@@ -96,8 +97,10 @@ public class ViewManager extends Application {
 
     void visualVehicle(int playerID){
         Group group = new Group();
+        ScrollPane scroll = new ScrollPane();
         group.getChildren().add(new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID)).draw());
-        stages.get(playerID).setScene(new Scene(group, 1003, 599));
+        scroll.setContent(group);
+        stages.get(playerID).setScene(new Scene(scroll, 1003, 599));
     }
 
     void visualBoard(int playerID){

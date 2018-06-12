@@ -11,13 +11,12 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class CardShadow implements VisualElement {
-    private Image image;
 
-    public CardShadow() {
-
+    static private Image image;
+    static {
         try{
             image = new Image(new FileInputStream(Settings.getSettings().getResourcesPath() + "/VehicleCard/cardShadow.png"));
-        }catch (FileNotFoundException e){
+        }catch (FileNotFoundException e) {
             System.err.println("File not found!");
         }
     }

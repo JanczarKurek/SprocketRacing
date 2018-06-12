@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 public class VisualEffect implements VisualElement {
     static private HashMap<String, Image> images = new HashMap<>();
-    static{
+   static{
         try {
             Settings settings = Settings.getSettings();
             String resPref = settings.getResourcesPath();
@@ -39,6 +39,7 @@ public class VisualEffect implements VisualElement {
             throw new RuntimeException(e);
         }
     }
+
     private Effect effect;
 
     private double shift = 0.0;

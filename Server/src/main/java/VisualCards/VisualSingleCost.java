@@ -9,10 +9,24 @@ import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 
 public class VisualSingleCost implements VisualElement {
-    private Image image;
+    static private Image[] images = new Image[4];
     private int number;
     private int color;
-    private ImageView slash;
+    static private ImageView slash;
+
+    static {
+        try {
+            Settings settings = Settings.getSettings();
+            String resPref = settings.getResourcesPath();
+            images[0] = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/RedCube.png"));
+            images[1] = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/YellowCube.png"));
+            images[2] = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/BlueCube.png"));
+            images[3] = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/steam.png"));
+            slash = new ImageView(new Image(new FileInputStream(resPref + "/VehicleCard/Cost/slash.png")));
+        }catch (Exception e){
+            System.err.println("File not found!"+e.getMessage());
+        }
+    }
 
     public int getNumber(){
         return number;
@@ -20,32 +34,15 @@ public class VisualSingleCost implements VisualElement {
     public Node getSlash(){
         return slash;
     }
+
     public VisualSingleCost(int color, int number){
-        Settings settings = Settings.getSettings();
-        String resPref = settings.getResourcesPath();
         this.number=number;
         this.color = color;
-        try {
-            if (color == 0) {
-                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/RedCube.png"));
-            }
-            else if(color ==1 ){
-                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/YellowCube.png"));
-            }
-            else if(color ==2){
-                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/BlueCube.png"));
-            }
-            else{
-                image = new Image(new FileInputStream(resPref + "/VehicleCard/Cost/steam.png"));
-            }
-            slash = new ImageView(new Image(new FileInputStream(resPref + "/VehicleCard/Cost/slash.png")));
-        }catch (Exception e){
-            System.err.println("File not found!");
-        }
+
     }
 
     public Node draw(){
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(images[color]);
         return imageView;
     }
 
