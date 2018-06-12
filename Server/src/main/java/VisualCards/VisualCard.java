@@ -56,20 +56,21 @@ public class VisualCard implements VisualElement {
             try {
 
                 effects = new LinkedList<>();
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("tu też");
             }
-        }
-        name = new VisualName(card.getName());
-        cost = card.getCost();
-        setColorSlot(((VehicleCardData)card).getEngine().getDiceSlots().getColor());
-        if(((VehicleCardData)card).getEngine().getUsageCost() instanceof CardUsageDiceCost)
-            setUsagePipCost(7);
-        else
-            setUsagePipCost(((CardUsagePipCost)((VehicleCardData)card).getEngine().getUsageCost()).getPipCost());
-        setNumberSlots(((VehicleCardData)card).getEngine().getDiceSlots().getSize());
+
+            name = new VisualName(card.getName());
+            cost = card.getCost();
+            setColorSlot(((VehicleCardData) card).getEngine().getDiceSlots().getColor());
+            if (((VehicleCardData) card).getEngine().getUsageCost() instanceof CardUsageDiceCost)
+                setUsagePipCost(7);
+            else
+                setUsagePipCost(((CardUsagePipCost) ((VehicleCardData) card).getEngine().getUsageCost()).getPipCost());
+            setNumberSlots(((VehicleCardData) card).getEngine().getDiceSlots().getSize());
         /*for(CardEffect effect : ((VehicleCardData)card).getEngine().getEffects())
             addEffect(effect.getId()); // jak wyciagnac efekt*/
+        }
 
     }
 

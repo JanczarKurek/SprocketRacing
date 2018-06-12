@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
@@ -58,13 +59,15 @@ public class VisualVehicle implements VisualElement {
     }
     public Node draw(){
         VBox box = new VBox();
-        box.setPrefHeight(599);
-        box.setPrefWidth(1003);
+        box.setPrefHeight(700);
+        box.setPrefWidth(650);
         HBox up = new HBox();
-        up.setPrefHeight(50);
-        up.setPrefWidth(1003);
+        up.setPrefHeight(250);
+        up.setPrefWidth(650);
         up.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
         StackPane down = new StackPane();
+        down.setPrefHeight(400);
+        down.setPrefWidth(650);
         //button
         if(rollButton==true) {
             Button roll = new Button("ROLL");
@@ -85,7 +88,7 @@ public class VisualVehicle implements VisualElement {
         finishPut.setOnAction(event -> {
             try {
                 player.acceptVehicleLayout();
-                ((ViewManager)myApp).visualHand();
+                ((ViewManager)myApp).visualHand(player.getId());
             }catch (Exception e){
                 System.err.println(e.getMessage());
             }
@@ -162,8 +165,11 @@ public class VisualVehicle implements VisualElement {
             }
 
         }
-
-        box.getChildren().addAll(up, down);
+        ScrollPane scrollUp = new ScrollPane();
+        scrollUp.setContent(up);
+        ScrollPane scrollDown = new ScrollPane();
+        scrollDown.setContent(down);
+        box.getChildren().addAll(scrollUp, scrollDown);
         return box;
     }
     public void actualize(){

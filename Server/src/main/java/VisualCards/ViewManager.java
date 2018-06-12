@@ -80,27 +80,26 @@ public class ViewManager extends Application {
 
     public void showStages(){
         int playerID = 0;
-        visualHand();
         for(Stage stagePlayer : stages) {
+            visualHand(playerID);
             playerID++;
             stagePlayer.show();
         }
     }
 
-    void visualHand(){
-        for(int i=0; i<table.numberOfPlayers(); i++) {
+    void visualHand(int playerID){
+       // for(int i=0; i<table.numberOfPlayers(); i++) {
             Group group =  new Group();
-            group.getChildren().add(new VisualHand(this, table.getPlayer(i)).draw());
-            stages.get(i).setScene(new Scene(group, 1003, 599));
-        }
+            group.getChildren().add(new VisualHand(this, table.getPlayer(playerID)).draw());
+            stages.get(playerID).setScene(new Scene(group, 650, 650));
+        //}
     }
 
     void visualVehicle(int playerID){
         Group group = new Group();
         ScrollPane scroll = new ScrollPane();
         group.getChildren().add(new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID)).draw());
-        scroll.setContent(group);
-        stages.get(playerID).setScene(new Scene(scroll, 1003, 599));
+        stages.get(playerID).setScene(new Scene(group, 650, 650));
     }
 
     void visualBoard(int playerID){
