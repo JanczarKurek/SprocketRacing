@@ -1,6 +1,8 @@
 package Cards.CardFactory;
 
 import java.io.*;
+
+import Settings.Settings;
 import org.json.simple.*;
 import java.util.*;
 
@@ -89,7 +91,7 @@ public class ExDeckMaker {
     }
 
     static void putRandomCardEffectArray(JSONObject jsonObject) {
-        int r = new java.util.Random().nextInt(2);
+        int r = new java.util.Random().nextInt(2)+1;
         JSONArray jsonArray = new org.json.simple.JSONArray();
         for (int i = 0; i < r; i++) {
             int p = new java.util.Random().nextInt(1) + 1;
@@ -153,9 +155,11 @@ public class ExDeckMaker {
     }
 
     public static void main(String[] Args) {
-        deckMaker("src/main/java/Files/Deck1");
-        deckMaker("src/main/java/Files/Deck2");
-        deckMaker("src/main/java/Files/Deck3");
-        deckMaker("src/main/java/Files/Deck4");
+        Settings settings = Settings.getSettings();
+        String resPref = settings.getResourcesPath();
+        deckMaker(resPref+"Files/Deck1");
+        deckMaker(resPref+"Files/Deck2");
+        deckMaker(resPref+"Files/Deck3");
+        deckMaker(resPref+"Files/Deck4");
     }
 }

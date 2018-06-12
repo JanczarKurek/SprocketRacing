@@ -3,23 +3,22 @@ package VisualCards;
 import Cards.CardEffect;
 import Cards.Joints;
 import Cards.VehicleCardData;
+import Players.Player;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import misc.Effect;
-
-import java.util.Collection;
-import java.util.LinkedList;
 
 public class VisualVehicleCardController implements VisualElement{
     private Node node;
     private VisualCard card;
+    static private boolean clickCard = false;
 
     public VisualVehicleCardController(VisualCard card, Node node){
         this.card=card;
         this.node=node;
     }
+
 
     private Node drawJoint(VisualJoint joint, VisualCard card){
         try{
@@ -68,23 +67,34 @@ public class VisualVehicleCardController implements VisualElement{
     }
     private Node drawSlots(){
         Group out = new Group();
-        if(card.getSlots()==null)
+        if(((VehicleCardData)card.getCard()).getDiceSlots()==null)
             System.err.println("NULL");
-        for(int i=0; i<card.getSlots().getSize(); i++){
-            VisualDiceSlot visualSlot = new VisualDiceSlot(card.getColorSlot());
-            Node temp = visualSlot.draw();
-            temp.setTranslateX(node.getTranslateX()+50*(i%2)+40);
-            temp.setTranslateY(node.getTranslateY()+50*(i/2)+65);
-            out.getChildren().add(temp);
-            try{
-                VisualDice dice = new VisualDice(card.getSlots().getDice(i));
-                Node diceVisual = dice.draw();
-                diceVisual.setTranslateY(temp.getTranslateY()+5);
-                diceVisual.setTranslateX(temp.getTranslateX()+5);
-                out.getChildren().add(diceVisual);
+        for(int i=0; i<((VehicleCardData)card.getCard()).getDiceSlots().getSize(); i++) {
+            try {
+                VisualDiceSlot visualSlot = new VisualDiceSlot((((VehicleCardData) card.getCard()).getDiceSlots()).getColor());
+                Node temp = visualSlot.draw();
+                temp.setTranslateX(node.getTranslateX() + 50 * (i % 2) + 40);
+                temp.setTranslateY(node.getTranslateY() + 50 * (i / 2) + 65);
+                out.getChildren().add(temp);
+                try {
+                    VisualDice dice = new VisualDice(((VehicleCardData) card.getCard()).getDiceSlots().getDice(i));
+                    dice.setPositionOnHand(i);
+                    Node diceVisual = dice.draw();
+                    diceVisual.setTranslateY(temp.getTranslateY() + 5);
+                    diceVisual.setTranslateX(temp.getTranslateX() + 5);
+                    diceVisual.setOnMouseClicked(event -> {
+                        System.out.println("dice click "+dice.getPositionOnHand());
+                        /*if(clickCard){
 
-            }catch (Exception e){
-                //System.err.println("Slots error "+e.getClass().getName());
+                        }*/
+                    });
+                    out.getChildren().add(diceVisual);
+
+                } catch (Exception e) {
+                    System.err.println("Dice not exsist "+e.getMessage());
+                }
+            } catch (Exception e) {
+                System.err.println("Slot error "+e.getMessage());
             }
         }
         return out;
@@ -95,14 +105,16 @@ public class VisualVehicleCardController implements VisualElement{
         cost.setTranslateY(node.getTranslateY()+100);
         return cost;
     }
-    private Node drawEffects(Collection<CardEffect> effectColl){
-       Group group = new  Group();
-        int slashes = 0;
-        int width = 0;
-        for(int i=0; i<effectColl.size(); i++){
-
-           // group.getChildren().add(new VisualEffectPack(effectColl.get(i)));
-        }
+    private Node drawEffects(CardEffect effectColl){
+        System.out.println("draw Effect");
+        Group group = new  Group();
+        Node node = new VisualEffectPack(effectColl).draw();
+        node.setScaleX(0.8);
+        node.setScaleY(0.8);
+        node.setTranslateX(node.getTranslateX()+200);
+        node.setTranslateY(node.getTranslateY()+90);
+            group.getChildren().add(node);
+       ;
         return group;
     }
     @Override
@@ -164,11 +176,25 @@ public class VisualVehicleCardController implements VisualElement{
         }
         group.getChildren().add(drawSlots());
         group.getChildren().add(drawPipCost());
-//        group.getChildren().add(drawEffects(((VehicleCardData)card.getCard()).getEngine().getEffects()));
+        try {
+            System.out.println("1");
+            ((VehicleCardData)card.getCard()).getEngine();
+            System.out.println("2");
+            group.getChildren().add(drawEffects(((VehicleCardData)card.getCard()).getEngine().getCardEffect()));
+        }catch (Exception e){
+            System.out.println("EXCEPTION " +  e.getMessage() + " " + e.getLocalizedMessage());
+        }
         return group;
     }
     @Override
     public void actualize() {
     }
 
+    static private void clickDice(){
+        throw new RuntimeException();
+    }
+
+    static private void setClickCard(){
+        clickCard = true;
+    }
 }

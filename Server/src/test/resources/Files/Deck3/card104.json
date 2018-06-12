@@ -1,1 +1,1 @@
-{"VehicleCardEngine":{"DiceSlots":{"size":2,"Color":"red"},"CardEffect":[],"CardUsageCost":{"isCardUsagePipeCost":false}},"Id":350,"Cost":{"red":2,"blue":0,"yellow":0},"Joints":[true,true,true,true],"Name":"vanitas"}
+{"VehicleCardEngine":{"DiceSlots":{"size":4,"Color":"blue"},"CardEffect":[[{"red":0,"blue":2,"yellow":0,"effectType":"GetResourceEffect","gears":2}]],"CardUsageCost":{"cost":2,"isCardUsagePipeCost":true}},"Id":350,"Cost":{"red":2,"blue":0,"yellow":0},"Joints":[true,true,false,true],"Name":"omnia"}
