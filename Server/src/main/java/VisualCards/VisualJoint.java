@@ -14,14 +14,38 @@ import java.util.Set;
 
 public class VisualJoint implements VisualElement {
 
-    private Image image;
+    static private Image image;
     private int rotation;
     private int position; //0-left, 1-right, 2-up, 3-down
-    private int heigth;
-    private int width;
+    static private int heigth;
+    static private int width;
+   /* static {
+        try {
+            image = new Image(new FileInputStream(Settings.getSettings().getResourcesPath() + "VehicleCard/Joint.png"));
+            File file = new File(Settings.getSettings().getResourcesPath() + "VehicleCard/JointDescription.txt");
+            FileInputStream stream = new FileInputStream(file);
+            Scanner fileReader = new Scanner(stream);
+            width = fileReader.nextInt();
+            heigth = fileReader.nextInt();
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+    }*/
+
+    static {
+        try {
+            image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Joint.png"));
+            File file = new File("Server/src/test/resources/VehicleCard/JointDescription.txt");
+            FileInputStream stream = new FileInputStream(file);
+            Scanner fileReader = new Scanner(stream);
+            width = fileReader.nextInt();
+            heigth = fileReader.nextInt();
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+    }
 
     public VisualJoint(boolean left, boolean right, boolean up, boolean down ) {
-        try {
             if (left) {
                 position = 0;
                 rotation = 270;
@@ -38,15 +62,7 @@ public class VisualJoint implements VisualElement {
                 position = 3;
                 rotation = 180;
             }
-            image = new Image(new FileInputStream(Settings.getSettings().getResourcesPath() + "VehicleCard/Joint.png"));
-            File file = new File(Settings.getSettings().getResourcesPath() + "VehicleCard/JointDescription.txt");
-            FileInputStream stream = new FileInputStream(file);
-            Scanner fileReader = new Scanner(stream);
-            width  = fileReader.nextInt();
-            heigth = fileReader.nextInt();
-        }catch (FileNotFoundException e){
-            System.err.println("File not found!");
-        }
+
     }
 
     public int getHeigth(){

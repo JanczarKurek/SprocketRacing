@@ -1,6 +1,7 @@
 package VisualCards;
 
 import Cards.CardEffect;
+import Cards.Joints;
 import Cards.VehicleCardData;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
@@ -94,78 +95,76 @@ public class VisualVehicleCardController implements VisualElement{
         cost.setTranslateY(node.getTranslateY()+100);
         return cost;
     }
-    private Node drawEffects(Collection<CardEffect> effects){
-       /* Group group = new  Group();
+    private Node drawEffects(Collection<CardEffect> effectColl){
+       Group group = new  Group();
         int slashes = 0;
         int width = 0;
-        for(int i=0; i<){
-            if(i==11) {
-                width = 0;
-                slashes++;
-            }
-            Node effect;
-            if(i==11) {
-                effect = new VisualEffect().draw();
-                effect.setTranslateY(node.getTranslateY()+70+slashes*50 - 45);
-                effect.setTranslateX(node.getTranslateX()+210+width*45);
-                width = 0;
-            }
-            else{
-                effect = new VisualEffect(i).draw();
-                effect.setTranslateY(node.getTranslateY()+70+(slashes)*65);
-                effect.setTranslateX(node.getTranslateX()+210+width*45);
-                width++;
+        for(int i=0; i<effectColl.size(); i++){
 
-            }
-            group.getChildren().add(effect);
+           // group.getChildren().add(new VisualEffectPack(effectColl.get(i)));
         }
-        return group;*/
-       return null;
+        return group;
     }
     @Override
     public Node draw() {
         Group group = new Group();
         int i=0;
-        for (VisualJoint joint : card.getJoints()) {
-            group.getChildren().add(drawJoint(joint, card));
+        //boolean left, boolean right, boolean up, boolean down
+        if(((VehicleCardData)card.getCard()).getJoints().isLeft()){
+            group.getChildren().add(drawJoint(new VisualJoint(true, false, false, false), card));
         }
+        if(((VehicleCardData)card.getCard()).getJoints().isRight()){
+            group.getChildren().add(drawJoint(new VisualJoint(false, true, false, false), card));
+        }
+        if(((VehicleCardData)card.getCard()).getJoints().isUp()){
+            group.getChildren().add(drawJoint(new VisualJoint(false, false, true, false), card));
+        }
+        if(((VehicleCardData)card.getCard()).getJoints().isDown()){
+            group.getChildren().add(drawJoint(new VisualJoint(false, false, false, true), card));
+        }
+        //}
         group.getChildren().add(drawName( card.getName()));
         int position=0;
         VisualSingleCost singlecost=null;
-        for(int j=0; j<card.redCost(); j++) {
-            singlecost = new VisualSingleCost(0, card.redCost());
-            group.getChildren().add(drawCost( new VisualSingleCost(0, card.redCost()), position));
+        for(int j=0; j<card.getCard().getCost().getRed(); j++) {
+            singlecost = new VisualSingleCost(0, card.getCard().getCost().getRed());
+            group.getChildren().add(drawCost( new VisualSingleCost(0, card.getCard().getCost().getRed()), position));
             position++;
         }
-        if(card.redCost()>0){
+        if(singlecost != null  && card.getCard().getCost().getYellow()>0){
             group.getChildren().add(drawSlash(  singlecost.getSlash(), position));
             position++;
+            singlecost = null;
         }
-        for(int j=0; j<card.yellowCost(); j++) {
-            singlecost = new VisualSingleCost(1, card.yellowCost());
+        for(int j=0; j<card.getCard().getCost().getYellow(); j++) {
+            singlecost = new VisualSingleCost(1, card.getCard().getCost().getYellow());
             group.getChildren().add(drawCost(singlecost ,position));
             position++;
         }
-        if(card.yellowCost()>0){
+        if( singlecost != null && card.getCard().getCost().getBlue()>0){
+            System.out.println("null? "+ (singlecost==null));
             group.getChildren().add(drawSlash( singlecost.getSlash(), position));
             position++;
+            singlecost = null;
         }
-        for(int j=0; j<card.blueCost(); j++) {
-            singlecost = new VisualSingleCost(2, card.blueCost());
-            group.getChildren().add(drawCost(new VisualSingleCost(2, card.blueCost()), position));
+        for(int j=0; j<card.getCard().getCost().getBlue(); j++) {
+            singlecost = new VisualSingleCost(2, card.getCard().getCost().getBlue());
+            group.getChildren().add(drawCost(singlecost ,position));
             position++;
         }
-        if(card.blueCost()>0){
-            group.getChildren().add(drawSlash(singlecost.getSlash(), position));
+        if( singlecost != null && card.getCard().getCost().getCogs()>0){
+            System.out.println("null? "+ (singlecost.getSlash()==null));
+          //  group.getChildren().add(drawSlash( singlecost.getSlash(), position));
             position++;
+            singlecost = null;
         }
-        for(int j=0; j<card.cogsCost(); j++) {
-            group.getChildren().add(drawCost(new VisualSingleCost(3, card.cogsCost()), position));
+        for(int j=0; j<card.getCard().getCost().getCogs(); j++) {
+            group.getChildren().add(drawCost(new VisualSingleCost(3, card.getCard().getCost().getCogs()), position));
             position++;
         }
         group.getChildren().add(drawSlots());
         group.getChildren().add(drawPipCost());
-        //group.getChildren().add(drawEffects(((VehicleCardData)card.getCard()).getEngine().getEffects()));
+//        group.getChildren().add(drawEffects(((VehicleCardData)card.getCard()).getEngine().getEffects()));
         return group;
     }
     @Override

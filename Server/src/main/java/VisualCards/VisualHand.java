@@ -15,6 +15,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -29,23 +31,18 @@ public class VisualHand implements VisualElement {
     public VisualHand(Application app, Player player){
         myApp = app;
         this.player = player;
-        try {
-            player.aquireHand();
-        }catch (Exception e){
-            System.err.println("aquire exception " + e.getClass().getName());
-        }
     }
 
     private Node drawCost( VisualSingleCost cost, int position){
         Node out = cost.draw();
-        out.setTranslateX(820+position*21);
-        out.setTranslateY(300);
+        out.setTranslateX(500+position*21);
+        out.setTranslateY(150);
         return out;
     }
 
     private Node drawSlash(Node slash, int position){
-        slash.setTranslateX(820+position*21+5);
-        slash.setTranslateY(300);
+        slash.setTranslateX(500+position*21+5);
+        slash.setTranslateY(150);
         return slash;
     }
 
@@ -53,39 +50,41 @@ public class VisualHand implements VisualElement {
         int position=0;
         LinkedList<Pair<Node,Integer>> costs= new LinkedList<>();
         VisualSingleCost singlecost=null;
-        for(int j=0; j<card.redCost(); j++) {
-            singlecost = new VisualSingleCost(0, card.redCost());
-            //group.getChildren().add(drawCost( singlecost, position));
+        for(int j=0; j<card.getCard().getCost().getRed(); j++) {
+            singlecost = new VisualSingleCost(0, card.getCard().getCost().getRed());
             costs.add(new Pair(drawCost(singlecost,position), 0));
             position++;
         }
-        if(card.redCost()>0){
+        if(singlecost != null && card.getCard().getCost().getRed()>0)
+            singlecost = null;
+        if(card.getCard().getCost().getYellow()>0){
             group.getChildren().add(drawSlash(  singlecost.getSlash(), position));
             position++;
         }
-        for(int j=0; j<card.yellowCost(); j++) {
-            singlecost = new VisualSingleCost(1, card.yellowCost());
-            //group.getChildren().add(drawCost(singlecost ,position));
+        for(int j=0; j<card.getCard().getCost().getYellow(); j++) {
+            singlecost = new VisualSingleCost(1, card.getCard().getCost().getYellow());
             costs.add(new Pair(drawCost(singlecost,position), 1));
             position++;
         }
-        if(card.yellowCost()>0){
+        if(card.getCard().getCost().getYellow()>0)
+            singlecost = null;
+        if(singlecost != null && card.getCard().getCost().getBlue()>0){
             group.getChildren().add(drawSlash( singlecost.getSlash(), position));
             position++;
         }
-        for(int j=0; j<card.blueCost(); j++) {
-            singlecost = new VisualSingleCost(2, card.blueCost());
-            //group.getChildren().add(drawCost(singlecost ,position));
+        for(int j=0; j<card.getCard().getCost().getBlue(); j++) {
+            singlecost = new VisualSingleCost(2, card.getCard().getCost().getBlue());
             costs.add(new Pair(drawCost(singlecost,position), 2));
             position++;
         }
-        if(card.blueCost()>0){
+        if(card.getCard().getCost().getBlue()>0)
+            singlecost = null;
+        if(singlecost != null && card.getCard().getCost().getCogs()>0){
             group.getChildren().add(drawSlash(singlecost.getSlash(), position));
             position++;
         }
-        for(int j=0; j<card.cogsCost(); j++) {
-            singlecost = new VisualSingleCost(3, card.blueCost());
-            //group.getChildren().add(drawCost(singlecost ,position));
+        for(int j=0; j<card.getCard().getCost().getCogs(); j++) {
+            singlecost = new VisualSingleCost(3, card.getCard().getCost().getCogs());
             costs.add(new Pair(drawCost(singlecost,position), 3));
             position++;
         }
@@ -96,18 +95,18 @@ public class VisualHand implements VisualElement {
             @Override
             public void handle(Event event) {
                 Button sell = new Button("SELL");
-                sell.setTranslateX(card.getWidth()*(2.5));
-                sell.setTranslateY(card.getHeight());
+                sell.setTranslateX((card.getWidth()/2)*(3));
+                sell.setTranslateY((card.getHeight()/2));
                 Button take = new Button("TAKE");
-                take.setTranslateX(card.getWidth()*(2.5)+50);
-                take.setTranslateY(card.getHeight());
+                take.setTranslateX((card.getWidth()/2)*(3)+50);
+                take.setTranslateY(card.getHeight()/2);
                 group.getChildren().add(sell);
                 group.getChildren().add(take);
                 sell.setOnAction(value ->  {
                     try {
-                        player.chooseCard(0);
+                        player.chooseCard(card.getCard().getID());
                     }catch (WrongMove mv){
-                        System.err.println("wrong mv");
+                        System.err.println("wrong mv " + mv.getMessage());
                     }
                     LinkedList<Pair<Node, Integer>> costs = new LinkedList<>();
                     costs.addAll(drawCostManager(card, group));
@@ -116,52 +115,34 @@ public class VisualHand implements VisualElement {
                         group.getChildren().add(pair.getKey());
                         pair.getKey().setOnMouseClicked(val -> {
                             if(pair.getValue()==0) {
-                                /*for(int j=0; j<((VehicleCardData)card.getCard()).getCost().getRed(); j++){
-                                    ((ViewManager) myApp).addDice(new VisualDice(new Dice(Dice.Color.RED)));
-                                    System.out.println("RED");
-                                }*/
                                 try {
                                     player.sellCard(Dice.Color.RED);
                                 }catch (Exception e){
-                                    System.err.println("sell exception: "+e.getClass().getName());
+                                    System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
                             else if(pair.getValue()==1) {
-                                /*for(int j=0; j<((VehicleCardData)card.getCard()).getCost().getYellow(); j++){
-                                    ((ViewManager) myApp).addDice(new VisualDice(new Dice(Dice.Color.YELLOW)));
-                                    System.out.println("YELLOW");
-                                }*/
                                 try {
                                     player.sellCard(Dice.Color.YELLOW);
                                 }catch (Exception e){
-                                    System.err.println("sell exception: "+e.getClass().getName());
+                                    System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
                             else if(pair.getValue()==2) {
-                                /*for(int j=0; j<((VehicleCardData)card.getCard()).getCost().getBlue(); j++){
-                                    ((ViewManager) myApp).addDice(new VisualDice(new Dice(Dice.Color.BLUE)));
-                                    System.out.println("BLUE");
-                                }*/
                                 try {
                                     player.sellCard(Dice.Color.BLUE);
                                 }catch (Exception e){
-                                    System.err.println("sell exception: "+e.getClass().getName());
+                                    System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
                             else  if(pair.getValue()==3) {
-                              /*  System.out.println("COG");
-                                for(int j=0; j<((VehicleCardData)card.getCard()).getCost().getCogs(); j++){
-                                    ((ViewManager) myApp).addDice(new VisualDice(new Dice(Dice.Color.BLUE)));
-                                    System.out.println("BLUE");
-                                }*/
                                 try {
                                     player.sellCard();
                                 }catch (Exception e){
-                                    System.err.println("sell exception: "+e.getClass().getName());
+                                    System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
-                            //if(player.getHandSize()>1){
-                                try {
+                            try {
                                     player.aquireHand();
                                     ((ViewManager) myApp).visualHand();
                                 }catch(Exception e){
@@ -176,61 +157,71 @@ public class VisualHand implements VisualElement {
                                     }
                                     ((ViewManager) myApp).visualVehicle(player.getId());
                                 }
-                                }
-                           // }
+                            }
                         });
                     }
 
                 });
                 take.setOnAction(value ->  {
                     try {
-                        player.chooseCard(0);
+                        player.chooseCard(card.getCard().getID());
                         player.takeCard();
+                        ((ViewManager) myApp).visualVehicle(player.getId());
                     }catch (Exception e){
-                        System.err.println("Choose card : Wrong move!"+e.getClass().getName()+" id: "+0);
+                        System.err.println("Choose card : Wrong move!"+e.getMessage());
                     }
-                    ((ViewManager)myApp).addCard(card);
-                    if(player.getHandSize()>1){
-                        try{
+
+                    try{
                             player.aquireHand();
-                        }
-                        catch(Exception e){
-                            System.err.println(e.getClass().getName());
-                        }
-                        ((ViewManager) myApp).visualHand();
-                        System.out.println(card.getCard().getID());
+                            ((ViewManager) myApp).visualHand();
                     }
-                    else{
+                    catch(Exception e){
                         try {
                             player.vote();
-                        }catch(Exception e){
-                            System.err.println(e.getClass().getName());
-                        }
+                        }catch(Exception e2){
+                            System.err.println(e2.getClass().getName());
+
                         ((ViewManager) myApp).visualVehicle(player.getId());
                     }
 
+                }
                 });
-            }
-        };
+            }};
         node.setOnMouseClicked(handler);
     }
 
+
     @Override
     public Node draw() {
+        try {
+            player.aquireHand();
+        }catch (Exception e){
+            System.out.println("Constructor error "+ e.getMessage());
+            if(e.getMessage().contains("prev players should pass hand first")){
+                System.out.println("I am waiting");
+                ((ViewManager) myApp).waitForPrevPlayer(player.getId());
+            };
+        }
         Group group = new Group();
+     /* Button aquire = new Button("AQUIRE HAND");
+        aquire.setTranslateX((new VisualCard(null).getWidth()/2)*(2.5));
+        aquire.setTranslateY((new VisualCard().getHeight()/2+30));
+        group.getChildren().add(aquire);*/
         int i=0;
         for(Card cardData : player.getMyHand().getCards()){
             VisualCard card = (new LoadedCard((VehicleCardData)cardData)).getVisualCard();
             System.out.println(card==null);
             Node node = card.draw();
+            node.setScaleY(0.5);
+            node.setScaleX(0.5);
             if(i<2) {
-                node.setTranslateY(20);
-                node.setTranslateX(i*(card.getWidth())+(i+1)*20);
+                node.setTranslateY(10);
+                node.setTranslateX(i*(card.getWidth()/2)+(i+1)*10);
 
             }
             else{
-                node.setTranslateY(card.getHeight()+40);
-                node.setTranslateX(((i%2)*card.getWidth())+((i%2)+1)*20);
+                node.setTranslateY(card.getHeight()/2+30);
+                node.setTranslateX((i%2)*(card.getWidth()/2)+((i%2)+1)*10);
             }
             group.getChildren().add(node);
             buttons(card, node, group);

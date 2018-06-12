@@ -20,10 +20,10 @@ import java.util.Scanner;
 
 public class VisualCard implements VisualElement {
 
-    private Image background;
+    static private Image background;
     private Card card;
-    private int height;
-    private int width;
+    static private int height;
+    static private int width;
     private ArrayList<VisualJoint> joints = new ArrayList<>();
     private VisualName name;
     private Cost cost;
@@ -33,21 +33,28 @@ public class VisualCard implements VisualElement {
     private int slotsNumber;
     private int usagePipCost;
 
+    static {
+        Settings settings = Settings.getSettings();
+        String resPref = settings.getResourcesPath();
+        try {
+            background = new Image(new FileInputStream(resPref + "VehicleCard/CardVehicle.png"));
+        }catch (Exception e){
+            System.out.println("tu łapię " + e.getMessage());
+        }
+        try {
+            File file = new File(resPref + "VehicleCard/VehicleCardDescription.txt");
+            FileInputStream stream = new FileInputStream(file);
+            Scanner fileReader = new Scanner(stream);
+            setXY(fileReader.nextInt(), fileReader.nextInt());
+        }catch (Exception e){
+            System.out.println("tu też");
+        }
+    }
     public VisualCard(Card card){
         this.card = card;
         if(card instanceof VehicleCard) {
-            Settings settings = Settings.getSettings();
-            String resPref = settings.getResourcesPath();
             try {
-                background = new Image(new FileInputStream(resPref + "VehicleCard/CardVehicle.png"));
-            }catch (Exception e){
-                System.out.println("tu łapię " + e.getClass().getName());
-            }
-            try {
-                File file = new File(resPref + "VehicleCard/VehicleCardDescription.txt");
-                FileInputStream stream = new FileInputStream(file);
-                Scanner fileReader = new Scanner(stream);
-                setXY(fileReader.nextInt(), fileReader.nextInt());
+
                 effects = new LinkedList<>();
             }catch (Exception e){
                 System.out.println("tu też");
@@ -66,7 +73,7 @@ public class VisualCard implements VisualElement {
 
     }
 
-    private void setXY(int x, int y){
+    static private void setXY(int x, int y){
         width = x;
         height = y;
     }
