@@ -27,7 +27,7 @@ public class VisualWallet implements VisualElement{
         }
     }
 
-    VisualWallet(ResourceWallet wallet){
+    public VisualWallet(ResourceWallet wallet){
         this.wallet = wallet;
     }
 

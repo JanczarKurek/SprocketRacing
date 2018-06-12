@@ -49,7 +49,7 @@ public class UseVehicle implements VisualElement {
     }
 
     public Node draw(){
-        Group group = new Group();
+       /* Group group = new Group();
         //button
 
         Button board = new Button("RACE!");
@@ -72,7 +72,7 @@ public class UseVehicle implements VisualElement {
                 group.getChildren().add(controller.draw());
                 node.setOnMouseClicked(event3 -> {
                     VisualCard visCard = map.get(card.getCard().getID());
-                    LinkedList<Integer> effects = visCard.getEffects();
+                 //   LinkedList<Integer> effects = visCard.getEffects();
                     int usagePipCost = visCard.getUsagePipCost();
                     int sumPips=0;
                     for(Dice dice : visCard.getSlots().getDice())
@@ -106,8 +106,8 @@ public class UseVehicle implements VisualElement {
             }catch (Exception e){
                 System.err.println("Controller error "+ e.getClass().getName());
             }
-        }
-        return group;
+        }*/
+        return null;
     }
     public void actualize(){
         vehicle = layout.getTrain();

@@ -8,32 +8,31 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 
 public class VisualDiceSlot implements VisualElement {
     private Dice.Color color;
-    private Image image;
+    static private HashMap<Dice.Color, Image> images = new HashMap();
 
-    public VisualDiceSlot(Dice.Color color){
-        try {
+    static{
+       try {
             Settings settings = Settings.getSettings();
             String resPref = settings.getResourcesPath();
-            this.color = color;
-            if (color == Dice.Color.RED) {
-                image = new Image(new FileInputStream(resPref + "VehicleCard/FireDicePool.png"));
-            }
-            else if(color == Dice.Color.BLUE ){
-                image = new Image(new FileInputStream(resPref + "VehicleCard/SteamDicePool.png"));
-            }
-            else{
-                image = new Image(new FileInputStream(resPref + "VehicleCard/EletricityDicePool.png"));
-            }
+            images.put(Dice.Color.RED,new Image(new FileInputStream(resPref + "VehicleCard/FireDicePool.png")));
+            images.put(Dice.Color.BLUE,new Image(new FileInputStream(resPref + "VehicleCard/SteamDicePool.png")));
+            images.put(Dice.Color.YELLOW, new Image(new FileInputStream(resPref + "VehicleCard/EletricityDicePool.png")));
         }catch (Exception e){
             System.err.println("File not found!");
         }
+
+    }
+
+    public VisualDiceSlot(Dice.Color color){
+            this.color = color;
     }
 
     public Node draw(){
-        ImageView imageView = new ImageView(image);
+        ImageView imageView = new ImageView(images.get(color));
         return imageView;
     }
 

@@ -3,216 +3,177 @@ package VisualCards;
 import Cards.*;
 import Cards.Layout.CardInLayout;
 import Cards.Layout.CardsLayout;
-import Cards.LoadedCard;
-import InGameResources.Dice.Dice;
 import Players.Player;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
+import VisualPlayer.VisualWallet;
 import javafx.application.Application;
-import javafx.scene.Group;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.util.Pair;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class VisualVehicle implements VisualElement {
     private CardsLayout layout;
-    private LinkedList<CardInLayout> vehicle;
-    private CardMap.StaticMap map;
     private Application myApp;
     private VisualCard waitingCard;
     private HashMap<CardInLayout, Node> nodeMap = new HashMap<>();
     private VisualDice waitingDice;
     private Player player;
+    private boolean rollButton=false;
 
     public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
-        vehicle = new LinkedList<>();
         this.layout = layout;
-        vehicle.addAll(layout.getTrain());
         this.player = player;
     }
 
 
-    public void  setMap(CardMap.StaticMap map){
-        this.map=map;
-    }
-
-
-    private void drawPlaces(Group group, VehicleCardData data){
+    private void drawPlaces(Pane group, VehicleCardData data, int positionOnHand){
         System.out.println("drawPlaces");
-        Joints joints = data.getJoints();
-        CardShadow shadow;
-        for(CardInLayout card : nodeMap.keySet()) {
-            Node node = nodeMap.get(card);
-            Joints joints2 = card.getCard().getJoints();
-            if (joints2.isLeft() && joints.isRight()) {
-                System.out.println("n1");
-                shadow = new CardShadow();
-                Node node1 = shadow.draw();
-                node1.setTranslateY(node.getTranslateY());
-                node1.setTranslateX(node.getTranslateX() - 350);
-                group.getChildren().add(node1);
-                node1.setOnMouseClicked(event -> {
-                    System.out.println("click");
-                    CardInLayout newCard = new CardInLayout((VehicleCardData) waitingCard.getCard(), card.getCoordinates().getKey() - 1, card.getCoordinates().getValue());
-                    layout.add(newCard);
-                    waitingCard = null;
+        CardShadow shadow = new CardShadow();
+        for(Pair<Integer, Integer> pair: player.getMyVehicle().possiblePositions(data)){
+            Node node = shadow.draw();
+            node.setScaleX(0.5);
+            node.setScaleY(0.5);
+            node.setTranslateX(50+pair.getKey()*(350/2));
+            node.setTranslateY(50 + pair.getValue()* (223/2));
+            group.getChildren().add(node);
+            node.setOnMouseClicked(event -> {
+                System.out.println("shadow click");
+                try {
+                    player.putCard(positionOnHand, pair.getKey(), pair.getValue());
                     actualize();
-                });
-            }
-            if (joints2.isRight() && joints.isLeft()) {
 
-                System.out.println("n2");
-                shadow = new CardShadow();
-                Node node1 = shadow.draw();
-                node1.setTranslateY(node.getTranslateY());
-                node1.setTranslateX(node.getTranslateX() + 350);
-                group.getChildren().add(node1);
-                node1.setOnMouseClicked(event -> {
-                    System.out.println("click");
-                    CardInLayout newCard = new CardInLayout((VehicleCardData) waitingCard.getCard(), card.getCoordinates().getKey() + 1, card.getCoordinates().getValue());
-                    layout.add(newCard);
-                    waitingCard = null;
-                    actualize();
-                });
-            }
-            if (joints2.isUp() && joints.isDown()) {
-                System.out.println("n3");
-                shadow = new CardShadow();
-                Node node1 = shadow.draw();
-                node1.setTranslateY(node.getTranslateY() - 233);
-                node1.setTranslateX(node.getTranslateX());
-                group.getChildren().add(node1);
-                node1.setOnMouseClicked(event -> {
-                    System.out.println("click");
-                    CardInLayout newCard = new CardInLayout((VehicleCardData) waitingCard.getCard(), card.getCoordinates().getKey(), card.getCoordinates().getValue() - 1);
-                    layout.add(newCard);
-                    waitingCard = null;
-                    actualize();
-                });
-            }
-            if (joints.isDown() && joints2.isUp()) {
-                System.out.println("n4");
-                shadow = new CardShadow();
-                Node node1 = shadow.draw();
-                node1.setTranslateY(node.getTranslateY() + 233);
-                node1.setTranslateX(node.getTranslateX());
-                group.getChildren().add(node1);
-                node1.setOnMouseClicked(event -> {
-                    System.out.println("click");
-                    CardInLayout newCard = new CardInLayout((VehicleCardData) waitingCard.getCard(), card.getCoordinates().getKey(), card.getCoordinates().getValue() + 1);
-                    layout.add(newCard);
-                    waitingCard = null;
-                    actualize();
-                });
-            }
+                }catch (Exception e){
+                    System.err.println(e.getMessage());
+                }
+            });
         }
     }
     public Node draw(){
-        Group group = new Group();
+        VBox box = new VBox();
+        box.setPrefHeight(599);
+        box.setPrefWidth(1003);
+        HBox up = new HBox();
+        up.setPrefHeight(50);
+        up.setPrefWidth(1003);
+        up.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY)));
+        StackPane down = new StackPane();
         //button
-        if(player.getMyWallet().getDices().get(0)!=null) {
+        if(rollButton==true) {
             Button roll = new Button("ROLL");
             roll.setOnAction(event -> {
-                for (int i=0; i<player.getMyWallet().getDices().size() ; i++) {
-                    player.getMyWallet().getDices().get(i).roll();
-                    group.getChildren().remove(roll);
-                }
-                int j = 1;
-                for (int i=0; i<player.getMyWallet().getDices().size() ; i++) {
-                    VisualDice visualDice = new VisualDice(player.getMyWallet().getDices().get(i));
-                    Node node = visualDice.draw();
-                    node.setTranslateX(10 + 60 * j);
-                    node.setTranslateY(30);
-                    node.setOnMouseClicked(event1 -> {
-                        System.out.println("dice click");
-                        waitingDice = visualDice;
-                    });
-                    group.getChildren().add(node);
-                    j++;
+                rollButton=false;
+                try {
+                    player.roll();
+                }catch (Exception e){
+                    System.err.println(e.getMessage());
                 }
             });
             roll.setTranslateY(30);
             roll.setTranslateX(10);
-            group.getChildren().add(roll);
+            up.getChildren().add(roll);
         }
 
-        Button board = new Button("RACE!");
-        board.setOnAction(event -> {
-            ((ViewManager)myApp).visualBoard(player.getId());
-        });
-        group.getChildren().add(board);
-        board.setTranslateY(60);
-        board.setTranslateX(10);
-
-        //dices
-        for (int i=1; i<=player.getMyWallet().getDices().size() ; i++) {
-            VisualDice visualDice = new VisualDice(player.getMyWallet().getDices().get(i-1));
-            Node node = visualDice.draw();
-            node.setTranslateX(10+60*i);
-            node.setTranslateY(30);
-            group.getChildren().add(node);
-            node.setOnMouseClicked(event -> {
-                System.out.println("dice click");
-                waitingDice = visualDice;
-            });
-        }
-        //names
-        int i=0;
-       /* for(Card card : player.getMyHand().getCards()){
-            VisualCard visualCard = new LoadedCard((VehicleCardData)card).getVisualCard();
-            Node node2 = visualCard.getName().draw();
-            node2.setTranslateX(40+150*i);
-            node2.setTranslateY(20);
-            node2.prefWidth(100);
-            node2.prefHeight(100);
-            group.getChildren().add(node2);
-            node2.setOnMouseClicked(event2 -> {
-                if(vehicle.size()==0) {
-                    layout.add((VehicleCardData) visualCard.getCard(), 1, 1);
-                    actualize();
-                }
-                else{
-                    waitingCard = visualCard;
-                    drawPlaces(group, (VehicleCardData) visualCard.getCard());
-                }
-                //actualize();
-            });
-            i++;
-        }*/
-        //vehicle
-        for(CardInLayout card : vehicle){
+        Button finishPut = new Button("FINISH PUT");
+        finishPut.setOnAction(event -> {
             try {
-                Node node = map.get(card.getCard().getID()).draw();
-                node.setTranslateY(50+card.getCoordinates().getValue()*223);
-                node.setTranslateX(50+card.getCoordinates().getKey()*350);
-                VisualVehicleCardController controller = new VisualVehicleCardController(map.get(card.getCard().getID()), node);
-                group.getChildren().add(node);
-                group.getChildren().add(controller.draw());
-                node.setOnMouseClicked(event3 -> {
+                player.acceptVehicleLayout();
+                ((ViewManager)myApp).visualHand();
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        });
+
+        up.getChildren().add(finishPut);
+
+        /*Button board = new Button("ACCEPT VEHICLE");
+        board.setOnAction(event -> {
+            try {
+                player.acceptVehicleLayout();
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+            ((ViewManager)myApp).visualHand();
+        });
+        up.getChildren().add(board);
+        board.setTranslateY(60);
+        board.setTranslateX(10);*/
+
+        //wallet
+        Node nodeWallet = new VisualWallet(player.getMyWallet()).draw();
+        nodeWallet.setScaleX(0.5);
+        nodeWallet.setScaleY(0.5);
+        nodeWallet.setTranslateX(0);
+        nodeWallet.setTranslateY(0);
+        up.getChildren().add(nodeWallet);
+
+
+        //names
+        int i = 0;
+        for(Card chosenCard : player.getUnusedCards()) {
+            VisualCard visualCard = new LoadedCard((VehicleCardData) chosenCard).getVisualCard();
+            Node node2 = visualCard.draw();
+            node2.setScaleX(0.5);
+            node2.setScaleY(0.5);
+            node2.setTranslateX(0 + (233/2)*i);
+            node2.setTranslateY(0);
+            up.getChildren().add(node2);
+            node2.setOnMouseClicked(event2 -> {
+                waitingCard = visualCard;
+                drawPlaces(down, (VehicleCardData) visualCard.getCard(), visualCard.getCard().getID());
+            });
+        }
+        //vehicle
+
+        Node cockpit = (new LoadedCard(player.getMyVehicle().getCockpit().getCard()).getVisualCard().draw());
+        cockpit.setScaleX(0.5);
+        cockpit.setScaleY(0.5);
+        cockpit.setTranslateX(50+player.getMyVehicle().getCockpit().getCoordinates().getKey()*(350/2));
+        cockpit.setTranslateY(50+player.getMyVehicle().getCockpit().getCoordinates().getValue()*(233/2));
+        down.getChildren().add(cockpit);
+        for(CardInLayout card : player.getMyVehicle().getTrain()) {
+            try {
+                System.out.println(card.getCard().getID() + " " + card.getCoordinates().getKey() + " " + card.getCoordinates().getValue());
+                Node node = new VisualCardInLayout(card).draw();
+                node.setTranslateY(50 + card.getCoordinates().getValue() * (223/2));
+                node.setTranslateX(50 + card.getCoordinates().getKey() * (350/2));
+                VisualVehicleCardController controller = new VisualVehicleCardController(((new LoadedCard(card.getCard())).getVisualCard()), node);
+                down.getChildren().add(node);
+               /* node.setOnMouseClicked(event3 -> {
                     System.out.println("card click");
                     try {
                         card.getCard().getDiceSlots().insert(waitingDice.getDice());
-                    }catch (Exception e){
-                        System.err.println("Dice error "+e.getClass().getName());
+                    } catch (Exception e) {
+                        System.err.println("Dice error " + e.getClass().getName());
                     }
                     System.out.println("add dice");
                     actualize();
                 });
-                nodeMap.put(card, node);
-            }catch (Exception e){
-                System.err.println("Controller error "+ e.getClass().getName());
+                nodeMap.put(card, node);*/
+            } catch (Exception e) {
+                System.err.println("Controller error " + e.getClass().getName());
             }
+
         }
-        return group;
+
+        box.getChildren().addAll(up, down);
+        return box;
     }
     public void actualize(){
-        vehicle = layout.getTrain();
         ((ViewManager) myApp).visualVehicle(player.getId());
     }
     public CardsLayout getLayout(){
         return layout;
+    }
+
+    public void setRollButton(boolean rollButton) {
+        this.rollButton = rollButton;
     }
 }
