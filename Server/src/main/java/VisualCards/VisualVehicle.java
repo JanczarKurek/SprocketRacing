@@ -85,7 +85,7 @@ public class VisualVehicle implements VisualElement {
         finishPut.setOnAction(event -> {
             try {
                 player.acceptVehicleLayout();
-                ((ViewManager)myApp).visualHand();
+                ((ViewManager)myApp).visualHand(player.getId());
             }catch (Exception e){
                 System.err.println(e.getMessage());
             }
