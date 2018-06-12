@@ -82,4 +82,8 @@ public class VehicleCardEngine {
         return actualProposition.getEffects();
     }
 
+    public CardEffect getCardEffect(){
+        return possibilities;
+    }
+
 }

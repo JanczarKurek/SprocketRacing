@@ -34,8 +34,9 @@ public class VisualJoint implements VisualElement {
 
     static {
         try {
-            image = new Image(new FileInputStream("Server/src/test/resources/VehicleCard/Joint.png"));
-            File file = new File("Server/src/test/resources/VehicleCard/JointDescription.txt");
+            String pref = Settings.getSettings().getResourcesPath();
+            image = new Image(new FileInputStream(pref + "/VehicleCard/Joint.png"));
+            File file = new File(pref + "/VehicleCard/JointDescription.txt");
             FileInputStream stream = new FileInputStream(file);
             Scanner fileReader = new Scanner(stream);
             width = fileReader.nextInt();
