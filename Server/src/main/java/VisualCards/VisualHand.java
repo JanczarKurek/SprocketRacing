@@ -58,7 +58,7 @@ public class VisualHand implements VisualElement {
         if(singlecost != null && card.getCard().getCost().getRed()>0)
             singlecost = null;
         if(card.getCard().getCost().getYellow()>0){
-            group.getChildren().add(drawSlash(  singlecost.getSlash(), position));
+//            group.getChildren().add(drawSlash(  singlecost.getSlash(), position));
             position++;
         }
         for(int j=0; j<card.getCard().getCost().getYellow(); j++) {
@@ -144,10 +144,10 @@ public class VisualHand implements VisualElement {
                             }
                             try {
                                     player.aquireHand();
-                                    ((ViewManager) myApp).visualHand();
+                                    ((ViewManager) myApp).visualHand(player.getId());
                                 }catch(Exception e){
                                 if(e.getMessage().contains("prev players should pass hand first")){
-                                        ((ViewManager) myApp).waitForPrevPlayer(player.getId());
+                                        ((ViewManager) myApp).visualHand(player.getId());
                                 }
                                 else {
                                     try {
@@ -173,7 +173,7 @@ public class VisualHand implements VisualElement {
 
                     try{
                             player.aquireHand();
-                            ((ViewManager) myApp).visualHand();
+                            ((ViewManager) myApp).visualHand(player.getId());
                     }
                     catch(Exception e){
                         try {
@@ -193,40 +193,41 @@ public class VisualHand implements VisualElement {
 
     @Override
     public Node draw() {
-        try {
-            player.aquireHand();
-        }catch (Exception e){
-            System.out.println("Constructor error "+ e.getMessage());
-            if(e.getMessage().contains("prev players should pass hand first")){
-                System.out.println("I am waiting");
-                ((ViewManager) myApp).waitForPrevPlayer(player.getId());
-            };
-        }
         Group group = new Group();
-     /* Button aquire = new Button("AQUIRE HAND");
-        aquire.setTranslateX((new VisualCard(null).getWidth()/2)*(2.5));
-        aquire.setTranslateY((new VisualCard().getHeight()/2+30));
-        group.getChildren().add(aquire);*/
-        int i=0;
-        for(Card cardData : player.getMyHand().getCards()){
-            VisualCard card = (new LoadedCard((VehicleCardData)cardData)).getVisualCard();
-            System.out.println(card==null);
-            Node node = card.draw();
-            node.setScaleY(0.5);
-            node.setScaleX(0.5);
-            if(i<2) {
-                node.setTranslateY(10);
-                node.setTranslateX(i*(card.getWidth()/2)+(i+1)*10);
+       Button aquire = new Button("AQUIRE HAND");
+        aquire.setTranslateX((new VisualCard(null).getWidth()/2)*(3));
+        aquire.setTranslateY((new VisualCard(null).getHeight()/2+50));
+        group.getChildren().add(aquire);
+        aquire.setOnMouseClicked(event -> {
+            try {
+                player.aquireHand();
+            }catch (Exception e){
+                System.out.println("Constructor error "+ e.getMessage());
+                System.out.println("I am waiting");
+                ((ViewManager) myApp).visualHand(player.getId());
+            }
+            int i=0;
+            for(Card cardData : player.getMyHand().getCards()){
+                VisualCard card = (new LoadedCard((VehicleCardData)cardData)).getVisualCard();
+                System.out.println(card==null);
+                Node node = card.draw();
+                node.setScaleY(0.5);
+                node.setScaleX(0.5);
+                if(i<2) {
+                    node.setTranslateY(10);
+                    node.setTranslateX(i*(card.getWidth()/2)+(i+1)*10);
 
+                }
+                else{
+                    node.setTranslateY(card.getHeight()/2+30);
+                    node.setTranslateX((i%2)*(card.getWidth()/2)+((i%2)+1)*10);
+                }
+                group.getChildren().add(node);
+                buttons(card, node, group);
+                i++;
             }
-            else{
-                node.setTranslateY(card.getHeight()/2+30);
-                node.setTranslateX((i%2)*(card.getWidth()/2)+((i%2)+1)*10);
-            }
-            group.getChildren().add(node);
-            buttons(card, node, group);
-            i++;
-        }
+            group.getChildren().remove(aquire);
+        });
         return group;
     }
 

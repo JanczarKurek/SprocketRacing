@@ -80,19 +80,19 @@ public class ViewManager extends Application {
 
     public void showStages(){
         int playerID = 0;
-        visualHand();
         for(Stage stagePlayer : stages) {
+            visualHand(playerID);
             playerID++;
             stagePlayer.show();
         }
     }
 
-    void visualHand(){
-        for(int i=0; i<table.numberOfPlayers(); i++) {
+    void visualHand(int playerID){
+       // for(int i=0; i<table.numberOfPlayers(); i++) {
             Group group =  new Group();
-            group.getChildren().add(new VisualHand(this, table.getPlayer(i)).draw());
-            stages.get(i).setScene(new Scene(group, 1003, 599));
-        }
+            group.getChildren().add(new VisualHand(this, table.getPlayer(playerID)).draw());
+            stages.get(playerID).setScene(new Scene(group, 1003, 599));
+        //}
     }
 
     void visualVehicle(int playerID){
