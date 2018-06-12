@@ -142,22 +142,7 @@ public class VisualHand implements VisualElement {
                                     System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
-                            try {
-                                    player.aquireHand();
-                                    ((ViewManager) myApp).visualHand(player.getId());
-                                }catch(Exception e){
-                                if(e.getMessage().contains("prev players should pass hand first")){
-                                        ((ViewManager) myApp).visualHand(player.getId());
-                                }
-                                else {
-                                    try {
-                                        player.vote();
-                                    } catch (Exception e2) {
-                                        System.err.println(e2.getClass().getName());
-                                    }
-                                    ((ViewManager) myApp).visualVehicle(player.getId());
-                                }
-                            }
+                            ((ViewManager) myApp).visualHand(player.getId());
                         });
                     }
 
@@ -170,21 +155,6 @@ public class VisualHand implements VisualElement {
                     }catch (Exception e){
                         System.err.println("Choose card : Wrong move!"+e.getMessage());
                     }
-
-                    try{
-                            player.aquireHand();
-                            ((ViewManager) myApp).visualHand(player.getId());
-                    }
-                    catch(Exception e){
-                        try {
-                            player.vote();
-                        }catch(Exception e2){
-                            System.err.println(e2.getClass().getName());
-
-                        ((ViewManager) myApp).visualVehicle(player.getId());
-                    }
-
-                }
                 });
             }};
         node.setOnMouseClicked(handler);
@@ -201,32 +171,32 @@ public class VisualHand implements VisualElement {
         aquire.setOnMouseClicked(event -> {
             try {
                 player.aquireHand();
+                int i=0;
+                for(Card cardData : player.getMyHand().getCards()){
+                    VisualCard card = (new LoadedCard((VehicleCardData)cardData)).getVisualCard();
+                    System.out.println(card==null);
+                    Node node = card.draw();
+                    node.setScaleY(0.5);
+                    node.setScaleX(0.5);
+                    if(i<2) {
+                        node.setTranslateY(10);
+                        node.setTranslateX(i*(card.getWidth()/2)+(i+1)*10);
+
+                    }
+                    else{
+                        node.setTranslateY(card.getHeight()/2+30);
+                        node.setTranslateX((i%2)*(card.getWidth()/2)+((i%2)+1)*10);
+                    }
+                    group.getChildren().add(node);
+                    buttons(card, node, group);
+                    i++;
+                }
+                group.getChildren().remove(aquire);
             }catch (Exception e){
                 System.out.println("Constructor error "+ e.getMessage());
                 System.out.println("I am waiting");
                 ((ViewManager) myApp).visualHand(player.getId());
             }
-            int i=0;
-            for(Card cardData : player.getMyHand().getCards()){
-                VisualCard card = (new LoadedCard((VehicleCardData)cardData)).getVisualCard();
-                System.out.println(card==null);
-                Node node = card.draw();
-                node.setScaleY(0.5);
-                node.setScaleX(0.5);
-                if(i<2) {
-                    node.setTranslateY(10);
-                    node.setTranslateX(i*(card.getWidth()/2)+(i+1)*10);
-
-                }
-                else{
-                    node.setTranslateY(card.getHeight()/2+30);
-                    node.setTranslateX((i%2)*(card.getWidth()/2)+((i%2)+1)*10);
-                }
-                group.getChildren().add(node);
-                buttons(card, node, group);
-                i++;
-            }
-            group.getChildren().remove(aquire);
         });
         return group;
     }
