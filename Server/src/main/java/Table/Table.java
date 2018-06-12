@@ -10,10 +10,7 @@ import MapServer.PawnController;
 import Players.Player;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.*;
 
 /** Represents game table - board with decks and players sitting **/
 
@@ -61,7 +58,7 @@ public class Table {
     private ArrayList<Player> players = new ArrayList<>();
     private HashMap<Player, Boolean> hasNextHand = new HashMap<>();
     private ArrayList<TableControllerImpl> controllers = new ArrayList<>();
-    private HashMap<Player, Hand> passedHands = new HashMap<>();
+    private HashMap<Player, ArrayDeque<Hand > > passedHandsQueues = new HashMap<>();
 
     private int actualPhaseVotes = 0;
 
@@ -98,8 +95,7 @@ public class Table {
             gotHand = false;
             voted = false;
             passedLast = false;
-            passedHands = new HashMap<>();
-            passedHands.put(player, null);
+            passedHandsQueues.put(player, new ArrayDeque<>());
         }
 
         private void prepareVent(){
@@ -138,11 +134,11 @@ public class Table {
                 pos = (pos - 1 + players.size()) % players.size();
                 Player myPred = players.get(pos);
                 System.err.println(player.getId() + " takes hand from " + myPred.getId());
-                if(passedHands.get(myPred) == null){
+                if(passedHandsQueues.get(myPred).isEmpty()){
                     throw new WrongMove("No hand to take, prev players should pass hand first");
                 }
                 gotHand = true;
-                return passedHands.remove(myPred);
+                return passedHandsQueues.get(myPred).removeFirst();
             }
             gotHand = true;
             firstHand = false;
@@ -157,14 +153,11 @@ public class Table {
             if(playersHand == null)
                 throw new NullPointerException();
             checkPhase(Phase.DRAW, "passHand");
-            if(passedHands.get(player) != null){
-                throw new WrongMove("Hand already passed in this phase");
-            }
+            passedHandsQueues.get(player).addLast(playersHand);
             if(playersHand.getHandSize() == 1){
                 passedLast = true;
             }
             gotHand = false;
-            passedHands.put(player, playersHand);
         }
 
         @Override
@@ -181,6 +174,7 @@ public class Table {
     public Pair<TableController, PawnController> sitDown(Player player){
         if(players.contains(player))
             throw new IllegalStateException("Player " + player.getId() + " already registered!");
+        passedHandsQueues.put(player, new ArrayDeque<>());
         players.add(player);
         TableControllerImpl ret = new TableControllerImpl(player);
         controllers.add(ret);
