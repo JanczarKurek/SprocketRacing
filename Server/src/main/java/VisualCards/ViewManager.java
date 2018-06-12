@@ -7,6 +7,7 @@ import MapServer.BoardField;
 import MapServer.BoardStructure;
 import MapServer.SimpleField;
 import Cards.LoadedDeck;
+import Players.Player;
 import Settings.Settings;
 import Table.Table;
 import VisualBoard.VisualBoardCreator;
@@ -45,12 +46,19 @@ public class ViewManager extends Application {
         board = gameSetup();
         String pref = Settings.getSettings().getResourcesPath();
         ArrayList<Deck> list = new ArrayList();
-        list.add(new LoadedDeck(pref + "/Files/Deck1").getDeck());
-        list.add(new LoadedDeck(pref + "/Files/Deck2").getDeck());
-        list.add(new LoadedDeck(pref + "/Files/Deck3").getDeck());
-        list.add(new LoadedDeck(pref + "/Files/Deck4").getDeck());
+        Deck deck1 = new LoadedDeck(pref + "/Files/Deck1").getDeck();
+        deck1.shuffle();
+        list.add(deck1);
+        Deck deck2 = new LoadedDeck(pref + "/Files/Deck2").getDeck();
+        deck2.shuffle();
+        list.add(deck2);
+        Deck deck3 = new LoadedDeck(pref + "/Files/Deck3").getDeck();
+        deck3.shuffle();
+        list.add(deck3);
+        Deck deck4 = new LoadedDeck(pref + "/Files/Deck4").getDeck();
+        deck4.shuffle();
+        list.add(deck4);
         table = new Table(board, list);
-        System.out.println("size deck from list " +list.get(0).size());
         System.out.println(table.getCurrentPhase().getClass().getName());
         //plansza - do zmiany
         try {
@@ -88,17 +96,20 @@ public class ViewManager extends Application {
     }
 
     void visualHand(int playerID){
-       // for(int i=0; i<table.numberOfPlayers(); i++) {
-            Group group =  new Group();
-            group.getChildren().add(new VisualHand(this, table.getPlayer(playerID)).draw());
-            stages.get(playerID).setScene(new Scene(group, 650, 650));
-        //}
+        Group group =  new Group();
+        group.getChildren().add(new VisualHand(this, table.getPlayer(playerID)).draw());
+        stages.get(playerID).setScene(new Scene(group, 650, 650));
     }
 
     void visualVehicle(int playerID){
         Group group = new Group();
-        ScrollPane scroll = new ScrollPane();
-        group.getChildren().add(new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID)).draw());
+        System.out.println(table.getPlayer(playerID).getMyVehicle() + " "+this+" "+ table.getPlayer(playerID));
+        VisualVehicle veh = new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID));
+        if(table.getPlayer(playerID).taskManager.getCurrentTask().type == Player.Task.IDLEVENT)
+            veh.setVentPhase(true);
+        //veh.setRollButton(true);
+        group.getChildren().add(veh.draw());
+
         stages.get(playerID).setScene(new Scene(group, 650, 650));
     }
 

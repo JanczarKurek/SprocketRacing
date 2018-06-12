@@ -8,16 +8,17 @@ import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
 import VisualPlayer.VisualWallet;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.Parent;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
-
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class VisualVehicle implements VisualElement {
     private CardsLayout layout;
@@ -27,11 +28,15 @@ public class VisualVehicle implements VisualElement {
     private VisualDice waitingDice;
     private Player player;
     private boolean rollButton=false;
+    private boolean ventPhase = false;
+    private int waitingCardPipes = 0;
+    private int waitingVentpipes = 0;
 
     public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
         this.layout = layout;
         this.player = player;
+
     }
 
 
@@ -57,7 +62,15 @@ public class VisualVehicle implements VisualElement {
             });
         }
     }
+
     public Node draw(){
+        try {
+            player.putCard(0,0,0);
+        }catch (Exception e){
+
+            System.out.println(e.getMessage());
+        }
+
         VBox box = new VBox();
         box.setPrefHeight(700);
         box.setPrefWidth(650);
@@ -84,17 +97,53 @@ public class VisualVehicle implements VisualElement {
             up.getChildren().add(roll);
         }
 
-        Button finishPut = new Button("FINISH PUT");
+        Button finishPut = new Button("ACCEPT");
         finishPut.setOnAction(event -> {
             try {
-                player.acceptVehicleLayout();
-                ((ViewManager)myApp).visualHand(player.getId());
+                if(player.taskManager.getCurrentTask().type == Player.Task.IDLEVENT){
+                    player.vote();
+                    ((ViewManager)myApp).waitForPrevPlayer(player.getId());
+                }
+                else {
+                    player.acceptVehicleLayout();
+                    ((ViewManager) myApp).visualHand(player.getId());
+                }
             }catch (Exception e){
                 System.err.println(e.getMessage());
             }
         });
-
+        //finishPut.setPrefWidth(150);
         up.getChildren().add(finishPut);
+
+
+
+        if(ventPhase==true) {
+            player.addDice();
+            //player.getMyWallet().add7gears();
+            MenuBar menuBar = new MenuBar();
+            Menu menuVent = new Menu("VENT ");
+
+            for(Integer i=0; i<player.getMyWallet().getGears(); i+=2) {
+                MenuItem number = new MenuItem(i.toString());
+                number.setOnAction(new EventHandler<ActionEvent>() {
+                    public void handle(ActionEvent event) {
+                        System.out.println((number.getText().hashCode())-48 + " usuń");
+                        waitingCardPipes += (number.getText().hashCode())-48;
+                        try {
+                            player.vent(((number.getText().hashCode()) - 48) / 2);
+                        }catch (Exception e){
+                            System.err.println("vent exception "+ e.getMessage());
+                        }
+
+                    }
+                });
+                menuVent.getItems().add(number);
+            }
+            menuBar.getMenus().add(menuVent);
+            menuBar.setPrefWidth(80);
+            up.getChildren().add(menuBar);
+        }
+
 
         /*Button board = new Button("ACCEPT VEHICLE");
         board.setOnAction(event -> {
@@ -120,18 +169,22 @@ public class VisualVehicle implements VisualElement {
 
         //names
         int i = 0;
-        for(Card chosenCard : player.getUnusedCards()) {
-            VisualCard visualCard = new LoadedCard((VehicleCardData) chosenCard).getVisualCard();
-            Node node2 = visualCard.draw();
-            node2.setScaleX(0.5);
-            node2.setScaleY(0.5);
-            node2.setTranslateX(0 + (233/2)*i);
-            node2.setTranslateY(0);
-            up.getChildren().add(node2);
-            node2.setOnMouseClicked(event2 -> {
-                waitingCard = visualCard;
-                drawPlaces(down, (VehicleCardData) visualCard.getCard(), visualCard.getCard().getID());
-            });
+        try {
+            for (Card chosenCard : player.getUnusedCards()) {
+                VisualCard visualCard = new LoadedCard((VehicleCardData) chosenCard).getVisualCard();
+                Node node2 = visualCard.draw();
+                node2.setScaleX(0.5);
+                node2.setScaleY(0.5);
+                node2.setTranslateX(0 + (233 / 2) * i);
+                node2.setTranslateY(0);
+                up.getChildren().add(node2);
+                node2.setOnMouseClicked(event2 -> {
+                    waitingCard = visualCard;
+                    drawPlaces(down, (VehicleCardData) visualCard.getCard(), visualCard.getCard().getID());
+                });
+            }
+        }catch (Exception e){
+            System.out.println("Unused card error "+ e.getMessage());
         }
         //vehicle
 
@@ -144,22 +197,54 @@ public class VisualVehicle implements VisualElement {
         for(CardInLayout card : player.getMyVehicle().getTrain()) {
             try {
                 System.out.println(card.getCard().getID() + " " + card.getCoordinates().getKey() + " " + card.getCoordinates().getValue());
-                Node node = new VisualCardInLayout(card).draw();
+                VisualCardInLayout temp = new VisualCardInLayout(card);
+                Node node = temp.draw();
                 node.setTranslateY(50 + card.getCoordinates().getValue() * (223/2));
                 node.setTranslateX(50 + card.getCoordinates().getKey() * (350/2));
-                VisualVehicleCardController controller = new VisualVehicleCardController(((new LoadedCard(card.getCard())).getVisualCard()), node);
+
                 down.getChildren().add(node);
-               /* node.setOnMouseClicked(event3 -> {
-                    System.out.println("card click");
-                    try {
-                        card.getCard().getDiceSlots().insert(waitingDice.getDice());
-                    } catch (Exception e) {
-                        System.err.println("Dice error " + e.getClass().getName());
-                    }
-                    System.out.println("add dice");
-                    actualize();
+                node.setOnMouseClicked(event3 -> {
+                   if(waitingCardPipes>0){
+                       System.out.println("click "+card.getCoordinates().getValue()+" "+card.getCoordinates().getKey());
+
+                       MenuBar menuBar = new MenuBar();
+                       Menu menuVent = new Menu("DICE NO. ");
+
+                       for(Integer j=0; j<card.getCard().getDiceSlots().getSize(); j++) {
+                           try {
+                               card.getCard().getDiceSlots().getDice(j);
+                               MenuItem number = new MenuItem(j.toString());
+                               number.setOnAction(new EventHandler<ActionEvent>() {
+                                   public void handle(ActionEvent event) {
+                                       System.out.println((number.getText().hashCode()) - 48 +" --");
+                                       up.getChildren().remove(menuBar);
+                                       try {
+                                           card.getCoordinates().getKey();
+                                           card.getCoordinates().getValue();
+                                           number.getText().hashCode();
+                                           player.ventOnce(card.getCoordinates().getKey(), card.getCoordinates().getValue(), (number.getText().hashCode()) - 48);
+                                       }catch (Exception e){
+                                           System.err.println("Wrong vent "+e.getMessage());
+                                       }
+                                       up.getChildren().remove(menuBar);
+                                   }
+                               });
+                               menuVent.getItems().add(number);
+                           }catch (Exception e){
+                               System.out.println(e.getMessage());
+                           }
+                       }
+                       menuBar.getMenus().add(menuVent);
+                       menuBar.setTranslateX(0);
+                       menuBar.setTranslateY(0);
+                       menuBar.setPrefWidth(100);
+                       up.getChildren().add(menuBar);
+                       waitingCardPipes--;
+
+
+                   }
                 });
-                nodeMap.put(card, node);*/
+               // nodeMap.put(card, node);
             } catch (Exception e) {
                 System.err.println("Controller error " + e.getClass().getName());
             }
@@ -170,6 +255,7 @@ public class VisualVehicle implements VisualElement {
         ScrollPane scrollDown = new ScrollPane();
         scrollDown.setContent(down);
         box.getChildren().addAll(scrollUp, scrollDown);
+
         return box;
     }
     public void actualize(){
@@ -181,5 +267,9 @@ public class VisualVehicle implements VisualElement {
 
     public void setRollButton(boolean rollButton) {
         this.rollButton = rollButton;
+    }
+
+    public void setVentPhase(boolean phase){
+        ventPhase = phase;
     }
 }

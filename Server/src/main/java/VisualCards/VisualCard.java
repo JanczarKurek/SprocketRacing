@@ -24,14 +24,11 @@ public class VisualCard implements VisualElement {
     private Card card;
     static private int height;
     static private int width;
-    private ArrayList<VisualJoint> joints = new ArrayList<>();
     private VisualName name;
-    private Cost cost;
-    private VehicleCardEngine engine;
     private LinkedList<Integer> effects;
     private Dice.Color color;
-    private int slotsNumber;
     private int usagePipCost;
+    private int slotsNumber;
 
     static {
         Settings settings = Settings.getSettings();
@@ -61,15 +58,13 @@ public class VisualCard implements VisualElement {
             }
 
             name = new VisualName(card.getName());
-            cost = card.getCost();
             setColorSlot(((VehicleCardData) card).getEngine().getDiceSlots().getColor());
             if (((VehicleCardData) card).getEngine().getUsageCost() instanceof CardUsageDiceCost)
                 setUsagePipCost(7);
             else
                 setUsagePipCost(((CardUsagePipCost) ((VehicleCardData) card).getEngine().getUsageCost()).getPipCost());
             setNumberSlots(((VehicleCardData) card).getEngine().getDiceSlots().getSize());
-        /*for(CardEffect effect : ((VehicleCardData)card).getEngine().getEffects())
-            addEffect(effect.getId()); // jak wyciagnac efekt*/
+
         }
 
     }
@@ -83,9 +78,6 @@ public class VisualCard implements VisualElement {
         usagePipCost = cost;
     }
 
-    private void addEffect(int effect){
-        effects.add(effect);
-    }
 
     private void setColorSlot(Dice.Color color){
         this.color = color;
@@ -106,22 +98,6 @@ public class VisualCard implements VisualElement {
         return width;
     }
 
-    public int redCost(){
-        return cost.getRed();
-    }
-
-    public int yellowCost(){
-        return cost.getYellow();
-    }
-
-    public int blueCost(){
-        return cost.getBlue();
-    }
-
-    public int cogsCost(){
-        return cost.getCogs();
-    }
-
     public DiceSlots getSlots(){
         return ((VehicleCardData)card).getDiceSlots();
     }
@@ -134,15 +110,9 @@ public class VisualCard implements VisualElement {
         return color;
     }
 
-    public int getSlotsNumber(){
-        return slotsNumber;
-    }
 
     public Card getCard(){
         return card;
-    }
-    public ArrayList<VisualJoint> getJoints(){
-        return joints;
     }
 
     public VisualName getName(){
@@ -150,29 +120,12 @@ public class VisualCard implements VisualElement {
     }
     @Override
     public Node draw(){
+        System.out.println("ID "+card.getID());
         Group group = new Group();
         ImageView imageView = new ImageView();
         imageView.setImage(background);
         group.getChildren().add(imageView);
-        if(card instanceof VehicleCard){
-            VehicleCardData cardData= (VehicleCardData) card;
-            //setCardVehicleEngine???
-           Joints joint = cardData.getJoints();
-            if(joint.isLeft()) {
-                joints.add(new VisualJoint(true, false, false, false));
-            }
-            if(joint.isRight()) {
-                joints.add(new VisualJoint(false, true, false, false));
-            }
-            if(joint.isUp()) {
-                joints.add(new VisualJoint(false, false, true, false));
-            }
-            if(joint.isDown()) {
-                joints.add(new VisualJoint(false, false, false, true));
-            }
-            group.getChildren().add(new VisualVehicleCardController(this, imageView).draw());
-        }
-
+        group.getChildren().add(new VisualVehicleCardController(this, imageView).draw());
         return group;
     }
 

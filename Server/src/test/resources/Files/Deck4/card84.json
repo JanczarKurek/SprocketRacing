@@ -1,1 +1,1 @@
-{"VehicleCardEngine":{"DiceSlots":{"size":3,"Color":"blue"},"CardEffect":[],"CardUsageCost":{"cost":6,"isCardUsagePipeCost":true}},"Id":453,"Cost":{"red":2,"blue":0,"yellow":0},"Joints":[true,true,true,false],"Name":"omnia"}
+{"VehicleCardEngine":{"DiceSlots":{"size":2,"Color":"yellow"},"CardEffect":[[{"value":0,"effectType":"DamageEffect"}]],"CardUsageCost":{"cost":3,"isCardUsagePipeCost":true}},"Id":453,"Cost":{"red":0,"blue":2,"yellow":0},"Joints":[true,true,true,false],"Name":"et"}

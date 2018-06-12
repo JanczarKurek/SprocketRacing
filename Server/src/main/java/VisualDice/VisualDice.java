@@ -16,6 +16,7 @@ public class VisualDice implements VisualElement {
     private Dice dice;
     private Image imageColor;
     private Image imageNumber;
+    private int positionOnHand = -1;
 
     public VisualDice(Dice dice){
         try {
@@ -95,5 +96,13 @@ public class VisualDice implements VisualElement {
         }catch (Exception e){
             System.err.println("File not found!");
         }
+    }
+
+    public void setPositionOnHand(int positionOnHand) {
+        this.positionOnHand = positionOnHand;
+    }
+
+    public int getPositionOnHand(){
+        return positionOnHand;
     }
 }

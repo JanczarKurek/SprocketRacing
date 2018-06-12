@@ -142,7 +142,12 @@ public class VisualHand implements VisualElement {
                                     System.err.println("sell exception: "+e.getMessage());
                                 }
                             }
-                            ((ViewManager) myApp).visualHand(player.getId());
+                            try {
+                                ((ViewManager) myApp).visualHand(player.getId());
+                            }catch (Exception e){}
+                            finally {
+                                return;
+                            }
                         });
                     }
 
@@ -152,6 +157,7 @@ public class VisualHand implements VisualElement {
                         player.chooseCard(card.getCard().getID());
                         player.takeCard();
                         ((ViewManager) myApp).visualVehicle(player.getId());
+                        return;
                     }catch (Exception e){
                         System.err.println("Choose card : Wrong move!"+e.getMessage());
                     }
@@ -163,8 +169,15 @@ public class VisualHand implements VisualElement {
 
     @Override
     public Node draw() {
+        try{
+            player.vote();
+            ((ViewManager) myApp).visualVehicle(player.getId());
+            return null;
+        }catch (WrongMove e){
+            System.out.println("vote " + e.getMessage() + e.getClass().getName());
+        }
         Group group = new Group();
-       Button aquire = new Button("AQUIRE HAND");
+        Button aquire = new Button("AQUIRE HAND");
         aquire.setTranslateX((new VisualCard(null).getWidth()/2)*(3));
         aquire.setTranslateY((new VisualCard(null).getHeight()/2+50));
         group.getChildren().add(aquire);
@@ -196,6 +209,7 @@ public class VisualHand implements VisualElement {
                 System.out.println("Constructor error "+ e.getMessage());
                 System.out.println("I am waiting");
                 ((ViewManager) myApp).visualHand(player.getId());
+                return;
             }
         });
         return group;
