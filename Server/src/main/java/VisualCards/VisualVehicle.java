@@ -32,6 +32,7 @@ public class VisualVehicle implements VisualElement {
     private boolean ventPhase = false;
     private int waitingCardPipes = 0;
     private int waitingVentpipes = 0;
+    private boolean removeBool = false;
 
     public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
@@ -140,6 +141,13 @@ public class VisualVehicle implements VisualElement {
         //finishPut.setPrefWidth(150);
         up.getChildren().add(finishPut);
 
+        Button remove = new Button("REMOVE");
+        remove.setOnAction(event -> {
+            removeBool = true;
+        });
+        //finishPut.setPrefWidth(150);
+        up.getChildren().add(remove);
+
 
 
         if(ventPhase==true) {
@@ -229,8 +237,18 @@ public class VisualVehicle implements VisualElement {
 
                 down.getChildren().add(node);
                 node.setOnMouseClicked(event3 -> {
-                   if(waitingCardPipes>0){
-                       System.out.println("click "+card.getCoordinates().getValue()+" "+card.getCoordinates().getKey());
+                    if(removeBool){
+                        System.out.println("click "+card.getCoordinates().getKey()+" "+card.getCoordinates().getValue());
+                        try {
+                            player.takeCard(card.getCoordinates().getKey(), card.getCoordinates().getValue());
+                            removeBool = false;
+                            actualize();
+                        }catch (Exception e){
+                            System.err.println(e.getMessage());
+                        }
+
+                    }
+                   else if(waitingCardPipes>0){
 
                        MenuBar menuBar = new MenuBar();
                        Menu menuVent = new Menu("DICE NO. ");
