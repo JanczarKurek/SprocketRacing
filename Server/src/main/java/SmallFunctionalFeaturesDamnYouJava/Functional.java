@@ -88,19 +88,31 @@ public class Functional {
 
     public static <T> PeekIterator<T> changetoPeek(Iterator<T> iterator){
         return new PeekIterator<T>() {
+            T peeked;
             @Override
             public T peek() {
+                if(peeked != null)
+                    return peeked;
+                if(hasNext()) {
+                    peeked = iterator.next();
+                    return peeked;
+                }
                 return null;
             }
 
             @Override
             public boolean hasNext() {
-                return false;
+                return peeked != null || hasNext();
             }
 
             @Override
             public T next() {
-                return null;
+                if(peeked != null){
+                    T ret = peeked;
+                    peeked = null;
+                    return ret;
+                }
+                return iterator.next();
             }
         };
     }
