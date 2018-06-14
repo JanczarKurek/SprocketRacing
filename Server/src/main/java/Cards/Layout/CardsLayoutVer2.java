@@ -1,13 +1,9 @@
 package Cards.Layout;
 
-import java.util.*;
-import Cards.*;
 import javafx.util.*;
-import ErrorsAndExceptions.*;
+import java.util.*;
 
-
-public class CardsLayout {
-
+public class CardsLayoutVer2 {
 
     private java.util.HashMap<Pair<Integer, Integer>, Cards.Layout.CardInLayout> map = new java.util.HashMap<>();
     private Cards.Layout.CardInLayout cockpit;
@@ -21,7 +17,7 @@ public class CardsLayout {
         return map.size() == 1;
     }
 
-    public CardsLayout (Cards.Layout.CardInLayout cockpit, Collection<CardInLayout> cards) {
+    public CardsLayoutVer2 (Cards.Layout.CardInLayout cockpit, Collection<CardInLayout> cards) {
         this.cockpit = cockpit;
         for (CardInLayout c : cards)
             map.put(c.getCoordinates(), c);
