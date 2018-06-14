@@ -183,4 +183,49 @@ public class CardsLayout {
         return result;
     }
 
+    public boolean jacekRatujeSwieta(){
+        LinkedList<CardInLayout> stack = new LinkedList<>();
+        System.err.println("We have cards on " + map.keySet());
+        stack.add(cockpit);
+        HashSet<CardInLayout> visited = new HashSet<>();
+        visited.add(cockpit);
+        while(!stack.isEmpty()){
+            CardInLayout actual = stack.pop();
+            VehicleCardData card = actual.getCard();
+            if(card.getJoints().isDown()){
+                CardInLayout nei = map.get(new Pair<>(actual.getCoordinates().getKey(), actual.getCoordinates().getValue() + 1));
+                if(nei != null && nei.getCard().getJoints().isUp() && !visited.contains(nei)){
+                    //System.err.println("Im in card " + actual.getCoordinates() + " adding " + nei.getCoordinates());
+                    stack.add(nei);
+                    visited.add(nei);
+                }
+            }
+            if(card.getJoints().isUp()){
+                CardInLayout nei = map.get(new Pair<>(actual.getCoordinates().getKey(), actual.getCoordinates().getValue() - 1));
+                if(nei != null && nei.getCard().getJoints().isDown() && !visited.contains(nei)){
+                    stack.add(nei);
+                    visited.add(nei);
+                }
+            }
+            if(card.getJoints().isLeft()){
+                CardInLayout nei = map.get(new Pair<>(actual.getCoordinates().getKey() - 1, actual.getCoordinates().getValue()));
+                if(nei != null && nei.getCard().getJoints().isRight() && !visited.contains(nei)){
+                    stack.add(nei);
+                    visited.add(nei);
+                }
+            }
+            if(card.getJoints().isRight()){
+                CardInLayout nei = map.get(new Pair<>(actual.getCoordinates().getKey() + 1, actual.getCoordinates().getValue()));
+                if(nei != null && nei.getCard().getJoints().isLeft() && !visited.contains(nei)){
+                    stack.add(nei);
+                    visited.add(nei);
+                }
+            }
+        }
+        for(CardInLayout card : map.values()){
+            if(!visited.contains(card))
+                return false;
+        }
+        return true;
+    }
 }
