@@ -13,12 +13,17 @@ public class CardsLayout {
     private Cards.Layout.CardInLayout cockpit;
 
 
+
     public void BakuretsuBakuretsuBakuretsuNaNa() {
         map.entrySet().removeIf(c -> c.getKey().equals(cockpit.getCoordinates()));
     }
 
     public boolean justCockpit() {
         return map.size() == 1;
+    }
+
+    public CardsLayout () {
+
     }
 
     public CardsLayout (Cards.Layout.CardInLayout cockpit, Collection<CardInLayout> cards) {
