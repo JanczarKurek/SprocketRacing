@@ -180,7 +180,7 @@ public class Player {
         }
 
         void acceptArrangement() throws WrongMove{
-            if(!myVehicle.checkCorrectness())
+            if(!myVehicle.jacekRatujeSwieta())
                 throw new WrongMove("Player " + getId() + ": tried to use invalid arrangement of vehicle");
             for(Card card : cardsById.values())
                 tableController.discard(card);

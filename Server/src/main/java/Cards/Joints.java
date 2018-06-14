@@ -45,4 +45,8 @@ public class Joints {
     public void setDown(boolean down) {
         this.down = down;
     }
+
+    public String toString(){
+        return "[" + up + ", " + right + ", " + down + ", " + left + "]";
+    }
 }
