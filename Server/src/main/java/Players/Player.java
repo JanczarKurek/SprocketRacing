@@ -211,6 +211,14 @@ public class Player {
         return chosenCard;
     }
 
+    public CardEffect peekNextCardEffect(){
+        return taskManager.getCurrentTask().peekNextCardEffect();
+    }
+
+    public Effect peekNextAtomicEffect(){
+        return taskManager.getCurrentTask().peekNextAtomicEffect();
+    }
+
     public int getId(){
         return id;
     }
