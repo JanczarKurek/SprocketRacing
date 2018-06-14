@@ -118,7 +118,7 @@ public class VisualVehicle implements VisualElement {
 
 
         if(ventPhase==true) {
-            player.addDice();
+            //player.addDice();
             //player.getMyWallet().add7gears();
             MenuBar menuBar = new MenuBar();
             Menu menuVent = new Menu("VENT ");

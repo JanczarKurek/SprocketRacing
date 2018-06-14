@@ -11,6 +11,8 @@ import InGameResources.Dice.DiceBunch;
 import InGameResources.ResourceWallet;
 import MapServer.Path;
 import MapServer.PawnController;
+import SmallFunctionalFeaturesDamnYouJava.Functional;
+import SmallFunctionalFeaturesDamnYouJava.PeekIterator;
 import Table.Table;
 import Table.TableController;
 import Table.Phase;
@@ -108,13 +110,25 @@ public class Player {
         }
 
         VehicleCardEngine.Proposition actualProposition;
-        Iterator<CardEffect> processedEffects;
-        Iterator<Effect> atomicEffect;
+        PeekIterator<CardEffect> processedEffects;
+        PeekIterator<Effect> atomicEffect;
         VehicleArrangementManager manager;
         public Dice.Color color;
 
-        Task type;
-        int value;
+        public Task type;
+        public int value;
+
+        public CardEffect peekNextCardEffect(){
+            if(processedEffects == null)
+                throw new RuntimeException("No effect to peek, drop system xD");
+            return processedEffects.peek();
+        }
+
+        public Effect peekNextAtomicEffect(){
+            if(atomicEffect == null)
+                throw new RuntimeException("No atomic effect to peek, that's silly xD");
+            return atomicEffect.peek();
+        }
     }
 
     public class TaskManager{
@@ -127,7 +141,7 @@ public class Player {
             pendingTasks.push(task);
         }
 
-        PendingTask getCurrentTask(){
+        public PendingTask getCurrentTask(){
             return pendingTasks.peek();
         }
 
@@ -182,7 +196,6 @@ public class Player {
     private CardsLayout myVehicle = new CardsLayout();
     private PawnController pawnController;
     public TaskManager taskManager = new TaskManager();
-    boolean waiting = false;
 
     public Player(Table table, int id, VehicleCardData cockpit){
         this.id = id;
@@ -392,7 +405,7 @@ public class Player {
         VehicleCardEngine.Proposition actualProposition = taskManager.getCurrentTask().actualProposition;
         taskManager.finalizeTask();
         PendingTask pendingTask = new PendingTask(Task.ACCEPTUSE, 0);
-        pendingTask.processedEffects = actualProposition.accept().iterator();
+        pendingTask.processedEffects = Functional.changetoPeek(actualProposition.accept().iterator());
         taskManager.putTask(pendingTask);
     }
 
@@ -406,7 +419,7 @@ public class Player {
         checkAction(Task.RUNEFFECTS);
         PendingTask actual = taskManager.getCurrentTask();
         PendingTask newTask = new PendingTask(Task.RUNEFFECTS, 0);
-        newTask.atomicEffect = actual.processedEffects.next().chooseEffect(idx).iterator();
+        newTask.atomicEffect = Functional.changetoPeek(actual.processedEffects.next().chooseEffect(idx).iterator());
         if(!actual.processedEffects.hasNext() && actual.type == Task.ACCEPTUSE) {
             taskManager.finalizeTask();
         }
@@ -434,7 +447,7 @@ public class Player {
             taskManager.finalizeTask();
             taskManager.finalizeTask();
             if(effects.size() != 0 && actual.type != Task.MOVESMOOTH) {
-                newTask.atomicEffect = pawnController.move(path).iterator();
+                newTask.atomicEffect = Functional.changetoPeek(pawnController.move(path).iterator());
                 taskManager.putTask(newTask);
             }
         } catch (WrongMove wrongMove) {
