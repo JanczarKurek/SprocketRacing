@@ -33,11 +33,25 @@ public class VisualVehicle implements VisualElement {
     private int waitingCardPipes = 0;
     private int waitingVentpipes = 0;
     private boolean removeBool = false;
+    private Node visualWalletNode;
 
     public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
         this.layout = layout;
         this.player = player;
+
+    }
+
+    private void drawWallet(HBox up){
+        if(visualWalletNode!=null)
+            up.getChildren().remove(visualWalletNode);
+        Node nodeWallet = new VisualWallet(player.getMyWallet()).draw();
+        nodeWallet.setScaleX(0.5);
+        nodeWallet.setScaleY(0.5);
+        nodeWallet.setTranslateX(0);
+        nodeWallet.setTranslateY(0);
+        visualWalletNode = nodeWallet;
+        up.getChildren().add(nodeWallet);
 
     }
 
@@ -108,20 +122,6 @@ public class VisualVehicle implements VisualElement {
         down.setPrefHeight(400);
         down.setPrefWidth(650);
         //button
-        if(rollButton==true) {
-            Button roll = new Button("ROLL");
-            roll.setOnAction(event -> {
-                rollButton=false;
-                try {
-                    player.roll();
-                }catch (Exception e){
-                    System.err.println(e.getMessage());
-                }
-            });
-            roll.setTranslateY(30);
-            roll.setTranslateX(10);
-            up.getChildren().add(roll);
-        }
 
         Button finishPut = new Button("ACCEPT");
         finishPut.setOnAction(event -> {
@@ -140,15 +140,31 @@ public class VisualVehicle implements VisualElement {
         });
         //finishPut.setPrefWidth(150);
         up.getChildren().add(finishPut);
+        if(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE) {
+            Button remove = new Button("REMOVE");
+            remove.setOnAction(event -> {
+                removeBool = true;
+            });
+            //finishPut.setPrefWidth(150);
+            up.getChildren().add(remove);
+        }
 
-        Button remove = new Button("REMOVE");
-        remove.setOnAction(event -> {
-            removeBool = true;
-        });
-        //finishPut.setPrefWidth(150);
-        up.getChildren().add(remove);
-
-
+        if(rollButton==true) {
+            Button roll = new Button("ROLL");
+            roll.setOnAction(event -> {
+                rollButton=false;
+                try {
+                    player.roll();
+                    drawWallet(up);
+                    up.getChildren().remove(up);
+                }catch (Exception e){
+                    System.err.println(e.getMessage());
+                }
+            });
+            /*roll.setTranslateY(30);
+            roll.setTranslateX(10);*/
+            up.getChildren().add(roll);
+        }
 
         if(ventPhase==true) {
             //player.addDice();
@@ -192,13 +208,7 @@ public class VisualVehicle implements VisualElement {
         board.setTranslateX(10);*/
 
         //wallet
-        Node nodeWallet = new VisualWallet(player.getMyWallet()).draw();
-        nodeWallet.setScaleX(0.5);
-        nodeWallet.setScaleY(0.5);
-        nodeWallet.setTranslateX(0);
-        nodeWallet.setTranslateY(0);
-        up.getChildren().add(nodeWallet);
-
+        drawWallet(up);
 
         //names
         int i = 0;
