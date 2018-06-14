@@ -19,6 +19,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import java.util.HashMap;
+import java.util.Set;
 
 public class VisualVehicle implements VisualElement {
     private CardsLayout layout;
@@ -43,7 +44,7 @@ public class VisualVehicle implements VisualElement {
     private void drawPlaces(Pane group, VehicleCardData data, int positionOnHand){
         System.out.println("drawPlaces");
         CardShadow shadow = new CardShadow();
-        for(Pair<Integer, Integer> pair: player.getMyVehicle().possiblePositions(data)){
+        /*for(Pair<Integer, Integer> pair: player.getMyVehicle().possiblePositions(data)){
             Node node = shadow.draw();
             node.setScaleX(0.5);
             node.setScaleY(0.5);
@@ -60,6 +61,30 @@ public class VisualVehicle implements VisualElement {
                     System.err.println(e.getMessage());
                 }
             });
+        }*/
+        Set set = player.getMyVehicle().getLayout().keySet();
+        for(int i = -10; i < 10; ++i) {
+            for (int j = -10; j < 10; ++j) {
+                Pair<Integer, Integer> pair = new Pair<>(i, j);
+                if(!set.contains(pair)) {
+                    Node node = shadow.draw();
+                    node.setScaleX(0.5);
+                    node.setScaleY(0.5);
+                    node.setTranslateX(50 + pair.getKey() * (350 / 2));
+                    node.setTranslateY(50 + pair.getValue() * (223 / 2));
+                    group.getChildren().add(node);
+                    node.setOnMouseClicked(event -> {
+                        System.out.println("shadow click");
+                        try {
+                            player.putCard(positionOnHand, pair.getKey(), pair.getValue());
+                            actualize();
+
+                        } catch (Exception e) {
+                            System.err.println(e.getMessage());
+                        }
+                    });
+                }
+            }
         }
     }
 
