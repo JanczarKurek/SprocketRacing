@@ -111,13 +111,13 @@ public class CardsLayout {
         Pair<Integer, Integer> d = new javafx.util.Pair<>(card.getCoordinates().getKey(),
                 card.getCoordinates().getValue() - 1);
 
-        if (card.getCard().getJoints().isRight())
+        if (card.getCard().getJoints().isRight() && map.get(a) != null && map.get(a).getCard().getJoints().isLeft())
             xd(map.get(a), set);
-        if (card.getCard().getJoints().isLeft())
+        if (card.getCard().getJoints().isLeft() && map.get(b) != null && map.get(b).getCard().getJoints().isRight())
             xd(map.get(b), set);
-        if (card.getCard().getJoints().isUp())
+        if (card.getCard().getJoints().isUp() && map.get(c) != null && map.get(c).getCard().getJoints().isDown())
             xd(map.get(c), set);
-        if (card.getCard().getJoints().isDown())
+        if (card.getCard().getJoints().isDown() && map.get(d) != null && map.get(d).getCard().getJoints().isUp())
             xd(map.get(d), set);
     }
 
