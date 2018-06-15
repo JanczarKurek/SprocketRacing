@@ -3,9 +3,13 @@ package VisualCards;
 import Cards.*;
 import Cards.Layout.CardInLayout;
 import Cards.Layout.CardsLayout;
+import MapServer.Board;
+import MapServer.Path;
 import Players.Player;
+import Table.Table;
 import VisualBoard.VisualElement;
 import VisualDice.VisualDice;
+import VisualDice.VisualDiceBunch;
 import VisualPlayer.VisualWallet;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -18,7 +22,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class VisualVehicle implements VisualElement {
@@ -26,7 +33,7 @@ public class VisualVehicle implements VisualElement {
     private Application myApp;
     private VisualCard waitingCard;
     private HashMap<CardInLayout, Node> nodeMap = new HashMap<>();
-    private VisualDice waitingDice;
+    public HashSet<Integer> waitingDices = new HashSet<>();
     private Player player;
     private boolean rollButton=false;
     private boolean ventPhase = false;
@@ -35,6 +42,11 @@ public class VisualVehicle implements VisualElement {
     private boolean removeBool = false;
     private Node visualWalletNode;
 
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    private Board board;
     public VisualVehicle(CardsLayout layout, Application app, Player player){
         myApp = app;
         this.layout = layout;
@@ -45,7 +57,9 @@ public class VisualVehicle implements VisualElement {
     private void drawWallet(HBox up){
         if(visualWalletNode!=null)
             up.getChildren().remove(visualWalletNode);
-        Node nodeWallet = new VisualWallet(player.getMyWallet()).draw();
+        VisualWallet visualWallet = new VisualWallet(player.getMyWallet());
+        visualWallet.setVehicle(this);
+        Node nodeWallet = visualWallet.draw();
         nodeWallet.setScaleX(0.5);
         nodeWallet.setScaleY(0.5);
         nodeWallet.setTranslateX(0);
@@ -122,11 +136,22 @@ public class VisualVehicle implements VisualElement {
         down.setPrefHeight(400);
         down.setPrefWidth(650);
         //button
-
-        Button finishPut = new Button("ACCEPT");
+        Button finishPut;
+        if(player.taskManager.getCurrentTask().type == Player.Task.IDLERACE || player.taskManager.getCurrentTask().type == Player.Task.IDLEDAMAGE)
+             finishPut = new Button("VOTE");
+        else
+            finishPut = new Button("ACCEPT");
         finishPut.setOnAction(event -> {
             try {
-                if(player.taskManager.getCurrentTask().type == Player.Task.IDLEVENT){
+                if(player.taskManager.getCurrentTask().type == Player.Task.IDLERACE ){
+                    player.vote();
+                    ((ViewManager) myApp).visualBoard(player.getId());
+                }
+                else if(player.taskManager.getCurrentTask().type == Player.Task.IDLEDAMAGE){
+                    player.vote();
+                    ((ViewManager) myApp).visualHand(player.getId());
+                }
+                else if(player.taskManager.getCurrentTask().type == Player.Task.IDLEVENT){
                     player.vote();
                     ((ViewManager)myApp).waitForPrevPlayer(player.getId());
                 }
@@ -141,6 +166,15 @@ public class VisualVehicle implements VisualElement {
         //finishPut.setPrefWidth(150);
         up.getChildren().add(finishPut);
         if(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE) {
+            Button remove = new Button("TAKE");
+            remove.setOnAction(event -> {
+                removeBool = true;
+            });
+            //finishPut.setPrefWidth(150);
+            up.getChildren().add(remove);
+        }
+
+        if(player.taskManager.getCurrentTask().type == Player.Task.IDLEDAMAGE) {
             Button remove = new Button("REMOVE");
             remove.setOnAction(event -> {
                 removeBool = true;
@@ -161,14 +195,10 @@ public class VisualVehicle implements VisualElement {
                     System.err.println(e.getMessage());
                 }
             });
-            /*roll.setTranslateY(30);
-            roll.setTranslateX(10);*/
             up.getChildren().add(roll);
         }
 
         if(ventPhase==true) {
-            //player.addDice();
-            //player.getMyWallet().add7gears();
             MenuBar menuBar = new MenuBar();
             Menu menuVent = new Menu("VENT ");
 
@@ -236,6 +266,40 @@ public class VisualVehicle implements VisualElement {
         cockpit.setScaleY(0.5);
         cockpit.setTranslateX(50+player.getMyVehicle().getCockpit().getCoordinates().getKey()*(350/2));
         cockpit.setTranslateY(50+player.getMyVehicle().getCockpit().getCoordinates().getValue()*(233/2));
+        CardInLayout cardC = player.getMyVehicle().getCockpit();
+        cockpit.setOnMouseClicked( event -> {
+            if(waitingDices.size()>0 && player.taskManager.getCurrentTask().type == Player.Task.IDLERACE){
+                System.out.println("dodaje kosc");
+                try {
+                    player.useCard(cardC.getCoordinates().getKey(), cardC.getCoordinates().getValue(), waitingDices);
+                    player.acceptProposition();
+                    //player.runEffects(0);
+                    while(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE) {
+                        player.runAtomicEffect();
+                        if(player.taskManager.getCurrentTask().type == Player.Task.VENT)
+                            player.ventOnce(1,1, 0);
+                        else if(player.taskManager.getCurrentTask().type == Player.Task.MAKEMOVE) {
+                            ArrayList<Integer> path = new ArrayList<>();
+                            path.add(board.getPlayerPosition(player.getId()));
+                            path.add(board.getPlayerPosition(player.getId())+1);
+                            player.makeMove(new Path(path));
+                        }
+                        if(player.taskManager.getCurrentTask().type == Player.Task.MOVESMOOTH) {
+                            ArrayList<Integer> path = new ArrayList<>();
+                            path.add(board.getPlayerPosition(player.getId()));
+                            path.add(board.getPlayerPosition(player.getId())+1);
+                            player.makeMove(new Path(path));
+                        }
+                        System.out.println("nazwa " + player.taskManager.getCurrentTask().type.name());
+                    }
+                    System.out.println("po " + player.taskManager.getCurrentTask().type.name());
+                    actualize();
+                }catch (Exception e){
+                    System.err.println("wyjatek " + e.getMessage());
+                    waitingDices.clear();
+                }
+            }
+        });
         down.getChildren().add(cockpit);
         for(CardInLayout card : player.getMyVehicle().getTrain()) {
             try {
@@ -247,10 +311,53 @@ public class VisualVehicle implements VisualElement {
 
                 down.getChildren().add(node);
                 node.setOnMouseClicked(event3 -> {
-                    if(removeBool){
+                    if(waitingDices.size()>0 && player.taskManager.getCurrentTask().type == Player.Task.IDLERACE){
+                        System.out.println("dodaje kosc");
+                        try {
+                            System.out.println(card.getCoordinates().getKey()+" "+card.getCoordinates().getValue());
+                            System.out.println(waitingDices.size());
+                            player.useCard(card.getCoordinates().getKey(), card.getCoordinates().getValue(), waitingDices);
+                            player.acceptProposition();
+                            //player.runEffects(0);
+                            while(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE) {
+                                try{
+                                    player.runEffects(0);
+                                }catch (Exception e){
+
+                                }
+                                player.runAtomicEffect();
+                                if(player.taskManager.getCurrentTask().type == Player.Task.VENT)
+                                    player.ventOnce(1,1, 0);
+                                else if(player.taskManager.getCurrentTask().type == Player.Task.MAKEMOVE) {
+                                    ArrayList<Integer> path = new ArrayList<>();
+                                    path.add(board.getPlayerPosition(player.getId()));
+                                    path.add(board.getPlayerPosition(player.getId())+1);
+                                    path.add(board.getPlayerPosition(player.getId())+2);
+                                    player.makeMove(new Path(path));
+                                }
+                                else if(player.taskManager.getCurrentTask().type == Player.Task.MOVESMOOTH) {
+                                    ArrayList<Integer> path = new ArrayList<>();
+                                    path.add(board.getPlayerPosition(player.getId()));
+                                    path.add(board.getPlayerPosition(player.getId())+1);
+                                    path.add(board.getPlayerPosition(player.getId())+2);
+                                    player.makeMove(new Path(path));
+                                }
+                                System.out.println("nazwa " + player.taskManager.getCurrentTask().type.name());
+                            }
+                            System.out.println("po " + player.taskManager.getCurrentTask().type.name());
+                            actualize();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            waitingDices.clear();
+                        }
+                    }
+                    else if(removeBool){
                         System.out.println("click "+card.getCoordinates().getKey()+" "+card.getCoordinates().getValue());
                         try {
-                            player.takeCard(card.getCoordinates().getKey(), card.getCoordinates().getValue());
+                            if(player.taskManager.getCurrentTask().type == Player.Task.IDLEDAMAGE)
+                                player.obligatoryRemoveOne(card.getCoordinates().getKey(), card.getCoordinates().getValue());
+                            else
+                                 player.takeCard(card.getCoordinates().getKey(), card.getCoordinates().getValue());
                             removeBool = false;
                             actualize();
                         }catch (Exception e){

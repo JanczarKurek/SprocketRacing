@@ -12,6 +12,7 @@ import Settings.Settings;
 import Table.Table;
 import VisualBoard.VisualBoardCreator;
 import VisualBoard.VisualBoard;
+import VisualPlayer.VisualHp;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -101,10 +102,11 @@ public class ViewManager extends Application {
         stages.get(playerID).setScene(new Scene(group, 650, 650));
     }
 
-    void visualVehicle(int playerID){
+    public void visualVehicle(int playerID){
         Group group = new Group();
         System.out.println(table.getPlayer(playerID).getMyVehicle() + " "+this+" "+ table.getPlayer(playerID));
         VisualVehicle veh = new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID));
+        veh.setBoard(board);
         if(table.getPlayer(playerID).taskManager.getCurrentTask().type == Player.Task.IDLEVENT) {
             try {
                 table.getPlayer(playerID).vote();
@@ -121,10 +123,20 @@ public class ViewManager extends Application {
 
     void visualBoard(int playerID){
         visualBoard.setMyApp(this);
+        visualBoard.setPlayerID(playerID);
         Group group = new Group();
         visualBoard.actualize();
         group.getChildren().add(visualBoard.draw());
-        stage.setScene(new Scene(group, 1003, 599));
+        stages.get(playerID).setScene(new Scene(group, 1003, 599));
+    }
+
+    public void visualHp(int playerID){
+        Group group = new Group();
+        VisualHp hp = new VisualHp(table.getPlayer(playerID).getHpBar());
+        hp.setApp(this);
+        hp.setPlayer(playerID);
+        group.getChildren().add(hp.draw());
+        stages.get(playerID).setScene(new Scene(group, 650, 650));
     }
 
     void waitForPrevPlayer(int playerID){

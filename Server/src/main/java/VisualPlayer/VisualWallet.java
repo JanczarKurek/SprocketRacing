@@ -1,8 +1,10 @@
 package VisualPlayer;
 
 import InGameResources.ResourceWallet;
+import Players.Player;
 import Settings.Settings;
 import VisualBoard.VisualElement;
+import VisualCards.VisualVehicle;
 import VisualDice.VisualDiceBunch;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -18,6 +20,12 @@ import java.io.FileNotFoundException;
 public class VisualWallet implements VisualElement{
     private ResourceWallet wallet;
     static Image cogImage;
+
+    private VisualVehicle veh;
+
+    public void setVehicle(VisualVehicle veh){
+        this.veh = veh;
+    }
 
     static {
         try {
@@ -42,7 +50,9 @@ public class VisualWallet implements VisualElement{
         text.setTranslateY(30);
         text.setFill(Color.RED);
         ret.getChildren().add(text);
-        Node bunch = new VisualDiceBunch(wallet.getDices()).draw();
+        VisualDiceBunch visualDiceBunch = new VisualDiceBunch(wallet.getDices());
+        visualDiceBunch.setVehicle(veh);
+        Node bunch = visualDiceBunch.draw();
         bunch.setTranslateX(100);
         ret.getChildren().add(bunch);
         return ret;

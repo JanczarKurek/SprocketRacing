@@ -26,6 +26,9 @@ public class VisualRolledDice implements VisualElement {
             Node node = dice.draw();
             node.setTranslateX(50*i);
             node.setTranslateY(50);
+            node.setOnMouseClicked(event -> {
+                System.out.println("kliknieta jestem");
+            });
             group.getChildren().add(node);
             i++;
         }

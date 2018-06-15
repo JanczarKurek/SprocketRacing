@@ -19,6 +19,7 @@ public class VisualBoard implements VisualElement {
 
     private Image boardSprite;
     private Application myApp;
+    private Integer playerID;
 
     public void setMyApp(Application myApp){
         this.myApp = myApp;
@@ -69,6 +70,10 @@ public class VisualBoard implements VisualElement {
         PlayersToPawns = new TreeMap<>();
     }
 
+    public void setPlayerID(int playerID){
+        this.playerID=playerID;
+    }
+
     public void insertPlayer(Integer player, VisualPawn pawn){
         PlayersToPawns.put(player, pawn);
     }
@@ -89,16 +94,17 @@ public class VisualBoard implements VisualElement {
             node.setTranslateX(fieldRecord.getPosition().getX());
             group.getChildren().add(node);
         }
-        Button button = new Button("USE VEHICLE");
+        Button button = new Button("DAMAGE PHASE");
         button.setOnAction(event -> {
-            ((ViewManager)myApp).useVehicle();
+            System.out.println("damage phase!!!");
+            ((ViewManager)myApp).visualHp(playerID);
         });
         Random random = new Random();
         group.getChildren().add(button);
-        if(random.nextBoolean()) {
+        /*if(random.nextBoolean()) {
             group.setScaleX(0.8);
             group.setScaleY(0.5);
-        }
+        }*/
         return group;
     }
 

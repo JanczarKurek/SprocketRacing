@@ -97,4 +97,10 @@ public class ResourceWallet{
     public void transferTo(ResourceWallet other){
         other.transferFrom(this);
     }
+
+    public void add7gears(){
+        dices.add(new Dice(Dice.Color.RED));
+       // dices.roll();
+        gears+=7;
+    }
 }

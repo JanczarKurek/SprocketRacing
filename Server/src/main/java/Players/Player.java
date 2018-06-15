@@ -70,7 +70,7 @@ public class Player {
         transitions.put(Task.IDLERACE, put);
         put = new TreeSet<>(Arrays.asList(Task.CHANGEVEHICLE, Task.VENT, Task.VOTE));
         transitions.put(Task.IDLEVENT, put);
-        put = new TreeSet<>(Arrays.asList(Task.BREAKPART));
+        put = new TreeSet<>(Arrays.asList(Task.BREAKPART, Task.VOTE));
         transitions.put(Task.IDLEDAMAGE, put);
         put = new TreeSet<>(Arrays.asList(Task.VOTE));
         transitions.put(Task.DAMAGEEND, put);
@@ -194,7 +194,7 @@ public class Player {
     private Card chosenCard;
     private ResourceWallet myWallet = new ResourceWallet();
     private CardsLayout myVehicle = new CardsLayout();
-    private PawnController pawnController;
+    public PawnController pawnController;
     public TaskManager taskManager = new TaskManager();
 
     public Player(Table table, int id, VehicleCardData cockpit){
@@ -396,13 +396,17 @@ public class Player {
     public void useCard(int x, int y, Collection<Integer> indices) throws WrongMove{
         checkAction(Task.USECARD);
         DiceBunch dice = new DiceBunch();
-        VehicleCardData card = myVehicle.getLayout(x, y).get(new Pair<>(x, y));
+        VehicleCardData card = myVehicle.getCardByCoordinates(x, y);
         try {
             dice = myWallet.takeSome(indices);
             PendingTask pendingTask = new PendingTask(Task.USECARD, 0);
             pendingTask.actualProposition = card.getEngine().getProposition(dice);
             taskManager.putTask(pendingTask);
-        } catch (WrongColor wrongColor) {
+        }catch (NullPointerException np){
+           np.printStackTrace();
+        }
+        catch (WrongColor wrongColor) {
+            System.out.println("zly kolor");
             myWallet.putDices(dice);
             throw new WrongMove("Player " + getId() + ":" + wrongColor);
         }
@@ -414,6 +418,7 @@ public class Player {
         taskManager.finalizeTask();
         PendingTask pendingTask = new PendingTask(Task.ACCEPTUSE, 0);
         pendingTask.processedEffects = Functional.changetoPeek(actualProposition.accept().iterator());
+        pendingTask = new PendingTask(Task.IDLERACE, 0); // Przyklejone taśmą
         taskManager.putTask(pendingTask);
     }
 

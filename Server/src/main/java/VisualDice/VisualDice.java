@@ -1,8 +1,11 @@
 package VisualDice;
 
 import InGameResources.Dice.Dice;
+import Players.Player;
 import Settings.Settings;
 import VisualBoard.VisualElement;
+import VisualCards.VisualVehicle;
+import VisualPlayer.VisualWallet;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -16,7 +19,12 @@ public class VisualDice implements VisualElement {
     private Dice dice;
     private Image imageColor;
     private Image imageNumber;
-    private int positionOnHand = -1;
+    private Integer positionOnHand = -1;
+    private VisualVehicle veh;
+
+    public void setPlayer(VisualVehicle veh){
+        this.veh = veh;
+    }
 
     public VisualDice(Dice dice){
         try {
@@ -65,6 +73,10 @@ public class VisualDice implements VisualElement {
         Group group = new Group();
         group.getChildren().add(new ImageView(imageColor));
         group.getChildren().add(new ImageView(imageNumber));
+        group.setOnMouseClicked(event -> {
+           veh.waitingDices.add(positionOnHand);
+           System.out.println("dodaje "+positionOnHand);
+        });
         return group;
     }
 
