@@ -46,7 +46,7 @@ public class ViewManager extends Application {
         stage = primaryStage;
         board = gameSetup();
         String pref = Settings.getSettings().getResourcesPath();
-        ArrayList<Deck> list = new ArrayList();
+        ArrayList<Deck> list = new ArrayList<>();
         Deck deck1 = new LoadedDeck(pref + "/Files/Deck1").getDeck();
         deck1.shuffle();
         list.add(deck1);

@@ -31,14 +31,11 @@ import java.util.Set;
 public class VisualVehicle implements VisualElement {
     private CardsLayout layout;
     private Application myApp;
-    private VisualCard waitingCard;
-    private HashMap<CardInLayout, Node> nodeMap = new HashMap<>();
     public HashSet<Integer> waitingDices = new HashSet<>();
     private Player player;
     private boolean rollButton=false;
     private boolean ventPhase = false;
     private int waitingCardPipes = 0;
-    private int waitingVentpipes = 0;
     private boolean removeBool = false;
     private boolean takeBool = false;
     private Node visualWalletNode;
@@ -184,7 +181,7 @@ public class VisualVehicle implements VisualElement {
             up.getChildren().add(remove);
         }
 
-        if(rollButton==true) {
+        if(rollButton) {
             Button roll = new Button("ROLL");
             roll.setOnAction(event -> {
                 rollButton=false;
@@ -199,7 +196,7 @@ public class VisualVehicle implements VisualElement {
             up.getChildren().add(roll);
         }
 
-        if(ventPhase==true) {
+        if(ventPhase) {
             MenuBar menuBar = new MenuBar();
             Menu menuVent = new Menu("VENT ");
 
@@ -253,7 +250,6 @@ public class VisualVehicle implements VisualElement {
                 node2.setTranslateY(0);
                 up.getChildren().add(node2);
                 node2.setOnMouseClicked(event2 -> {
-                    waitingCard = visualCard;
                     drawPlaces(down, (VehicleCardData) visualCard.getCard(), visualCard.getCard().getID());
                 });
             }
