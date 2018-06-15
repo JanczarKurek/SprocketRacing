@@ -3,8 +3,11 @@ package VisualPlayer;
 import Players.HpBar;
 import Settings.Settings;
 import VisualBoard.VisualElement;
+import VisualCards.ViewManager;
+import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -18,6 +21,15 @@ import java.util.HashMap;
 
 public class VisualHp implements VisualElement{
     private HpBar hpBar;
+    private Application app;
+    private int player;
+
+    public void setApp(Application app){
+        this.app = app;
+    }
+    public void setPlayer(int player){
+        this.player = player;
+    }
     private static HashMap<String, Image> images = new HashMap<>();
     static {
         String pref = Settings.getSettings().getResourcesPath();
@@ -28,7 +40,7 @@ public class VisualHp implements VisualElement{
             throw new RuntimeException(e);
         }
     }
-    VisualHp(HpBar hpBar){
+    public VisualHp(HpBar hpBar){
         this.hpBar = hpBar;
     }
 
@@ -49,10 +61,19 @@ public class VisualHp implements VisualElement{
         }
         ret.getChildren().add(image);
         Text text = new Text(String.valueOf(Math.abs(hpBar.getHp())));
+        if(hpBar.getHp()==0)
+            text.setText(String.valueOf(Math.abs(hpBar.getHp())) + "\n You shoud remove "+ hpBar.getHp() +" cards");
         text.setFont(new Font(20));
         text.setTranslateX(55);
         text.setTranslateY(30);
         ret.getChildren().add(text);
+        Button damage = new Button("DAMAGE");
+        damage.setOnMouseClicked(event -> {
+            ((ViewManager)app).visualVehicle(player);
+        });
+        damage.setTranslateY(70);
+        damage.setTranslateX(55);
+        ret.getChildren().add(damage);
         return ret;
     }
 

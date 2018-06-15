@@ -80,8 +80,8 @@ public class CardsLayout {
     }
 
     public Cards.VehicleCardData getCardByCoordinates(int x, int y) {
-        if (!map.containsKey(new Pair<>(x, y)))
-            return null;
+        if (!map.containsKey(new Pair<>(x, y))){ System.out.println("nie zawieram");
+            return null;}
         return map.get(new Pair<>(x, y)).getCard();
     }
 

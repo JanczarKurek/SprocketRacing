@@ -83,6 +83,7 @@ public class VehicleCardEngine {
     }
 
     public CardEffect getCardEffect(){
+        System.out.println("get eff "+(possibilities==null));
         return possibilities;
     }
 
