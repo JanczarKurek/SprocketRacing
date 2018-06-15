@@ -129,10 +129,7 @@ public class CardsLayout {
         return set.containsAll(map.keySet());
     }
 
-    public HashMap<Pair<Integer, Integer>, Cards.VehicleCardData> getLayout()
-            throws ErrorsAndExceptions.IllegalCardsLayoutException {
-        if (!checkCorrectness())
-            throw new ErrorsAndExceptions.IllegalCardsLayoutException();
+    public HashMap<Pair<Integer, Integer>, Cards.VehicleCardData> getLayout(){
         HashMap<Pair<Integer, Integer>, Cards.VehicleCardData> r = new java.util.HashMap<>();
         for (Pair<Integer, Integer> p : map.keySet())
             r.put(p, map.get(p).getCard());
