@@ -105,8 +105,14 @@ public class ViewManager extends Application {
         Group group = new Group();
         System.out.println(table.getPlayer(playerID).getMyVehicle() + " "+this+" "+ table.getPlayer(playerID));
         VisualVehicle veh = new VisualVehicle(table.getPlayer(playerID).getMyVehicle(), this, table.getPlayer(playerID));
-        if(table.getPlayer(playerID).taskManager.getCurrentTask().type == Player.Task.IDLEVENT)
-            veh.setVentPhase(true);
+        if(table.getPlayer(playerID).taskManager.getCurrentTask().type == Player.Task.IDLEVENT) {
+            try {
+                table.getPlayer(playerID).vote();
+                veh.setRollButton(true);
+            }catch (Exception e){
+                System.err.println(e.getMessage());
+            }
+        }
         //veh.setRollButton(true);
         group.getChildren().add(veh.draw());
 
