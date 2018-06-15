@@ -102,7 +102,7 @@ public class Functional {
 
             @Override
             public boolean hasNext() {
-                return peeked != null || hasNext();
+                return peeked != null || iterator.hasNext();
             }
 
             @Override
