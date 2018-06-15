@@ -154,7 +154,7 @@ public class VisualVehicle implements VisualElement {
                 }
                 else if(player.taskManager.getCurrentTask().type == Player.Task.IDLEVENT){
                     player.vote();
-                    ((ViewManager)myApp).waitForPrevPlayer(player.getId());
+                    ((ViewManager)myApp).visualVehicle(player.getId());
                 }
                 else {
                     player.acceptVehicleLayout();
