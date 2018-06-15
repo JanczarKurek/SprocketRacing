@@ -40,6 +40,7 @@ public class VisualVehicle implements VisualElement {
     private int waitingCardPipes = 0;
     private int waitingVentpipes = 0;
     private boolean removeBool = false;
+    private boolean takeBool = false;
     private Node visualWalletNode;
 
     public void setBoard(Board board) {
@@ -165,10 +166,10 @@ public class VisualVehicle implements VisualElement {
         });
         //finishPut.setPrefWidth(150);
         up.getChildren().add(finishPut);
-        if(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE) {
+        if(player.taskManager.getCurrentTask().type != Player.Task.IDLERACE && player.taskManager.getCurrentTask().type != Player.Task.IDLEDAMAGE ) {
             Button remove = new Button("TAKE");
             remove.setOnAction(event -> {
-                removeBool = true;
+                takeBool = true;
             });
             //finishPut.setPrefWidth(150);
             up.getChildren().add(remove);
@@ -354,16 +355,23 @@ public class VisualVehicle implements VisualElement {
                     else if(removeBool){
                         System.out.println("click "+card.getCoordinates().getKey()+" "+card.getCoordinates().getValue());
                         try {
-                            if(player.taskManager.getCurrentTask().type == Player.Task.IDLEDAMAGE)
                                 player.obligatoryRemoveOne(card.getCoordinates().getKey(), card.getCoordinates().getValue());
-                            else
-                                 player.takeCard(card.getCoordinates().getKey(), card.getCoordinates().getValue());
                             removeBool = false;
                             actualize();
                         }catch (Exception e){
                             System.err.println(e.getMessage());
                         }
 
+                    }
+                    else if(takeBool){
+                        System.out.println("click "+card.getCoordinates().getKey()+" "+card.getCoordinates().getValue());
+                        try {
+                             player.takeCard(card.getCoordinates().getKey(), card.getCoordinates().getValue());
+                            takeBool = false;
+                            actualize();
+                        }catch (Exception e){
+                            System.err.println(e.getMessage());
+                        }
                     }
                    else if(waitingCardPipes>0){
 
